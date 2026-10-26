@@ -3,6 +3,7 @@ const fs = require('fs'), path = require('path'), http = require('http'), assert
 const root = path.resolve(__dirname, '..'), out = path.join(root, 'qa-output');
 fs.mkdirSync(out, { recursive: true });
 const document = fs.readFileSync(path.join(root, 'docs/index.html'), 'utf8');
+const currentTasks = JSON.parse(fs.readFileSync(path.join(root, 'src/daily-tasks.json'), 'utf8'));
 assert(!/C:[\\/]|E:[\\/]|password=|ghp_/.test(document), '发布文件不得含本地路径或凭据');
 assert(!/src=&quot;https:/.test(document), '独立站不依赖外部CDN脚本');
 assert(!document.includes('给144供粉'), '旧演示任务不得发布');
@@ -24,8 +25,35 @@ assert(document.includes('publishedTasks'), '应内嵌负责人发布的任务')
     assert.equal(await app.getAttribute('data-pots'), '23');
     assert.equal(await app.getAttribute('data-renderer'), 'webgl');
     assert.equal(await frame.locator('#pf-import-toggle').isVisible(), false);
-    assert.equal(await frame.locator('#pf-task-legend').isVisible(), false);
-    assert.match(await frame.locator('#pf-source').innerText(), /尚未发布当天任务/);
+    assert.equal(await frame.locator('#pf-task-legend').isVisible(), currentTasks.tasks.length > 0);
+    assert((await frame.locator('#pf-source').innerText()).includes(currentTasks.label));
+    const cameraState = () => app.evaluate(el => ({ x: Number(el.dataset.cameraX), z: Number(el.dataset.cameraZ), pitch: Number(el.dataset.cameraPitch), yaw: Number(el.dataset.cameraYaw), distance: Number(el.dataset.cameraDistance), eye: el.dataset.cameraEye.split(',').map(Number), target: el.dataset.cameraTarget.split(',').map(Number) }));
+    const near = (a, b, message) => assert(Math.abs(a - b) < .0001, message || `${a} != ${b}`);
+    const vector = s => s.eye.map((n, i) => n - s.target[i]);
+    const dragBy = async (dx, dy) => {
+      const b = await frame.locator('#pf-canvas').boundingBox();
+      const x = b.x + b.width * .5, y = b.y + b.height * .35;
+      await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x + dx, y + dy, { steps: 8 }); await page.mouse.up(); await page.waitForTimeout(60);
+    };
+    assert.equal(await app.getAttribute('data-navigation'), 'pan-tilt');
+    assert.equal(await app.getAttribute('data-pitch-axis'), '1,0,0');
+    const start = await cameraState();
+    await dragBy(120, 0); const pan = await cameraState();
+    assert(pan.x < start.x - .5, '横拖应平移摄像机，不绕盆位转动');
+    near(pan.pitch, start.pitch); near(pan.yaw, start.yaw); near(pan.z, start.z); near(pan.distance, start.distance);
+    vector(pan).forEach((n, i) => near(n, vector(start)[i], '平移不能改变观察方向'));
+    await page.screenshot({ path: path.join(out, 'horizontal-pan.png'), fullPage: true });
+    await dragBy(0, 48); const tilt = await cameraState();
+    near(tilt.x, pan.x); near(tilt.z, pan.z); near(tilt.distance, pan.distance); assert(tilt.pitch > pan.pitch + .1);
+    near(tilt.eye[0], pan.eye[0]); tilt.target.forEach((n, i) => near(n, pan.target[i]));
+    near(Math.hypot(...vector(tilt)), Math.hypot(...vector(pan)), '俯仰须绕固定平行轴，不改变距离');
+    await page.screenshot({ path: path.join(out, 'vertical-tilt.png'), fullPage: true });
+    // First movement is horizontal, then becomes diagonal: retain the chosen mode.
+    await dragBy(-100, 15); const diagonal = await cameraState(); near(diagonal.pitch, tilt.pitch);
+    const b = await frame.locator('#pf-canvas').boundingBox(); await page.mouse.move(b.x + b.width / 2, b.y + 80); await page.mouse.wheel(0, 100); await page.waitForTimeout(60);
+    const zoom = await cameraState(); assert(zoom.distance > diagonal.distance); near(zoom.pitch, diagonal.pitch); near(zoom.x, diagonal.x);
+    await frame.locator('#pf-home').click(); await page.waitForTimeout(750); const home = await cameraState(); near(home.x, 6.05); near(home.pitch, .85);
+    tests.push('horizontal camera translation preserves orientation; vertical pitch axis parallel to steps; direction lock; wheel zoom; reset');
     for (const width of [320, 360, 736, 1024]) {
       await page.setViewportSize({ width, height: 1100 }); await page.waitForTimeout(120);
       const size = await app.evaluate(el => ({ width: el.clientWidth, content: el.scrollWidth }));
@@ -54,6 +82,20 @@ assert(document.includes('publishedTasks'), '应内嵌负责人发布的任务')
     const context = await browser.newContext({ viewport: { width: 360, height: 1000 }, isMobile: true, hasTouch: true });
     const mobile = await context.newPage(); mobile.on('pageerror', error => errors.push(error.message));
     await mobile.goto(url); const mf = mobile.frameLocator('iframe'); await mf.locator('#pf-search').fill('207'); await mf.locator('#pf-search').press('Enter');
+    const touchSession = await context.newCDPSession(mobile);
+    const mc = mf.locator('#plant-field-3d'); const touchCamera = () => mc.evaluate(el => ({ x: Number(el.dataset.cameraX), pitch: Number(el.dataset.cameraPitch), distance: Number(el.dataset.cameraDistance) }));
+    const mb = await mf.locator('#pf-canvas').boundingBox(), tx = mb.x + mb.width * .5, ty = mb.y + mb.height * .28;
+    const touchStart = await touchCamera();
+    await touchSession.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: tx, y: ty, id: 0 }] });
+    await touchSession.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: tx + 65, y: ty, id: 0 }] });
+    await touchSession.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await mobile.waitForTimeout(60);
+    const touchPan = await touchCamera(); assert(touchPan.x < touchStart.x); near(touchPan.pitch, touchStart.pitch);
+    await touchSession.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: tx - 30, y: ty, id: 0 }, { x: tx + 30, y: ty, id: 1 }] });
+    await touchSession.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: tx - 55, y: ty, id: 0 }, { x: tx + 55, y: ty, id: 1 }] });
+    await touchSession.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await mobile.waitForTimeout(60);
+    const touchZoom = await touchCamera(); assert(touchZoom.distance < touchPan.distance); near(touchZoom.pitch, touchPan.pitch); near(touchZoom.x, touchPan.x);
+    await mf.locator('#pf-home').click(); await mobile.waitForTimeout(750);
+    tests.push('real touch pointer pan and two-finger pinch keep orientation and do not jump');
     await mf.locator('#pf-export').click(); assert.equal(await mf.locator('#pf-export-dialog').isVisible(), true);
     await mobile.screenshot({ path: path.join(out, 'mobile-export.png'), fullPage: true }); await context.close();
     fallback = await chromium.launch({ headless: true, executablePath, args: ['--disable-webgl'] });
