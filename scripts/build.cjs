@@ -6,17 +6,8 @@ const input = path.join(root, 'src/plant-field.html');
 const config = JSON.parse(fs.readFileSync(path.join(root, 'src/daily-tasks.json'), 'utf8'));
 if (!Array.isArray(config.tasks) || config.tasks.length > 1000) throw Error('任务格式错误');
 const raw = fs.readFileSync(input, 'utf8');
-const vm = require('vm');
-const rows = vm.runInNewContext(raw.match(/const actualRows=(\[[\s\S]*?\n    \]);/)[1]);
-const ids = new Set(rows.flatMap(row => Array.from(row.ids)));
-const seen = new Set();
-for (const task of config.tasks) {
-  if (!ids.has(task.id)) throw Error('任务植株尚未录入盆位：' + task.id);
-  if (!/^\d+$/.test(String(task.flower))) throw Error('缺少有效花号：' + task.id);
-  if (task.area !== '第一片区' || !task.evening || !task.morning) throw Error('任务字段不完整：' + task.id);
-  if (seen.has(task.id + '#' + task.flower)) throw Error('任务重复：' + task.id);
-  seen.add(task.id + '#' + task.flower);
-}
+const { readLayout, validateConfig } = require('./task-data.cjs');
+const ids = readLayout(raw), summary = validateConfig(config, ids);
 const renderer = process.env.VISUALIZE_RENDERER;
 if (!renderer || !fs.existsSync(renderer)) throw Error('请设置 VISUALIZE_RENDERER 为 visualize 的 render.py 路径');
 const python = process.env.PYTHON_BIN || 'python';
@@ -51,4 +42,4 @@ fs.mkdirSync(path.join(root, 'docs'), { recursive: true });
 document = document.replace(/\r\n/g, '\n');
 fs.writeFileSync(path.join(root, 'docs/index.html'), document);
 fs.writeFileSync(path.join(root, 'docs/.nojekyll'), '');
-console.log(JSON.stringify({ built: true, confirmedPlants: ids.size, taskCount: config.tasks.length, bytes: Buffer.byteLength(document) }));
+console.log(JSON.stringify({ built: true, confirmedPlants: ids.size, ...summary, bytes: Buffer.byteLength(document) }));

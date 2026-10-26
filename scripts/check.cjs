@@ -4,12 +4,38 @@ const root = path.resolve(__dirname, '..'), out = path.join(root, 'qa-output');
 fs.mkdirSync(out, { recursive: true });
 const document = fs.readFileSync(path.join(root, 'docs/index.html'), 'utf8');
 const currentTasks = JSON.parse(fs.readFileSync(path.join(root, 'src/daily-tasks.json'), 'utf8'));
+const { readLayout, validateConfig, periodLabels, needsAction } = require('./task-data.cjs');
+const layout = readLayout(fs.readFileSync(path.join(root, 'src/plant-field.html'), 'utf8'));
+const taskSummary = validateConfig(currentTasks, layout);
+const encode = s => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const embedded = c => encode('const publishedTasks=' + JSON.stringify(c).replace(/</g, '\\u003c') + ';');
+assert(document.includes(embedded(currentTasks)), '构建产物必须嵌入当前真实任务，不能只更新JSON');
 assert(!/C:[\\/]|E:[\\/]|password=|ghp_/.test(document), '发布文件不得含本地路径或凭据');
 assert(!/src=&quot;https:/.test(document), '独立站不依赖外部CDN脚本');
-assert(!document.includes('给144供粉'), '旧演示任务不得发布');
 assert(document.includes('publishedTasks'), '应内嵌负责人发布的任务');
+// Isolated fixtures are served from memory, never saved into production task data.
+const fixture = { date: '2026-10-27', label: '10月26日晚／10月27日早 · 仅展示已录入盆位的8/8株', tasks: [
+  { area: '第一片区', id: '49', flower: '99', evening: '红线；去雄；套袋', morning: '接157花粉（父本第99朵）；重新套袋，红线' },
+  { area: '第一片区', id: '792', flower: '99', evening: '已完成：红线；去雄；套袋', morning: '接157花粉（父本第99朵）；重新套袋，红线' },
+  { area: '第一片区', id: '157', flower: '99', evening: '不处理（保留雄蕊，不套袋）', morning: '给49供粉（母本第99朵）；给792供粉（母本第99朵）' },
+  { area: '第一片区', id: '59', flower: '99', evening: '绿线；套袋；不去雄', morning: '自主自交：确认开放，保持套袋' },
+  { area: '第一片区', id: '56', flower: '99', evening: '白线；不套袋；不去雄', morning: '自然开放：确认开放，白线' },
+  { area: '第一片区', id: '36', flower: '99', evening: '不处理（不套袋，不去雄）', morning: '摘取测量：确认开放后采样' },
+  { area: '第一片区', id: '46', flower: '99', evening: '黄线；套袋；不去雄', morning: '人工自交：取本花花粉授本花柱头，再套袋' },
+  { area: '第一片区', id: '47', flower: '99', evening: '已完成：绿线套袋', morning: '已完成：自主自交，已确认开放' },
+  { area: '第一片区', id: '49', flower: '100', evening: '已完成：绿线套袋', morning: '已完成：自主自交，已确认开放' }
+] };
+const fixtureSummary = validateConfig(fixture, layout);
+const fixtureDocument = document.replace(embedded(currentTasks), embedded(fixture));
+const expiredFixture = { ...fixture, date: '2000-10-27', label: '10月26日晚／10月27日早 · 仅展示已录入盆位的8/8株' };
+const expiredDocument = document.replace(embedded(currentTasks), embedded(expiredFixture));
+assert.notEqual(fixtureDocument, document);
+assert.equal(fixtureSummary.crosses, 2, '一父两母的两个关系必须分别保留');
+assert.equal(needsAction('不处理（不套袋，不去雄）'), false);
+assert.equal(needsAction('已完成：接157花粉；重新套袋'), false);
+assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t => t.id !== '157') }, layout), /双方|一致/);
 (async () => {
-  const server = http.createServer((req, res) => { res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(document); });
+  const server = http.createServer((req, res) => { res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(req.url.startsWith('/expired') ? expiredDocument : req.url.startsWith('/fixture') ? fixtureDocument : document); });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   let browser, fallback;
   const errors = [], tests = [];
@@ -17,6 +43,7 @@ assert(document.includes('publishedTasks'), '应内嵌负责人发布的任务')
     const executablePath = process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
     browser = await chromium.launch({ headless: true, executablePath, args: ['--enable-unsafe-swiftshader'] });
     const page = await browser.newPage({ viewport: { width: 1024, height: 1100 }, acceptDownloads: true });
+    if (currentTasks.date) await page.clock.install({ time: new Date(currentTasks.date + 'T08:00:00+08:00') });
     page.on('pageerror', error => errors.push(error.message));
     page.on('console', message => { if (message.type() === 'error' || message.type() === 'warning') console.log(message.type() + ': ' + message.text().slice(0, 300)); });
     const url = 'http://127.0.0.1:' + server.address().port + '/';
@@ -27,6 +54,29 @@ assert(document.includes('publishedTasks'), '应内嵌负责人发布的任务')
     assert.equal(await frame.locator('#pf-import-toggle').isVisible(), false);
     assert.equal(await frame.locator('#pf-task-legend').isVisible(), currentTasks.tasks.length > 0);
     assert((await frame.locator('#pf-source').innerText()).includes(currentTasks.label));
+    if (currentTasks.date) {
+      const labels = periodLabels(currentTasks.date);
+      assert.equal(await app.getAttribute('data-batch-date'), currentTasks.date);
+      assert.equal(await app.getAttribute('data-task-plants'), String(taskSummary.plants));
+      assert.equal(await app.getAttribute('data-pairs'), String(taskSummary.crosses));
+      for (const phase of ['evening', 'morning']) {
+        await frame.locator('#pf-phase').selectOption(phase);
+        assert.equal(await frame.locator('#pf-phase option:checked').innerText(), labels[phase]);
+        assert.equal(await app.getAttribute('data-active-tasks'), String(taskSummary.active[phase]));
+        for (const id of new Set(currentTasks.tasks.map(t => t.id))) {
+          const active = currentTasks.tasks.some(t => t.id === id && needsAction(t[phase]));
+          assert.equal(await frame.locator(`.pf-label[data-id="${id}"]`).getAttribute('data-task-active'), String(active));
+        }
+      }
+      if (currentTasks.tasks.some(t => /父本盆位未录入/.test(t.morning))) {
+        const mother = currentTasks.tasks.find(t => /父本盆位未录入/.test(t.morning));
+        await frame.locator('#pf-search').fill(mother.id); await frame.locator('#pf-search').press('Enter');
+        assert.match(await frame.locator('#pf-detail').innerText(), /父本第\d+朵.*父本盆位未录入/);
+        assert.equal(await frame.locator('#pf-pairtag').isVisible(), false, '未定位亲本不得虚构盆位连线');
+        await frame.locator('#pf-search').fill(''); await frame.locator('#pf-search').press('Enter');
+      }
+      tests.push('real embedded batch; explicit Beijing dates; phase-specific pending actions; completed preparation inactive; unlocated partner disclosed');
+    }
     const cameraState = () => app.evaluate(el => ({ x: Number(el.dataset.cameraX), z: Number(el.dataset.cameraZ), pitch: Number(el.dataset.cameraPitch), yaw: Number(el.dataset.cameraYaw), distance: Number(el.dataset.cameraDistance), eye: el.dataset.cameraEye.split(',').map(Number), target: el.dataset.cameraTarget.split(',').map(Number) }));
     const near = (a, b, message) => assert(Math.abs(a - b) < .0001, message || `${a} != ${b}`);
     const vector = s => s.eye.map((n, i) => n - s.target[i]);
@@ -102,6 +152,44 @@ assert(document.includes('publishedTasks'), '应内嵌负责人发布的任务')
     const fp = await fallback.newPage(); fp.on('pageerror', error => errors.push(error.message)); await fp.goto(url);
     assert.equal(await fp.frameLocator('iframe').locator('#plant-field-3d').getAttribute('data-renderer'), 'perspective-canvas');
     tests.push('touch search and PNG preview; no-WebGL fallback');
+    const fixturePage = await browser.newPage({ viewport: { width: 1024, height: 1100 } });
+    fixturePage.on('pageerror', error => errors.push(error.message));
+    await fixturePage.clock.install({ time: new Date(fixture.date + 'T08:00:00+08:00') });
+    await fixturePage.goto(url + 'fixture');
+    const ff = fixturePage.frameLocator('iframe'), fa = ff.locator('#plant-field-3d');
+    await ff.locator('.pf-label[data-id="56"]').waitFor({ state: 'visible' });
+    assert.equal(await fa.getAttribute('data-pairs'), '2');
+    for (const phase of ['evening', 'morning']) {
+      await ff.locator('#pf-phase').selectOption(phase);
+      assert.equal(await fa.getAttribute('data-active-tasks'), String(fixtureSummary.active[phase]));
+      assert.equal(await fa.getAttribute('data-active-pairs'), phase === 'morning' ? '2' : '0');
+      assert.equal(await ff.locator('.pf-label[data-id="792"]').getAttribute('data-task-active'), String(phase === 'morning'));
+      assert.equal(await ff.locator('.pf-label[data-id="157"]').getAttribute('data-task-active'), String(phase === 'morning'));
+      assert.equal(await ff.locator('.pf-label[data-id="47"]').getAttribute('data-task-active'), 'false');
+    }
+    const expectedKinds = { '49': 'cross', '157': 'donor', '59': 'auto', '56': 'open', '36': 'measure', '46': 'hand' };
+    const colors = [];
+    for (const [id, kind] of Object.entries(expectedKinds)) {
+      const label = ff.locator(`.pf-label[data-id="${id}"]`);
+      assert.equal(await label.getAttribute('data-task-kind'), kind);
+      assert.equal(await label.getAttribute('data-task-active'), 'true');
+      colors.push(await label.evaluate(el => el.style.getPropertyValue('--task-color')));
+    }
+    assert.equal(new Set(colors).size, 6, '六类处理应保留独立颜色');
+    const crossColor = await ff.locator('.pf-label[data-id="49"]').evaluate(el => el.style.getPropertyValue('--task-color'));
+    await ff.locator('#pf-search').fill('49'); await ff.locator('#pf-search').press('Enter');
+    assert.equal(await ff.locator('.pf-label[data-id="49"]').evaluate(el => el.style.getPropertyValue('--task-color')), crossColor, '搜索定位不能覆盖处理色');
+    assert.match(await ff.locator('#pf-detail').innerText(), /第99朵/);
+    assert.match(await ff.locator('#pf-detail').innerText(), /第100朵/);
+    await fixturePage.goto(url + 'expired');
+    await ff.locator('.pf-label[data-id="56"]').waitFor({ state: 'visible' });
+    await ff.locator('#pf-phase').selectOption('evening');
+    assert.equal(await fa.getAttribute('data-batch-expired'), 'true');
+    assert.equal(await fa.getAttribute('data-active-tasks'), '0');
+    assert.equal(await fa.getAttribute('data-active-pairs'), '0');
+    assert.match(await ff.locator('#pf-source').innerText(), /历史批次，不作为今日待办/);
+    tests.push('isolated six-color fixture; one father two mothers; multiple flowers; no-op/completed inactive; search color independent; expired batch not pending');
+    await fixturePage.close();
     assert.deepEqual(errors, []);
     fs.writeFileSync(path.join(out, 'checks.json'), JSON.stringify({ passed: true, tests, errors }, null, 2));
     console.log(JSON.stringify({ passed: true, tests, errors }));

@@ -22,7 +22,7 @@
     #plant-field-3d .pf-iconbutton{display:flex;align-items:center;justify-content:center;gap:6px;min-width:42px;min-height:42px;background:var(--pf-panel);border:1px solid var(--pf-border);border-radius:9px;padding:8px 11px}
     #plant-field-3d .pf-iconbutton svg{width:17px;height:17px}
     #plant-field-3d .pf-iconbutton:hover{background:var(--pf-panel2)}
-    #plant-field-3d .pf-phase{border:1px solid var(--pf-border);border-radius:9px;min-height:42px;padding:8px;background:var(--pf-panel);width:78px;flex-shrink:0}
+    #plant-field-3d .pf-phase{border:1px solid var(--pf-border);border-radius:9px;min-height:42px;padding:8px;background:var(--pf-panel);width:132px;flex-shrink:0}
     #plant-field-3d .pf-results{padding:0 20px 12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px}
     #plant-field-3d .pf-result{border:1px solid var(--pf-border);border-radius:6px;background:var(--pf-panel);padding:5px 10px;min-height:34px;font-variant-numeric:tabular-nums}
     #plant-field-3d .pf-result[aria-pressed="true"]{background:#344654;border-color:#9ecce7}
@@ -43,6 +43,8 @@
     #plant-field-3d .pf-label[aria-pressed="true"]{color:#edf5fa;border-color:#b5dcef;background:#2a3b48;box-shadow:0 0 16px #93c9ee15;z-index:4}
     #plant-field-3d .pf-label.pf-related{border-color:#7b7360}
     #plant-field-3d .pf-label.pf-dim{opacity:.35}
+    #plant-field-3d .pf-label.pf-task-active{border-color:var(--task-color)}
+    #plant-field-3d .pf-label.pf-task-inactive{opacity:.65}
     #plant-field-3d .pf-stagehead{position:absolute;left:20px;top:12px;pointer-events:none;display:grid;gap:4px}
     #plant-field-3d .pf-zonetitle{font-size:14px;font-weight:500;letter-spacing:.03em}
     #plant-field-3d .pf-zoneinfo{color:var(--pf-muted);font-size:11px}
@@ -70,11 +72,12 @@
     #plant-field-3d .pf-credit{padding:8px 20px;color:#748592;font-size:11px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
     @media(max-width:480px){#plant-field-3d{border-radius:11px}#plant-field-3d .pf-header{padding-left:13px;gap:8px}#plant-field-3d .pf-toolbar{padding:0 12px 12px;gap:6px}#plant-field-3d .pf-searchbox{padding:0 8px;gap:5px}#plant-field-3d .pf-searchbox input{font-size:16px}#plant-field-3d .pf-iconbutton{padding:8px;min-width:42px}#plant-field-3d .pf-phase{width:70px}#plant-field-3d .pf-stagehead{left:14px}#plant-field-3d .pf-legend{padding-left:14px;padding-right:14px;gap:7px 12px}#plant-field-3d .pf-detail{padding:12px 14px;grid-template-columns:1fr}#plant-field-3d .pf-partner{justify-self:start}#plant-field-3d .pf-results{padding-left:14px;padding-right:14px}#plant-field-3d .pf-import{margin-left:12px;margin-right:12px}#plant-field-3d .pf-camera-note{left:14px;bottom:16px}#plant-field-3d .pf-bottom{padding:10px 12px}#plant-field-3d .pf-zonebutton{padding:8px 12px}#plant-field-3d .pf-credit{padding:8px 14px}}
     @media(pointer:coarse){#plant-field-3d .pf-label{min-width:44px;min-height:44px}#plant-field-3d .pf-iconbutton,#plant-field-3d .pf-phase,#plant-field-3d .pf-result,#plant-field-3d .pf-partner{min-height:44px}}
+    @media(max-width:480px){#plant-field-3d .pf-phase{width:122px}}
   </style>
   <header class="pf-header"><span class="pf-brand">同质园</span><span class="pf-demo" id="pf-layout-status">右侧盆位核对</span><button type="button" class="pf-export" id="pf-export">保存PNG</button></header>
   <div class="pf-toolbar">
     <div class="pf-searchbox" role="search" aria-label="搜索植株"><i data-lucide="search" aria-hidden="true"></i><input id="pf-search" type="text" aria-label="输入植株编号定位" data-tooltip="定位光圈不改变处理颜色" placeholder="输入编号定位" autocomplete="off"></div>
-    <select id="pf-phase" class="pf-phase cursor-interaction" aria-label="操作时段"><option value="morning">明早</option><option value="evening">今晚</option></select>
+    <select id="pf-phase" class="pf-phase cursor-interaction" aria-label="操作时段（北京时间）"><option value="morning">早晨（无批次）</option><option value="evening">晚间（无批次）</option></select>
     <button id="pf-import-toggle" class="pf-iconbutton cursor-interaction" type="button" aria-label="导入当天任务表" aria-expanded="false" data-tooltip="导入任务表" hidden><i data-lucide="upload" aria-hidden="true"></i></button>
   </div>
   <div class="pf-results" id="pf-results" hidden><span id="pf-searchmsg" class="pf-searchmsg" role="status" aria-live="polite"></span><div id="pf-result-buttons" style="display:contents"></div></div>
@@ -128,13 +131,43 @@
     const settings={frameHeight:3.35,duration:1900,brightness:1,greenhouse:true};
     let phase='morning',queryIds=[],selected='56',activePair='',currentZone=0,pending=null,taskLabel='盆位核对 · 未载入当日任务';
     if(typeof publishedTasks!=='undefined'){tasks=publishedTasks.tasks;taskLabel=publishedTasks.label+(publishedTasks.date?' · '+publishedTasks.date:'');}
+    const taskDate=typeof publishedTasks!=='undefined'?publishedTasks.date:null;
+    const dateText=d=>(d.getUTCMonth()+1)+'月'+d.getUTCDate()+'日';
+    const batchMorning=taskDate?new Date(taskDate+'T00:00:00Z'):null,batchEvening=batchMorning?new Date(+batchMorning-86400000):null;
+    const periodLabels={morning:batchMorning?dateText(batchMorning)+'早':'早晨（无批次）',evening:batchEvening?dateText(batchEvening)+'晚':'晚间（无批次）'};
+    const beijingDate=()=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const get=k=>parts.find(x=>x.type===k).value;return get('year')+'-'+get('month')+'-'+get('day');};
+    const expired=()=>!!taskDate&&beijingDate()>taskDate;
+    if(taskDate)phase=beijingDate()===taskDate?'morning':'evening';
     const cameraLimits={pan:14,minPitch:.32,maxPitch:1.25},axisHeight=1.2,axisOffset=-1.2;
     let camera={cx:0,cz:0,yaw:0,pitch:.69,distance:31},flight=null,frameRequested=false,mvp=null,cssWidth=736,cssHeight=560,sceneBuffers=null,lastSavedSignature='';
     const motion=matchMedia('(prefers-reduced-motion: reduce)');
     function kind(t){const s=t.morning;if(/接\s*\d+\s*花粉/.test(s))return'cross';if(/给\s*\d+\s*供粉/.test(s))return'donor';if(s.includes('自主自交'))return'auto';if(s.includes('人工自交'))return'hand';if(s.includes('自然开放'))return'open';if(/摘取|测量|采样/.test(s))return'measure';return'other';}
-    function pairsOf(ts){const pairs=new Map();for(const t of ts){let m=t.morning.match(/接\s*(\d+)\s*花粉/);if(m){const key=m[1]+'>'+t.id;pairs.set(key,{key,donor:m[1],mother:t.id});}m=t.morning.match(/给\s*(\d+)\s*供粉/);if(m){const key=t.id+'>'+m[1];if(!pairs.has(key))pairs.set(key,{key,donor:t.id,mother:m[1]});}}return [...pairs.values()];}
+    function needsAction(t,when=phase){
+      if(!t||expired())return false;
+      const s=String(t[when]||'').trim();
+      if(!s||/已完成|已取消|已摘取|已丢弃/.test(s)||/^(不处理|无需操作|无操作|—)/.test(s))return false;
+      const actionable=s.replace(/不(?:套袋|去雄|授粉|人工授粉|摘取|绑线)/g,'');
+      return /接\s*\d+\s*花粉|给\s*\d+\s*供粉|套袋|去雄|绑|摘取|测量|采样|人工自交|自主自交|自然开放|确认|检查/.test(actionable);
+    }
+    function pairsOf(ts){
+      const pairs=new Map();
+      for(const t of ts)for(const m of t.morning.matchAll(/接\s*(\d+)\s*花粉/g)){
+        const donor=m[1],candidates=ts.filter(x=>x.id===donor&&new RegExp('给\\s*'+t.id+'\\s*供粉').test(x.morning));
+        const hint=t.morning.match(/父本第(\d+)朵/)?.[1],source=hint?candidates.find(x=>String(x.flower)===hint):candidates.length===1?candidates[0]:null;
+        const key=donor+'>'+t.id+'#'+t.flower;
+        pairs.set(key,{key,donor,mother:t.id,donorFlower:hint||source?.flower||null,motherFlower:t.flower});
+      }
+      for(const t of ts)for(const m of t.morning.matchAll(/给\s*(\d+)\s*供粉(?:（母本第(\d+)朵[^）]*）)?/g)){
+        const recipients=ts.filter(x=>x.id===m[1]&&(!m[2]||String(x.flower)===m[2])&&new RegExp('接\\s*'+t.id+'\\s*花粉').test(x.morning));
+        const matches=recipients.length?recipients:[{id:m[1],flower:m[2]||null}];
+        for(const recipient of matches){const key=t.id+'>'+recipient.id+'#'+recipient.flower;if(!pairs.has(key))pairs.set(key,{key,donor:t.id,mother:recipient.id,donorFlower:t.flower,motherFlower:recipient.flower});}
+      }
+      return [...pairs.values()];
+    }
     const records=id=>tasks.filter(t=>t.id===id);
-    const getPair=()=>pairsOf(tasks).find(p=>p.key===activePair);
+    const activeRecord=id=>records(id).find(t=>needsAction(t))||records(id)[0];
+    const pairIsActive=p=>phase==='morning'&&(tasks.some(t=>t.id===p.mother&&String(t.flower)===String(p.motherFlower)&&needsAction(t))||tasks.some(t=>t.id===p.donor&&String(t.flower)===String(p.donorFlower)&&needsAction(t)));
+    const getPair=()=>pairsOf(tasks).find(p=>p.key===activePair&&pairIsActive(p));
     const rgba=(c,a)=>[c[0],c[1],c[2],a],mix=(a,b,t)=>a+(b-a)*t;
     const ease=t=>t*t*(3-2*t),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
     const distanceForWidth=(zone=currentZone)=>Math.max(zone===0?13.5:29,(zone===0?5.9:15)/(Math.tan(38*Math.PI/360)*(cssWidth/cssHeight)));
@@ -223,18 +256,18 @@
       const pair=getPair(),filter=new Set(queryIds);
       for(const p of pots){
         if(p.zone!==currentZone&&!flight?.transfer)continue;
-        const task=records(p.id)[0],category=task?kind(task):'other',related=pair&&(p.id===pair.donor||p.id===pair.mother),matched=filter.size===0||filter.has(p.id),dim=false;
+        const task=activeRecord(p.id),active=needsAction(task),category=active?kind(task):'other',related=pair&&(p.id===pair.donor||p.id===pair.mother),matched=filter.size===0||filter.has(p.id),dim=false;
         const a=p.id?(dim?.16:.88):.2,wire=rgba(colors.wire,a),taskColor=rgba(colors[category],dim?.12:1),x=p.x,z=p.z;
         const rt=.43,rb=.275,top=p.y+.64,bottom=p.y+.055;
         if(p.id){for(let i=0;i<16;i++){const t=i/16*2*Math.PI,t2=(i+1)/16*2*Math.PI,s=.86+.14*Math.cos(t-.5),c=[.093*s,.134*s,.167*s,1];const at=[x+rt*Math.cos(t),top,z+rt*Math.sin(t)],bt=[x+rb*Math.cos(t),bottom,z+rb*Math.sin(t)],at2=[x+rt*Math.cos(t2),top,z+rt*Math.sin(t2)],bt2=[x+rb*Math.cos(t2),bottom,z+rb*Math.sin(t2)];triangle(at,bt,bt2,c);triangle(at,bt2,at2,c);}}
         ring(x,z,top,rt,wire);ring(x,z,top-.065,rt-.012,rgba(wire,wire[3]*.55));ring(x,z,bottom,rb,rgba(wire,wire[3]*.65));
         for(let i=0;i<8;i++){const t=i/8*2*Math.PI;line([x+rt*Math.cos(t),top,z+rt*Math.sin(t)],[x+rb*Math.cos(t),bottom,z+rb*Math.sin(t)],rgba(wire,wire[3]*.65));}
-        if(task){ring(x,z,top+.014,rt+.012,rgba(taskColor,.92));line([x-.11,p.y+.07,z+.56],[x+.11,p.y+.07,z+.56],taskColor);}
+        if(active){ring(x,z,top+.014,rt+.012,rgba(taskColor,.92));line([x-.11,p.y+.07,z+.56],[x+.11,p.y+.07,z+.56],taskColor);}
         if(p.id&&(p.id===selected||related||filter.has(p.id))){const located=p.id===selected||filter.has(p.id);ring(x,z,p.y+.025,.59,located?[.87,.94,1,.95]:[.85,.72,.5,.75]);ring(x,z,p.y+.03,.66,located?[.68,.84,.96,.23]:[.8,.7,.5,.17]);}
       }
       if(pair){const a=layout.get(pair.donor),b=layout.get(pair.mother);if(a&&b){let previous=null;const same=a.zone===b.zone,raise=same?2.25:5;const points=[];for(let i=0;i<=60;i++){const t=i/60,p=[mix(a.x,b.x,t),mix(a.y,b.y,t)+.82+Math.sin(Math.PI*t)*raise,mix(a.z,b.z,t)];if(previous)line(previous,p,[.91,.78,.55,.88]);previous=p;points.push(p);}const end=points[60],dir=normal(sub(end,points[56])),side=normal(cross(dir,[0,1,0]));for(const sign of [-1,1])line(end,end.map((v,k)=>v-dir[k]*.36+side[k]*.17*sign),[1,.86,.62,1]);}}
       if(gl){if(sceneBuffers){for(const key of ['line','triangle','glass'])gl.deleteBuffer(sceneBuffers[key]);}const make=data=>{const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);return b;};sceneBuffers={line:make(lines),triangle:make(triangles),glass:make(glass),lineCount:lines.length/7,triangleCount:triangles.length/7,glassCount:glass.length/7};}
-      root.dataset.pots=String(pots.length);root.dataset.taskPlants=String(layout.size);root.dataset.pairs=String(pairsOf(tasks).length);root.dataset.columns=String(columns);root.dataset.frames='2,1';root.dataset.roofPoles='2';root.dataset.arrangement='zone2-north-of-zone1';root.dataset.terraces='row1-south-low-row3-north-high';root.dataset.rowElevations=rowElevations.join(',');root.dataset.greenhouses=settings.greenhouse?'2':'0';root.dataset.pendingSecondRow=String(pendingSecondRow);root.dataset.positions='partial-real';
+      root.dataset.pots=String(pots.length);root.dataset.confirmedPlants=String(layout.size);root.dataset.taskPlants=String(new Set(tasks.map(t=>t.id)).size);root.dataset.activeTasks=String(tasks.filter(t=>needsAction(t)).length);root.dataset.pairs=String(pairsOf(tasks).length);root.dataset.activePairs=String(pairsOf(tasks).filter(pairIsActive).length);root.dataset.batchDate=taskDate||'';root.dataset.batchExpired=String(expired());root.dataset.columns=String(columns);root.dataset.frames='2,1';root.dataset.roofPoles='2';root.dataset.arrangement='zone2-north-of-zone1';root.dataset.terraces='row1-south-low-row3-north-high';root.dataset.rowElevations=rowElevations.join(',');root.dataset.greenhouses=settings.greenhouse?'2':'0';root.dataset.pendingSecondRow=String(pendingSecondRow);root.dataset.positions='partial-real';
     }
     function drawScene(){
       updateCamera();
@@ -276,10 +309,11 @@
     function updateHead(){$('#pf-zonetitle').textContent=flight?.transfer?areas[flight.fromZone]+' → '+areas[currentZone]:currentZone===0?'第一片区 · 右侧有架区':'第二片区';$('#pf-zoneinfo').textContent=flight?'视角转场':currentZone===0?'第一排最低 · 第三排最高':'盆位待录入';root.dataset.zone=String(currentZone);}
     function refresh(){
       if(!pairsOf(tasks).some(p=>p.key===activePair))activePair='';
-      $('#pf-phase').value=phase;$('#pf-hand-legend').hidden=!tasks.some(t=>kind(t)==='hand');$('#pf-task-legend').hidden=!tasks.length;$('#pf-source').textContent=taskLabel;$('#pf-layout-status').textContent=pendingSecondRow?'部分盆位待确认':layout.size+'株盆位已录入';
+      for(const option of $('#pf-phase').options)option.textContent=periodLabels[option.value];
+      $('#pf-phase').value=phase;$('#pf-hand-legend').hidden=!tasks.some(t=>kind(t)==='hand');$('#pf-task-legend').hidden=!tasks.length;$('#pf-source').textContent=taskLabel+(expired()?' · 历史批次，不作为今日待办':'');$('#pf-layout-status').textContent=pendingSecondRow?'部分盆位待确认':layout.size+'株盆位已录入';
       root.querySelectorAll('[data-zone]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.zone)===currentZone)));
       const group=$('#pf-labels'),pair=getPair(),filter=new Set(queryIds);group.replaceChildren();
-      for(const [id,p]of layout){const t=records(id)[0],k=t?kind(t):'other',c=colors[k],button=document.createElement('button');button.type='button';button.className='pf-label cursor-interaction';button.dataset.id=id;button.dataset.elevation=String(p.y);button.dataset.row=String(p.row+1);button.dataset.col=String(p.col+1);button.dataset.x=String(p.x);button.dataset.z=String(p.z);button.textContent=id;button.style.setProperty('--task-color','rgb('+c.slice(0,3).map(v=>Math.round(v*255)).join(',')+')');button.setAttribute('aria-pressed',String(id===selected));button.setAttribute('aria-label',id+'号，'+p.area+'右侧有架区第'+(p.row+1)+'排左起第'+(p.col+1)+'株，'+['南侧低台阶','中间台阶','北侧高台阶'][p.row]+'，左右顺序已录入、间距示意，'+(t?'第'+t.flower+'朵，'+t[phase]:tasks.length?'当天无任务':'未载入当天任务'));if(pair&&(id===pair.donor||id===pair.mother))button.classList.add('pf-related');button.addEventListener('click',()=>selectPlant(id));group.append(button);}
+      for(const [id,p]of layout){const t=activeRecord(id),active=needsAction(t),k=active?kind(t):'other',c=colors[k],button=document.createElement('button');button.type='button';button.className='pf-label cursor-interaction';button.dataset.id=id;button.dataset.taskActive=String(active);button.dataset.taskKind=t?kind(t):'none';button.dataset.elevation=String(p.y);button.dataset.row=String(p.row+1);button.dataset.col=String(p.col+1);button.dataset.x=String(p.x);button.dataset.z=String(p.z);button.textContent=id;button.style.setProperty('--task-color','rgb('+c.slice(0,3).map(v=>Math.round(v*255)).join(',')+')');button.setAttribute('aria-pressed',String(id===selected));button.setAttribute('aria-label',id+'号，'+p.area+'右侧有架区第'+(p.row+1)+'排左起第'+(p.col+1)+'株，'+['南侧低台阶','中间台阶','北侧高台阶'][p.row]+'，左右顺序已录入、间距示意，'+periodLabels[phase]+'，'+(t?'第'+t.flower+'朵，'+(active?'待办：':'本时段无需操作：')+t[phase]:tasks.length?'本批次无任务':'未载入任务'));if(t)button.classList.add(active?'pf-task-active':'pf-task-inactive');if(pair&&(id===pair.donor||id===pair.mother))button.classList.add('pf-related');button.addEventListener('click',()=>selectPlant(id));group.append(button);}
       const results=$('#pf-results'),resultButtons=$('#pf-result-buttons');resultButtons.replaceChildren();results.hidden=!queryIds.length&&!$('#pf-search').value.trim();
       const known=queryIds.filter(id=>layout.has(id)),missing=queryIds.filter(id=>!layout.has(id));$('#pf-searchmsg').textContent=queryIds.length?'定位 '+known.length+'/'+queryIds.length+(missing.length?' · 未录入 '+missing.join('、'):''):'';
       for(const id of known){const b=document.createElement('button');b.type='button';b.className='pf-result cursor-interaction';b.textContent=id;b.setAttribute('aria-pressed',String(id===selected));b.setAttribute('aria-label','查看'+id+'号的盆位');b.addEventListener('click',()=>selectPlant(id));resultButtons.append(b);}
@@ -287,8 +321,9 @@
     }
     function renderDetail(){
       const p=layout.get(selected),detail=$('#pf-detail');if(!p){detail.innerHTML='<span class="pf-position">'+(currentZone===1?'第二片区盆位待录入':'点选花盆核对位置')+'</span>';return;}
-      const ts=records(selected),pair=getPair();let action=ts.map(t=>'第'+escape(t.flower)+'朵 · '+escape(t[phase])).join('<br>');const text='<div><div class="pf-detail-title"><span>'+escape(selected)+'</span><span class="pf-position">右侧有架区 · 第'+(p.row+1)+'排 · 左起第'+(p.col+1)+'株</span></div><div class="pf-action">'+(action||(tasks.length?'当天无任务':'仅核对盆位 · 当日任务尚未载入'))+'</div></div>';
+      const ts=records(selected),pair=getPair();let action=ts.map(t=>escape(periodLabels[phase])+' · 第'+escape(t.flower)+'朵 · '+(needsAction(t)?'待办：':'本时段无需操作：')+escape(t[phase])).join('<br>');const text='<div><div class="pf-detail-title"><span>'+escape(selected)+'</span><span class="pf-position">右侧有架区 · 第'+(p.row+1)+'排 · 左起第'+(p.col+1)+'株</span></div><div class="pf-action">'+(action||(tasks.length?'本批次无任务':'仅核对盆位 · 当日任务尚未载入'))+'</div></div>';
       detail.innerHTML=text;if(pair&&(selected===pair.donor||selected===pair.mother)){const partner=selected===pair.donor?pair.mother:pair.donor;if(layout.has(partner)){const b=document.createElement('button');b.type='button';b.className='pf-partner cursor-interaction';b.dataset.partner=partner;b.textContent=pair.donor+' → '+pair.mother+' · '+(selected===pair.donor?'看母本':'看父本');b.addEventListener('click',()=>selectPlant(partner));detail.append(b);}}
+      if(pair&&(!layout.has(pair.donor)||!layout.has(pair.mother))){const hint=document.createElement('span');hint.className='pf-position';hint.dataset.partnerUnmapped='true';hint.textContent=pair.donor+'（第'+(pair.donorFlower||'?')+'朵）→'+pair.mother+'（第'+(pair.motherFlower||'?')+'朵）：'+(!layout.has(pair.donor)?'父本':'母本')+'盆位未录入，不绘制虚构连线';detail.append(hint);}
     }
     function selectPlant(id){if(!layout.has(id))return;selected=id;activePair=pairsOf(tasks).find(p=>p.donor===id||p.mother===id)?.key??'';const zone=layout.get(id).zone;refresh();if(zone!==currentZone)flyTo(zone);else requestRender();save();}
     function findPlants(){const input=$('#pf-search').value.normalize('NFKC').trim();if(input&&!/^[\d\s,，、;；]+$/.test(input)){$('#pf-results').hidden=false;$('#pf-searchmsg').textContent='仅输入编号，以空格或逗号分隔';return;}queryIds=[...new Set(input.match(/\d+/g)??[])].slice(0,300);const first=queryIds.find(id=>layout.has(id));if(first){selected=first;activePair=pairsOf(tasks).find(p=>p.donor===first||p.mother===first)?.key??'';}else if(!queryIds.length){activePair='';}refresh();if(first&&layout.get(first).zone!==currentZone)flyTo(layout.get(first).zone);save();}
@@ -339,7 +374,7 @@
         if(el.classList.contains('pf-label')){g.fillStyle=s.getPropertyValue('--task-color')||'#a5d5ef';g.beginPath();g.arc(x+5,y+r.height/2,2,0,Math.PI*2);g.fill();}
       }
       g.textAlign='left';g.textBaseline='alphabetic';g.font='11px system-ui, "Microsoft YaHei", sans-serif';g.fillStyle='#97a5b2';
-      const status=currentZone===0?'第一排最低 · 第三排最高 · 间距示意':'盆位待录入';g.fillText(status,16,head+cssHeight+23);
+      const status=periodLabels[phase]+' · '+(currentZone===0?'第一排最低 · 第三排最高 · 间距示意':'盆位待录入');g.fillText(status,16,head+cssHeight+23);
       if(tasks.length){const marks=[['#f19b9d','异交母本'],['#e4c189','供粉'],['#96d1ae','自主'],['#dce5eb','开放'],['#96c5ee','采样'],['#c3afe8','人工自交']];let x=16,y=head+cssHeight+45;for(const [c,label]of marks){const w=g.measureText(label).width+23;if(x+w>cssWidth-12){x=16;y+=18;}g.fillStyle=c;g.fillRect(x,y-7,6,6);g.fillStyle='#97a5b2';g.fillText(label,x+10,y);x+=w;}}
       const png=output.toDataURL('image/png');$('#pf-export-image').src=png;
       const download=$('#pf-export-download');if(download.dataset.blob)URL.revokeObjectURL(download.dataset.blob);
