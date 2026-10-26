@@ -1,0 +1,7 @@
+{
+  "name": "plant-field-map",
+  "version": "1.0.0",
+  "private": true,
+  "description": "同质园盆位与每日处理查看器",
+  "scripts": { "build": "node scripts/build.cjs", "test": "node scripts/check.cjs" }
+}

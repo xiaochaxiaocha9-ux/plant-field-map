@@ -1,0 +1,347 @@
+<section id="plant-field-3d" aria-label="同质园三维盆位预览">
+  <style>
+    #plant-field-3d{--pf-bg:#101318;--pf-panel:#181d24;--pf-panel2:#202731;--pf-fg:#e3eaf0;--pf-muted:#97a5b2;--pf-border:#303a45;--pf-wire:#a5d5ef;--pf-red:#f19b9d;--pf-green:#96d1ae;--pf-yellow:#e4c189;--pf-purple:#c3afe8;--pf-blue:#96c5ee;background:var(--pf-bg);color:var(--pf-fg);font:400 14px/1.5 system-ui,"Microsoft YaHei",sans-serif;border-radius:16px;overflow:hidden;isolation:isolate;color-scheme:dark;width:100%;position:relative}
+    #plant-field-3d *{box-sizing:border-box}
+    #plant-field-3d button,#plant-field-3d input,#plant-field-3d select{font:inherit;color:inherit}
+    #plant-field-3d button{font-weight:500}
+    #plant-field-3d [hidden]{display:none!important}
+    #plant-field-3d .pf-header{padding:18px 20px 12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-height:62px}
+    #plant-field-3d .pf-export{margin-left:auto;border:1px solid var(--pf-border);background:var(--pf-panel);border-radius:8px;padding:7px 12px;min-height:42px;white-space:nowrap}
+    #plant-field-3d .pf-export-dialog{color:var(--pf-fg);background:var(--pf-panel);border:1px solid var(--pf-border);border-radius:12px;max-width:min(96vw,1000px);max-height:94vh;padding:14px}
+    #plant-field-3d .pf-export-dialog::backdrop{background:#000b}
+    #plant-field-3d .pf-export-dialog img{display:block;max-width:100%;max-height:70vh;object-fit:contain;margin:10px auto}
+    #plant-field-3d .pf-export-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    #plant-field-3d .pf-export-actions a{color:var(--pf-wire)}
+    #plant-field-3d .pf-brand{font-size:18px;font-weight:500;letter-spacing:.06em;white-space:nowrap}
+    #plant-field-3d .pf-demo{font-size:11px;letter-spacing:.04em;color:var(--pf-muted);padding:3px 7px;border:1px solid var(--pf-border);border-radius:4px;white-space:nowrap}
+    #plant-field-3d .pf-toolbar{padding:0 20px 14px;display:flex;gap:8px;align-items:center}
+    #plant-field-3d .pf-searchbox{display:flex;align-items:center;gap:8px;flex:1;min-width:0;padding:0 11px;background:var(--pf-panel);border:1px solid var(--pf-border);border-radius:9px;height:42px}
+    #plant-field-3d .pf-searchbox>svg{width:17px;height:17px;color:var(--pf-muted);flex-shrink:0}
+    #plant-field-3d .pf-searchbox input{width:100%;min-width:0;border:0;outline-offset:4px;background:transparent;padding:8px 0;font-size:16px}
+    #plant-field-3d input::placeholder{color:var(--pf-muted);opacity:.85}
+    #plant-field-3d .pf-iconbutton{display:flex;align-items:center;justify-content:center;gap:6px;min-width:42px;min-height:42px;background:var(--pf-panel);border:1px solid var(--pf-border);border-radius:9px;padding:8px 11px}
+    #plant-field-3d .pf-iconbutton svg{width:17px;height:17px}
+    #plant-field-3d .pf-iconbutton:hover{background:var(--pf-panel2)}
+    #plant-field-3d .pf-phase{border:1px solid var(--pf-border);border-radius:9px;min-height:42px;padding:8px;background:var(--pf-panel);width:78px;flex-shrink:0}
+    #plant-field-3d .pf-results{padding:0 20px 12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px}
+    #plant-field-3d .pf-result{border:1px solid var(--pf-border);border-radius:6px;background:var(--pf-panel);padding:5px 10px;min-height:34px;font-variant-numeric:tabular-nums}
+    #plant-field-3d .pf-result[aria-pressed="true"]{background:#344654;border-color:#9ecce7}
+    #plant-field-3d .pf-searchmsg{color:var(--pf-muted);font-size:12px;overflow-wrap:anywhere}
+    #plant-field-3d .pf-import{margin:0 20px 14px;padding:14px;background:var(--pf-panel);border:1px solid var(--pf-border);border-radius:10px;display:grid;gap:10px}
+    #plant-field-3d .pf-import-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    #plant-field-3d .pf-import input{width:100%;min-width:0}
+    #plant-field-3d .pf-preview{font-size:12px;white-space:pre-line;overflow-wrap:anywhere;color:var(--pf-muted)}
+    #plant-field-3d .pf-error{color:var(--pf-red);font-size:12px;white-space:pre-line;overflow-wrap:anywhere}
+    #plant-field-3d .pf-apply{justify-self:start;border:1px solid #648194;background:#2d424f;border-radius:7px;padding:8px 14px;min-height:42px}
+    #plant-field-3d .pf-apply:disabled{opacity:.4}
+    #plant-field-3d .pf-stage{position:relative;width:100%;height:clamp(430px,65vw,560px);background:radial-gradient(ellipse at 50% 55%,#1b232b 0%,#13181f 52%,#101318 88%);overflow:hidden}
+    #plant-field-3d canvas{display:block;width:100%;height:100%;touch-action:none}
+    #plant-field-3d .pf-labels{position:absolute;inset:0;pointer-events:none}
+    #plant-field-3d .pf-label{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;font-size:12px;font-variant-numeric:tabular-nums;font-weight:400;min-width:40px;min-height:30px;padding:3px 5px;color:#cbd9e3;background:#121921d9;border:1px solid transparent;border-radius:5px;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:4px}
+    #plant-field-3d .pf-label::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--task-color,#a5d5ef);flex-shrink:0}
+    #plant-field-3d .pf-label:hover{border-color:#7d9bad;background:#24333f}
+    #plant-field-3d .pf-label[aria-pressed="true"]{color:#edf5fa;border-color:#b5dcef;background:#2a3b48;box-shadow:0 0 16px #93c9ee15;z-index:4}
+    #plant-field-3d .pf-label.pf-related{border-color:#7b7360}
+    #plant-field-3d .pf-label.pf-dim{opacity:.35}
+    #plant-field-3d .pf-stagehead{position:absolute;left:20px;top:12px;pointer-events:none;display:grid;gap:4px}
+    #plant-field-3d .pf-zonetitle{font-size:14px;font-weight:500;letter-spacing:.03em}
+    #plant-field-3d .pf-zoneinfo{color:var(--pf-muted);font-size:11px}
+    #plant-field-3d .pf-annotation{position:absolute;transform:translate(-50%,-50%);color:#7e8f9d;font-size:11px;white-space:nowrap;pointer-events:none}
+    #plant-field-3d .pf-frame-label{color:#9faeb9;background:#151c23d9;padding:3px 7px;border:1px dashed #51616f;border-radius:4px}
+    #plant-field-3d .pf-pole-label{color:#91a5b4;font-size:11px;background:#131a21d9;padding:2px 5px;border-radius:3px}
+    #plant-field-3d .pf-greenhouse-label{color:#98aab4;letter-spacing:.1em;background:#131a21c9;padding:3px 8px;border-radius:4px}
+    #plant-field-3d .pf-north{position:absolute;top:14px;right:20px;color:#a7b8c4;font-size:11px;display:flex;gap:5px;align-items:center;pointer-events:none}
+    #plant-field-3d .pf-north-arrow{display:inline-block;font-size:18px;transform-origin:center}
+    #plant-field-3d .pf-pairtag{position:absolute;pointer-events:none;transform:translate(-50%,-50%);padding:4px 9px;font-size:12px;font-variant-numeric:tabular-nums;border:1px solid #6b6151;background:#29261f;color:#ead2a6;border-radius:5px;white-space:nowrap}
+    #plant-field-3d .pf-camera-note{position:absolute;bottom:17px;left:20px;font-size:11px;color:#758592;pointer-events:none}
+    #plant-field-3d .pf-home{position:absolute;right:16px;bottom:12px;min-width:40px;min-height:40px;background:#1a222b;border-color:#34414d}
+    #plant-field-3d .pf-legend{display:flex;align-items:center;flex-wrap:wrap;gap:7px 15px;padding:10px 20px 12px;color:var(--pf-muted);font-size:11px}
+    #plant-field-3d .pf-legend span{display:inline-flex;gap:5px;align-items:center;white-space:nowrap}
+    #plant-field-3d .pf-legend i{display:inline-block;width:6px;height:6px;background:var(--mark);border-radius:50%}
+    #plant-field-3d .pf-bottom{display:flex;gap:8px;align-items:center;justify-content:center;padding:12px 20px;border-top:1px solid #242e38;background:#14191f}
+    #plant-field-3d .pf-zonebutton{background:transparent;border:1px solid transparent;border-radius:8px;display:flex;align-items:center;gap:9px;padding:9px 15px;min-height:44px;color:var(--pf-muted)}
+    #plant-field-3d .pf-zonebutton[aria-pressed="true"]{border-color:#475966;background:#26323d;color:var(--pf-fg)}
+    #plant-field-3d .pf-zonebutton small{font-size:11px;font-weight:400;color:#a2b4c1;font-variant-numeric:tabular-nums}
+    #plant-field-3d .pf-detail{border-top:1px solid #29333d;padding:14px 20px;background:#181e26;display:grid;grid-template-columns:1fr auto;align-items:center;gap:9px 14px;min-height:82px}
+    #plant-field-3d .pf-detail-title{font-size:14px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+    #plant-field-3d .pf-position{font-size:11px;color:var(--pf-muted)}
+    #plant-field-3d .pf-action{font-size:12px;color:#c1cdd6;margin-top:4px;overflow-wrap:anywhere}
+    #plant-field-3d .pf-partner{font-size:12px;background:#252e39;border:1px solid #43515f;border-radius:7px;padding:8px 10px;min-height:40px;white-space:nowrap}
+    #plant-field-3d .pf-credit{padding:8px 20px;color:#748592;font-size:11px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    @media(max-width:480px){#plant-field-3d{border-radius:11px}#plant-field-3d .pf-header{padding-left:13px;gap:8px}#plant-field-3d .pf-toolbar{padding:0 12px 12px;gap:6px}#plant-field-3d .pf-searchbox{padding:0 8px;gap:5px}#plant-field-3d .pf-searchbox input{font-size:16px}#plant-field-3d .pf-iconbutton{padding:8px;min-width:42px}#plant-field-3d .pf-phase{width:70px}#plant-field-3d .pf-stagehead{left:14px}#plant-field-3d .pf-legend{padding-left:14px;padding-right:14px;gap:7px 12px}#plant-field-3d .pf-detail{padding:12px 14px;grid-template-columns:1fr}#plant-field-3d .pf-partner{justify-self:start}#plant-field-3d .pf-results{padding-left:14px;padding-right:14px}#plant-field-3d .pf-import{margin-left:12px;margin-right:12px}#plant-field-3d .pf-camera-note{left:14px;bottom:16px}#plant-field-3d .pf-bottom{padding:10px 12px}#plant-field-3d .pf-zonebutton{padding:8px 12px}#plant-field-3d .pf-credit{padding:8px 14px}}
+    @media(pointer:coarse){#plant-field-3d .pf-label{min-width:44px;min-height:44px}#plant-field-3d .pf-iconbutton,#plant-field-3d .pf-phase,#plant-field-3d .pf-result,#plant-field-3d .pf-partner{min-height:44px}}
+  </style>
+  <header class="pf-header"><span class="pf-brand">同质园</span><span class="pf-demo" id="pf-layout-status">右侧盆位核对</span><button type="button" class="pf-export" id="pf-export">保存PNG</button></header>
+  <div class="pf-toolbar">
+    <div class="pf-searchbox" role="search" aria-label="搜索植株"><i data-lucide="search" aria-hidden="true"></i><input id="pf-search" type="text" aria-label="输入植株编号定位" data-tooltip="定位光圈不改变处理颜色" placeholder="输入编号定位" autocomplete="off"></div>
+    <select id="pf-phase" class="pf-phase cursor-interaction" aria-label="操作时段"><option value="morning">明早</option><option value="evening">今晚</option></select>
+    <button id="pf-import-toggle" class="pf-iconbutton cursor-interaction" type="button" aria-label="导入当天任务表" aria-expanded="false" data-tooltip="导入任务表" hidden><i data-lucide="upload" aria-hidden="true"></i></button>
+  </div>
+  <div class="pf-results" id="pf-results" hidden><span id="pf-searchmsg" class="pf-searchmsg" role="status" aria-live="polite"></span><div id="pf-result-buttons" style="display:contents"></div></div>
+  <section class="pf-import" id="pf-import" aria-label="导入任务表" hidden>
+    <div class="pf-import-top"><span>当天任务表</span><span style="font-size:11px;color:var(--pf-muted)">本机读取 · 不上传</span></div>
+    <input type="file" id="pf-file" accept=".xlsx,.tsv,.txt" aria-label="选择Excel或制表符文本任务表">
+    <div id="pf-preview" class="pf-preview" aria-live="polite" hidden></div><div id="pf-import-error" class="pf-error" role="alert" hidden></div>
+    <button type="button" id="pf-apply" class="pf-apply cursor-interaction" disabled>应用任务</button>
+  </section>
+  <div class="pf-stage" id="pf-stage">
+    <canvas id="pf-canvas" aria-label="第一片区右侧有架区实际编号预览。第一排最低、第三排最高；前两排中间留空，第三排连续。左右顺序按用户录入，间距依照片示意；其他区域待录入。"></canvas>
+    <div class="pf-labels" id="pf-labels" aria-label="植株编号"></div>
+    <div class="pf-stagehead"><span id="pf-zonetitle" class="pf-zonetitle">第一片区 · 三排</span><span id="pf-zoneinfo" class="pf-zoneinfo">有架 / 无架</span></div>
+    <span class="pf-annotation pf-frame-label" id="pf-frame-label">有架</span>
+    <span class="pf-annotation pf-frame-label" id="pf-frame-label-2" hidden>有架</span>
+    <span class="pf-annotation pf-pole-label" id="pf-pole-label" hidden>连接杆</span>
+    <span class="pf-annotation pf-greenhouse-label" id="pf-greenhouse-label">玻璃大棚</span>
+    <span class="pf-north" aria-label="北方方向"><span id="pf-north-arrow" class="pf-north-arrow">↑</span>北</span>
+    <span class="pf-annotation" id="pf-row-0">一排</span><span class="pf-annotation" id="pf-row-1">二排</span><span class="pf-annotation" id="pf-row-2">三排</span>
+    <span class="pf-annotation" id="pf-pending-label" style="color:#cfb68b" hidden>左段编号待确认</span>
+    <span class="pf-pairtag" id="pf-pairtag" hidden></span>
+    <div class="pf-camera-note" id="pf-camera-note">拖动旋转 · 滚动缩放</div>
+    <button class="pf-iconbutton pf-home cursor-interaction" id="pf-home" type="button" aria-label="复位视角" data-tooltip="复位视角"><i data-lucide="rotate-ccw" aria-hidden="true"></i></button>
+  </div>
+  <div class="pf-legend" id="pf-task-legend" aria-label="任务颜色" hidden><span><i style="--mark:var(--pf-red)"></i>异交母本</span><span><i style="--mark:var(--pf-yellow)"></i>供粉</span><span><i style="--mark:var(--pf-green)"></i>自主</span><span><i style="--mark:#dce5eb"></i>开放</span><span><i style="--mark:var(--pf-blue)"></i>采样</span><span id="pf-hand-legend" hidden><i style="--mark:var(--pf-purple)"></i>人工自交</span></div>
+  <nav class="pf-bottom" aria-label="片区切换，第二片区在第一片区北侧"><button type="button" class="pf-zonebutton cursor-interaction" data-zone="0" aria-pressed="true"><small>南</small>第一片区</button><button type="button" class="pf-zonebutton cursor-interaction" data-zone="1" aria-pressed="false"><small>北</small>第二片区</button></nav>
+  <div class="pf-detail" id="pf-detail" aria-live="polite"></div>
+  <footer class="pf-credit"><span id="pf-source">盆位核对 · 未载入当日任务</span><span>左右顺序已录入 · 间距示意</span></footer>
+  <dialog id="pf-export-dialog" class="pf-export-dialog" aria-label="保存盆位图片"><div class="pf-export-actions"><span>微信内可长按图片保存</span><a id="pf-export-download" download="同质园盆位.png">下载PNG</a><button type="button" class="pf-export" id="pf-export-close">关闭</button></div><img id="pf-export-image" alt="当前片区的盆位、处理颜色和异交配对示意图"></dialog>
+  <script>
+  (()=>{
+    const root=document.getElementById('plant-field-3d');
+    const $=s=>root.querySelector(s),stage=$('#pf-stage'),canvas=$('#pf-canvas');
+    const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const clean=s=>String(s??'').normalize('NFKC').trim();
+    let tasks=[];
+    /*__PUBLISHED_TASKS__*/
+    // Row numbers follow the user: first = south/lowest, third = north/highest.
+    // Only this right-hand bay is entered. No illustrative ID is assigned elsewhere.
+    const areas=['第一片区','第二片区'],centers=[{x:0,z:0},{x:0,z:-25}],columns=12,spacing=1.62,rowSpacing=1.45,rowElevations=[0,.5,1],frameDepth=rowSpacing*1.5-.15,layout=new Map(),pots=[];
+    const frameRegions=[[{left:-10,right:-3.8},{left:2,right:10}],[{left:-2,right:10}]];
+    const isFramed=p=>frameRegions[p.zone].some(f=>p.x-centers[p.zone].x>=f.left&&p.x-centers[p.zone].x<=f.right);
+    const actualRows=[
+      {ids:['59','56','49','224','36','1166','1131'],xs:[2.55,3.45,4.35,5.25,7.2,8.35,9.5],groups:[0,0,0,0,1,1,1]},
+      {ids:['157','542','792','46','298','227','922','78'],xs:[2.55,3.45,4.35,5.25,6.8,7.7,8.6,9.5],groups:[0,0,0,0,1,1,1,1]},
+      {ids:['515','694','82','47','320','287','207','79'],xs:[2.55,3.55,4.55,5.55,6.55,7.55,8.55,9.55],groups:[0,0,0,0,0,0,0,0]}
+    ];
+    const pendingSecondRow=false;
+    actualRows.forEach((data,row)=>data.ids.forEach((id,col)=>{const p={id,zone:0,area:areas[0],section:'右侧有架区',slot:row*12+col,row,col,group:data.groups[col],x:data.xs[col],y:rowElevations[row],z:(1-row)*rowSpacing,confirmed:!!id};pots.push(p);if(id){if(layout.has(id))throw Error('重复盆位编号：'+id);layout.set(id,p);}}));
+    const colors={wire:[.64,.83,.94,1],grid:[.25,.31,.37,.46],frame:[.47,.57,.64,.72],cross:[.95,.57,.59,1],donor:[.90,.76,.51,1],auto:[.56,.82,.65,1],open:[.85,.90,.94,1],measure:[.53,.75,.96,1],hand:[.77,.67,.92,1],other:[.45,.57,.66,1]};
+    const settings={frameHeight:3.35,duration:1900,brightness:1,greenhouse:true};
+    let phase='morning',queryIds=[],selected='56',activePair='',currentZone=0,pending=null,taskLabel='盆位核对 · 未载入当日任务';
+    if(typeof publishedTasks!=='undefined'){tasks=publishedTasks.tasks;taskLabel=publishedTasks.label+(publishedTasks.date?' · '+publishedTasks.date:'');}
+    let camera={cx:0,cz:0,yaw:.43,pitch:.69,distance:31},flight=null,frameRequested=false,mvp=null,cssWidth=736,cssHeight=560,sceneBuffers=null,lastSavedSignature='';
+    const motion=matchMedia('(prefers-reduced-motion: reduce)');
+    function kind(t){const s=t.morning;if(/接\s*\d+\s*花粉/.test(s))return'cross';if(/给\s*\d+\s*供粉/.test(s))return'donor';if(s.includes('自主自交'))return'auto';if(s.includes('人工自交'))return'hand';if(s.includes('自然开放'))return'open';if(/摘取|测量|采样/.test(s))return'measure';return'other';}
+    function pairsOf(ts){const pairs=new Map();for(const t of ts){let m=t.morning.match(/接\s*(\d+)\s*花粉/);if(m){const key=m[1]+'>'+t.id;pairs.set(key,{key,donor:m[1],mother:t.id});}m=t.morning.match(/给\s*(\d+)\s*供粉/);if(m){const key=t.id+'>'+m[1];if(!pairs.has(key))pairs.set(key,{key,donor:t.id,mother:m[1]});}}return [...pairs.values()];}
+    const records=id=>tasks.filter(t=>t.id===id);
+    const getPair=()=>pairsOf(tasks).find(p=>p.key===activePair);
+    const rgba=(c,a)=>[c[0],c[1],c[2],a],mix=(a,b,t)=>a+(b-a)*t;
+    const ease=t=>t*t*(3-2*t),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+    const distanceForWidth=(zone=currentZone)=>Math.max(zone===0?13.5:29,(zone===0?5.9:15)/(Math.tan(38*Math.PI/360)*(cssWidth/cssHeight)));
+    const defaultCamera=zone=>({cx:zone===0?6.05:centers[zone].x,cz:centers[zone].z,yaw:zone===0?.08:.43,pitch:zone===0?.85:.69,distance:distanceForWidth(zone)});
+    function restore(s){const p=s?.privateContent??s;if(![2,3,4,5].includes(p?.version))return false;if(['morning','evening'].includes(p.phase))phase=p.phase;if(p.version===5&&Array.isArray(p.queryIds))queryIds=p.queryIds.map(String).filter(x=>/^\d+$/.test(x)).slice(0,300);if(layout.has(String(p.selected)))selected=String(p.selected);if(p.version===5&&typeof p.activePair==='string')activePair=p.activePair;currentZone=p.version===5&&[0,1].includes(p.zone)?p.zone:0;camera=defaultCamera(currentZone);if(p.version===5&&typeof p.greenhouse==='boolean')settings.greenhouse=p.greenhouse;if(p.version===5&&p.camera&&['cx','cz','yaw','pitch','distance'].every(k=>Number.isFinite(p.camera[k]))){camera={cx:clamp(p.camera.cx,-20,20),cz:clamp(p.camera.cz,-45,10),yaw:p.camera.yaw,pitch:clamp(p.camera.pitch,.23,1.43),distance:clamp(p.camera.distance,9,85)};}return true;}
+    function save(){const privateContent={version:5,selected,phase,activePair,queryIds,zone:currentZone,greenhouse:settings.greenhouse,camera:{...(flight?flight.target:camera)}};lastSavedSignature=JSON.stringify(privateContent);try{window.openai?.setWidgetState?.({modelContent:{version:5,selectedPlant:selected,phase,selectedPair:activePair,filterPlantIds:queryIds,zone:areas[currentZone],positions:'partial-real',section:'第一片区右侧有架区',confirmedPlants:layout.size,pendingSecondRow,view:'3d-wireframe',arrangement:'zone2-north-of-zone1',firstZoneFrames:2,roofConnectingPoles:2,greenhouseNorth:settings.greenhouse,terraces:'row1-south-low-row3-north-high'},privateContent})?.catch(()=>{});}catch(e){}}
+    if(!restore(window.openai?.widgetState))camera=defaultCamera(0);
+    window.addEventListener('openai:set_globals',event=>{const state=event.detail?.globals?.widgetState;if(state&&JSON.stringify(state.privateContent??state)===lastSavedSignature)return;if(restore(state)){flight=null;$('#pf-search').value=queryIds.join(' ');refresh();requestRender();}});
+
+    // Model geometry and camera are genuinely three-dimensional; no external libraries.
+    function normal(v){const d=Math.hypot(...v)||1;return v.map(x=>x/d);}
+    const sub=(a,b)=>a.map((x,i)=>x-b[i]);
+    const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+    const dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0);
+    function multiply(a,b){const out=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++)for(let k=0;k<4;k++)out[c*4+r]+=a[k*4+r]*b[c*4+k];return out;}
+    function viewMatrix(eye,at){const f=normal(sub(at,eye)),s=normal(cross(f,[0,1,0])),u=cross(s,f);return new Float32Array([s[0],u[0],-f[0],0,s[1],u[1],-f[1],0,s[2],u[2],-f[2],0,-dot(s,eye),-dot(u,eye),dot(f,eye),1]);}
+    function projection(){const f=1/Math.tan(38*Math.PI/360),aspect=cssWidth/cssHeight,n=.1,far=140;return new Float32Array([f/aspect,0,0,0,0,f,0,0,0,0,(far+n)/(n-far),-1,0,0,2*far*n/(n-far),0]);}
+    function updateCamera(){const cp=Math.cos(camera.pitch),eye=[camera.cx+Math.sin(camera.yaw)*cp*camera.distance,Math.sin(camera.pitch)*camera.distance,camera.cz+Math.cos(camera.yaw)*cp*camera.distance];mvp=multiply(projection(),viewMatrix(eye,[camera.cx,1.2,camera.cz-1.2]));root.dataset.cameraHeight=eye[1].toFixed(2);root.dataset.cameraX=camera.cx.toFixed(2);root.dataset.cameraZ=camera.cz.toFixed(2);}
+    function project(p){if(!mvp)return{x:0,y:0,visible:false,depth:0};const q=[0,0,0,0];for(let r=0;r<4;r++)q[r]=mvp[r]*p[0]+mvp[4+r]*p[1]+mvp[8+r]*p[2]+mvp[12+r];const x=(q[0]/q[3]*.5+.5)*cssWidth,y=(-q[1]/q[3]*.5+.5)*cssHeight;return{x,y,depth:q[3],visible:q[3]>.1&&q[2]/q[3]<1&&x>12&&x<cssWidth-12&&y>30&&y<cssHeight-25};}
+    let gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false}),ctx=null,program=null,glPosition=null,glColor=null,glMatrix=null,glBrightness=null;
+    if(gl){
+      const compile=(type,source)=>{const shader=gl.createShader(type);gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(shader));return shader;};
+      program=gl.createProgram();gl.attachShader(program,compile(gl.VERTEX_SHADER,'attribute vec3 aPosition;attribute vec4 aColor;uniform mat4 uMatrix;varying vec4 vColor;void main(){gl_Position=uMatrix*vec4(aPosition,1.0);vColor=aColor;}'));gl.attachShader(program,compile(gl.FRAGMENT_SHADER,'precision mediump float;varying vec4 vColor;uniform float uBrightness;void main(){gl_FragColor=vec4(vColor.rgb*uBrightness,vColor.a);}'));gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));glPosition=gl.getAttribLocation(program,'aPosition');glColor=gl.getAttribLocation(program,'aColor');glMatrix=gl.getUniformLocation(program,'uMatrix');glBrightness=gl.getUniformLocation(program,'uBrightness');gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);root.dataset.renderer='webgl';
+    }else{ctx=canvas.getContext('2d');root.dataset.renderer='perspective-canvas';}
+    let flatLines=[],flatTriangles=[],flatGlass=[];
+    function buildScene(){
+      const lines=[],triangles=[],glass=[];flatLines=[];flatTriangles=[];flatGlass=[];
+      function vertex(arr,p,c){arr.push(...p,...c);}
+      function line(a,b,c){vertex(lines,a,c);vertex(lines,b,c);flatLines.push([a,b,c]);}
+      function triangle(a,b,c,color){vertex(triangles,a,color);vertex(triangles,b,color);vertex(triangles,c,color);flatTriangles.push([a,b,c,color]);}
+      function rect(x0,z0,x1,z1,y,c){triangle([x0,y,z0],[x1,y,z0],[x1,y,z1],c);triangle([x0,y,z0],[x1,y,z1],[x0,y,z1],c);}
+      function quad(a,b,c,d,color){triangle(a,b,c,color);triangle(a,c,d,color);}
+      function pane(a,b,c,d,color){for(const p of [a,b,c,a,c,d])vertex(glass,p,color);flatGlass.push([a,b,c,color],[a,c,d,color]);}
+      function dashed(a,b,c,unit=.25){const d=sub(b,a),len=Math.hypot(...d),n=Math.ceil(len/unit);for(let i=0;i<n;i+=2){const from=i/n,to=Math.min((i+1)/n,1);line(a.map((v,k)=>v+d[k]*from),a.map((v,k)=>v+d[k]*to),c);}}
+      function ring(x,z,y,r,c,segments=40){for(let i=0;i<segments;i++){const a=2*Math.PI*i/segments,b=2*Math.PI*(i+1)/segments;line([x+r*Math.cos(a),y,z+r*Math.sin(a)],[x+r*Math.cos(b),y,z+r*Math.sin(b)],c);}}
+      for(let zone=0;zone<2;zone++){
+        if(zone!==currentZone&&!flight?.transfer)continue;
+        const {x:cx,z:cz}=centers[zone],stepLeft=cx-10.7,stepRight=cx+10.7;
+        // Three broad landings. The pots sit on their own level, not on a flat overlay.
+        rect(stepLeft-.15,cz-rowSpacing*1.5-.2,stepRight+.15,cz+rowSpacing*1.5+.2,-.06,[.06,.077,.095,1]);
+        for(let band=0;band<3;band++){
+          const row=2-band,z=cz+(1-row)*rowSpacing,y=rowElevations[row],back=z-rowSpacing/2,front=z+rowSpacing/2,next=rowElevations[row-1]??-.055;
+          rect(stepLeft,back,stepRight,front,y,[.087+row*.003,.11+row*.003,.135+row*.003,1]);
+          quad([stepLeft,y,front],[stepRight,y,front],[stepRight,next,front],[stepLeft,next,front],[.057,.075,.095,1]);
+          for(const x of [stepLeft,stepRight])quad([x,-.055,back],[x,y,back],[x,y,front],[x,-.055,front],[.065,.085,.106,1]);
+          line([stepLeft,y+.012,front],[stepRight,y+.012,front],[.44,.55,.62,.61]);
+          for(const x of [stepLeft,stepRight]){line([x,y+.012,back],[x,y+.012,front],[.38,.48,.56,.56]);line([x,y,front],[x,next,front],[.42,.52,.60,.57]);}
+          for(let x=-10.5;x<=10.6;x+=.81)line([cx+x,y+.005,back+.05],[cx+x,y+.005,front-.05],rgba(colors.grid,.12));
+          for(let dz=-rowSpacing*.4;dz<rowSpacing*.45;dz+=rowSpacing/3)line([stepLeft+.05,y+.005,z+dz],[stepRight-.05,y+.005,z+dz],rgba(colors.grid,.12));
+        }
+        const front=cz+frameDepth,back=cz-frameDepth,h=settings.frameHeight,frame=colors.frame;
+        for(const region of frameRegions[zone]){
+          const left=cx+region.left,right=cx+region.right;
+          for(const z of [back,front]){const y=z===back?rowElevations[2]:rowElevations[0];dashed([left,y+.04,z],[right,y+.04,z],frame);dashed([left,h,z],[right,h,z],frame);for(const x of [left,right])dashed([x,y+.04,z],[x,h,z],frame);}
+          for(const x of [left,right]){dashed([x,h,back],[x,h,front],frame);for(let row=0;row<3;row++){const z=cz+(1-row)*rowSpacing,y=rowElevations[row],z0=Math.max(back,z-rowSpacing/2),z1=Math.min(front,z+rowSpacing/2);dashed([x,y+.04,z0],[x,y+.04,z1],rgba(frame,.6));if(row>0)dashed([x,y+.04,z1],[x,rowElevations[row-1]+.04,z1],rgba(frame,.6));}}
+          for(let row=0;row<3;row++){const z=cz+(1-row)*rowSpacing,y=rowElevations[row];rect(left,Math.max(back,z-rowSpacing/2),right,Math.min(front,z+rowSpacing/2),y+.009,[.13,.18,.21,.13]);dashed([left,h,z],[right,h,z],rgba(frame,.5));for(const p of pots){if(p.zone===zone&&p.row===row&&p.x>left&&p.x<right)dashed([p.x,y+.69,z],[p.x,h,z],[.39,.48,.55,.22],.16);}}
+        }
+        if(zone===0){
+          // Exactly two overhead connecting poles. The gap has no frame volume,
+          // ground shading, extra legs, or intermediate transverse beams.
+          const from=cx+frameRegions[0][0].right,to=cx+frameRegions[0][1].left;
+          for(const z of [back,front])dashed([from,h,z],[to,h,z],[.57,.67,.74,.82],.38);
+        }
+        if(settings.greenhouse){
+          // A restrained glasshouse sits immediately north of each three-tier strip.
+          // Its solid mullions remain visually distinct from the dashed plant scaffold.
+          const left=cx-11.15,right=cx+11.15,south=cz-rowSpacing*1.5-.25,north=south-5.2,ridge=(south+north)/2,eave=4.85,peak=6.2;
+          const outline=[.50,.63,.70,.58],mullion=[.44,.57,.65,.39],tint=[.27,.46,.55,.065];
+          pane([left,0,north],[right,0,north],[right,eave,north],[left,eave,north],tint);
+          pane([left,0,south],[left,0,north],[left,eave,north],[left,eave,south],tint);
+          pane([right,0,north],[right,0,south],[right,eave,south],[right,eave,north],tint);
+          pane([left,eave,north],[right,eave,north],[right,peak,ridge],[left,peak,ridge],[.29,.48,.56,.065]);
+          pane([left,peak,ridge],[right,peak,ridge],[right,eave,south],[left,eave,south],[.27,.45,.54,.075]);
+          pane([left,0,south],[right,0,south],[right,eave,south],[left,eave,south],tint);
+          for(const z of [south,north]){for(const y of [0,eave])line([left,y,z],[right,y,z],outline);for(const y of [1.6,3.2])line([left,y,z],[right,y,z],mullion);}
+          line([left,peak,ridge],[right,peak,ridge],outline);
+          for(let i=0;i<=12;i++){const x=mix(left,right,i/12),c=i===0||i===12?outline:mullion;for(const z of [south,north])line([x,0,z],[x,eave,z],c);line([x,eave,north],[x,peak,ridge],c);line([x,peak,ridge],[x,eave,south],c);}
+          for(const x of [left,right]){line([x,0,north],[x,0,south],outline);for(const y of [1.6,3.2,eave])line([x,y,north],[x,y,south],mullion);line([x,0,ridge],[x,peak,ridge],mullion);}
+          for(const t of [.5]){const zn=mix(north,ridge,t),zs=mix(south,ridge,t),y=mix(eave,peak,t);line([left,y,zn],[right,y,zn],mullion);line([left,y,zs],[right,y,zs],mullion);}
+          // Two slightly open vent panels recall the reference photo without adding detail noise.
+          for(const col of [3,8]){const x0=mix(left,right,col/12),x1=mix(left,right,(col+1)/12),y0=2.45,y1=3.9,z=south+.52;for(const x of [x0,x1]){line([x,y1,south],[x,y0,z],outline);}line([x0,y0,z],[x1,y0,z],outline);line([x0,y1,south],[x1,y1,south],outline);}
+        }
+      }
+      const pair=getPair(),filter=new Set(queryIds);
+      for(const p of pots){
+        if(p.zone!==currentZone&&!flight?.transfer)continue;
+        const task=records(p.id)[0],category=task?kind(task):'other',related=pair&&(p.id===pair.donor||p.id===pair.mother),matched=filter.size===0||filter.has(p.id),dim=false;
+        const a=p.id?(dim?.16:.88):.2,wire=rgba(colors.wire,a),taskColor=rgba(colors[category],dim?.12:1),x=p.x,z=p.z;
+        const rt=.43,rb=.275,top=p.y+.64,bottom=p.y+.055;
+        if(p.id){for(let i=0;i<16;i++){const t=i/16*2*Math.PI,t2=(i+1)/16*2*Math.PI,s=.86+.14*Math.cos(t-.5),c=[.093*s,.134*s,.167*s,1];const at=[x+rt*Math.cos(t),top,z+rt*Math.sin(t)],bt=[x+rb*Math.cos(t),bottom,z+rb*Math.sin(t)],at2=[x+rt*Math.cos(t2),top,z+rt*Math.sin(t2)],bt2=[x+rb*Math.cos(t2),bottom,z+rb*Math.sin(t2)];triangle(at,bt,bt2,c);triangle(at,bt2,at2,c);}}
+        ring(x,z,top,rt,wire);ring(x,z,top-.065,rt-.012,rgba(wire,wire[3]*.55));ring(x,z,bottom,rb,rgba(wire,wire[3]*.65));
+        for(let i=0;i<8;i++){const t=i/8*2*Math.PI;line([x+rt*Math.cos(t),top,z+rt*Math.sin(t)],[x+rb*Math.cos(t),bottom,z+rb*Math.sin(t)],rgba(wire,wire[3]*.65));}
+        if(task){ring(x,z,top+.014,rt+.012,rgba(taskColor,.92));line([x-.11,p.y+.07,z+.56],[x+.11,p.y+.07,z+.56],taskColor);}
+        if(p.id&&(p.id===selected||related||filter.has(p.id))){const located=p.id===selected||filter.has(p.id);ring(x,z,p.y+.025,.59,located?[.87,.94,1,.95]:[.85,.72,.5,.75]);ring(x,z,p.y+.03,.66,located?[.68,.84,.96,.23]:[.8,.7,.5,.17]);}
+      }
+      if(pair){const a=layout.get(pair.donor),b=layout.get(pair.mother);if(a&&b){let previous=null;const same=a.zone===b.zone,raise=same?2.25:5;const points=[];for(let i=0;i<=60;i++){const t=i/60,p=[mix(a.x,b.x,t),mix(a.y,b.y,t)+.82+Math.sin(Math.PI*t)*raise,mix(a.z,b.z,t)];if(previous)line(previous,p,[.91,.78,.55,.88]);previous=p;points.push(p);}const end=points[60],dir=normal(sub(end,points[56])),side=normal(cross(dir,[0,1,0]));for(const sign of [-1,1])line(end,end.map((v,k)=>v-dir[k]*.36+side[k]*.17*sign),[1,.86,.62,1]);}}
+      if(gl){if(sceneBuffers){for(const key of ['line','triangle','glass'])gl.deleteBuffer(sceneBuffers[key]);}const make=data=>{const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);return b;};sceneBuffers={line:make(lines),triangle:make(triangles),glass:make(glass),lineCount:lines.length/7,triangleCount:triangles.length/7,glassCount:glass.length/7};}
+      root.dataset.pots=String(pots.length);root.dataset.taskPlants=String(layout.size);root.dataset.pairs=String(pairsOf(tasks).length);root.dataset.columns=String(columns);root.dataset.frames='2,1';root.dataset.roofPoles='2';root.dataset.arrangement='zone2-north-of-zone1';root.dataset.terraces='row1-south-low-row3-north-high';root.dataset.rowElevations=rowElevations.join(',');root.dataset.greenhouses=settings.greenhouse?'2':'0';root.dataset.pendingSecondRow=String(pendingSecondRow);root.dataset.positions='partial-real';
+    }
+    function drawScene(){
+      updateCamera();
+      if(gl){gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);gl.uniformMatrix4fv(glMatrix,false,mvp);gl.uniform1f(glBrightness,settings.brightness);const draw=(buffer,n,type)=>{gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.enableVertexAttribArray(glPosition);gl.enableVertexAttribArray(glColor);gl.vertexAttribPointer(glPosition,3,gl.FLOAT,false,28,0);gl.vertexAttribPointer(glColor,4,gl.FLOAT,false,28,12);gl.drawArrays(type,0,n);};if(sceneBuffers){draw(sceneBuffers.triangle,sceneBuffers.triangleCount,gl.TRIANGLES);gl.depthMask(false);draw(sceneBuffers.glass,sceneBuffers.glassCount,gl.TRIANGLES);gl.depthMask(true);draw(sceneBuffers.line,sceneBuffers.lineCount,gl.LINES);}}
+      else if(ctx){const ratio=canvas.width/cssWidth;ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,cssWidth,cssHeight);const color=c=>'rgba('+c.slice(0,3).map(x=>Math.round(x*255*settings.brightness)).join(',')+','+c[3]+')';const faces=[...flatTriangles,...flatGlass].map(t=>({t,p:t.slice(0,3).map(project)})).filter(f=>f.p.every(p=>p.depth>0)).sort((a,b)=>b.p.reduce((s,p)=>s+p.depth,0)-a.p.reduce((s,p)=>s+p.depth,0));for(const {t,p}of faces){ctx.beginPath();p.forEach((v,i)=>i?ctx.lineTo(v.x,v.y):ctx.moveTo(v.x,v.y));ctx.closePath();ctx.fillStyle=color(t[3]);ctx.fill();}for(const [a,b,c]of flatLines){const aa=project(a),bb=project(b);if(aa.depth<=0||bb.depth<=0)continue;ctx.beginPath();ctx.moveTo(aa.x,aa.y);ctx.lineTo(bb.x,bb.y);ctx.strokeStyle=color(c);ctx.lineWidth=1;ctx.stroke();}}
+      placeLabels();
+    }
+    function position(el,p){const s=project(p);el.hidden=!s.visible;if(s.visible){el.style.left=s.x+'px';el.style.top=s.y+'px';}return s;}
+    function placeLabels(){
+      const filter=new Set(queryIds),pair=getPair(),occupied=[];const labels=[...$('#pf-labels').children].map(el=>{const p=layout.get(el.dataset.id);return{el,p,s:project([p.x,p.y+.97,p.z]),priority:p.id===selected?10:filter.has(p.id)?8:pair&&(p.id===pair.donor||p.id===pair.mother)?6:1};}).sort((a,b)=>b.priority-a.priority||a.s.depth-b.s.depth);
+      for(const {el,p,s,priority}of labels){let show=s.visible&&(p.zone===currentZone||flight?.phase==='transfer')&&(!flight||flight.phase==='land'||s.depth<85);if(show){el.hidden=false;const w=el.offsetWidth,h=el.offsetHeight;const box={x:s.x-w/2,y:s.y-h/2,w,h};if(s.x<w/2+6||s.x>cssWidth-w/2-6||s.y<63||s.y>cssHeight-45)show=false;if(show&&occupied.some(b=>box.x<b.x+b.w+2&&box.x+box.w+2>b.x&&box.y<b.y+b.h+2&&box.y+box.h+2>b.y))show=false;if(show){occupied.push(box);el.style.left=s.x+'px';el.style.top=s.y+'px';el.style.zIndex=String(priority);}}
+        el.hidden=!show;
+      }
+      const center=centers[currentZone],flying=!!flight&&flight.phase!=='land',regions=frameRegions[currentZone];
+      for(let i=0;i<2;i++){const el=$(i?'#pf-frame-label-2':'#pf-frame-label'),region=regions[i];if(!region){el.hidden=true;continue;}el.textContent=currentZone===0&&i===1?'右侧有架':'待录入';position(el,[center.x+(region.left+region.right)/2,settings.frameHeight+.38,center.z-frameDepth]);el.hidden=flying||el.hidden;}
+      const pole=$('#pf-pole-label');if(currentZone===0){position(pole,[center.x-.9,settings.frameHeight+.38,center.z-frameDepth]);pole.hidden=flying||pole.hidden;}else pole.hidden=true;
+      const greenhouseLabel=$('#pf-greenhouse-label');position(greenhouseLabel,[center.x+(currentZone===0?6:0),5.35,center.z-rowSpacing*1.5-.25]);greenhouseLabel.hidden=!settings.greenhouse||flying||greenhouseLabel.hidden;
+      const northFrom=project([camera.cx,0,camera.cz]),northTo=project([camera.cx,0,camera.cz-1]);$('#pf-north-arrow').style.transform='rotate('+(Math.atan2(northTo.y-northFrom.y,northTo.x-northFrom.x)*180/Math.PI+90)+'deg)';
+      for(let r=0;r<3;r++){const el=$('#pf-row-'+r);el.textContent=['第一排 · 低','第二排','第三排 · 高'][r];position(el,[center.x+(currentZone===0?1.1:-10.5),rowElevations[r]+.18,center.z+(1-r)*rowSpacing]);el.hidden=flying||el.hidden;}
+      const pendingLabel=$('#pf-pending-label');position(pendingLabel,[3.85,.99,0]);pendingLabel.hidden=!pendingSecondRow||currentZone!==0||flying||pendingLabel.hidden;
+      const tag=$('#pf-pairtag');if(pair&&!flying){const a=layout.get(pair.donor),b=layout.get(pair.mother);if(a&&b){tag.textContent=pair.donor+' → '+pair.mother;const anchor=position(tag,[(a.x+b.x)/2,(a.y+b.y)/2+.98+(a.zone===b.zone?2.25:5),(a.z+b.z)/2]);if(!tag.hidden){const w=tag.offsetWidth,h=tag.offsetHeight;let placed=false;for(const [dx,dy]of [[0,0],[0,-34],[0,34],[0,-64],[0,64],[50,0],[-50,0]]){const x=clamp(anchor.x+dx,w/2+8,cssWidth-w/2-8),y=anchor.y+dy,box={x:x-w/2,y:y-h/2,w,h};if(y<75||y>cssHeight-55)continue;if(occupied.some(b=>box.x<b.x+b.w+4&&box.x+box.w+4>b.x&&box.y<b.y+b.h+4&&box.y+box.h+4>b.y))continue;tag.style.left=x+'px';tag.style.top=y+'px';placed=true;break;}tag.hidden=!placed;}}else tag.hidden=true;}else tag.hidden=true;
+    }
+    function requestRender(){if(frameRequested)return;frameRequested=true;requestAnimationFrame(t=>{frameRequested=false;if(flight)advanceFlight(t);drawScene();if(flight)requestRender();});}
+    function cameraMix(a,b,t){const out={};for(const key of ['cx','cz','yaw','pitch','distance'])out[key]=mix(a[key],b[key],ease(t));return out;}
+    function flyTo(zone,reset=false){
+      if(zone===currentZone&&!reset&&!flight)return;
+      const target=defaultCamera(zone),start={...camera},fromZone=currentZone;
+      if(layout.get(selected)?.zone!==zone){selected=queryIds.find(id=>layout.get(id)?.zone===zone)??tasks.find(t=>layout.get(t.id)?.zone===zone)?.id??'';activePair=pairsOf(tasks).find(p=>p.donor===selected||p.mother===selected)?.key??'';}
+      currentZone=zone;root.dataset.zone=String(zone);root.querySelectorAll('[data-zone]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.zone)===zone)));
+      if(motion.matches){camera=target;flight=null;root.dataset.flight='idle';refresh();save();return;}
+      const transfer=Math.hypot(start.cx-target.cx,start.cz-target.cz)>3;
+      flight={start,target,fromZone,t0:performance.now(),duration:transfer?settings.duration:650,transfer,phase:transfer?'rise':'land'};root.dataset.flight=flight.phase;refresh();
+    }
+    function advanceFlight(now){
+      const f=flight;if(!f)return;const t=clamp((now-f.t0)/f.duration,0,1);if(!f.transfer){camera=cameraMix(f.start,f.target,t);}
+      else {const highA={...f.start,pitch:1.28,distance:Math.max(35,f.target.distance+10)},highB={...f.target,pitch:1.28,distance:Math.max(35,f.target.distance+10)};if(t<.30){f.phase='rise';camera=cameraMix(f.start,highA,t/.30);}else if(t<.70){f.phase='transfer';camera=cameraMix(highA,highB,(t-.30)/.40);}else {f.phase='land';camera=cameraMix(highB,f.target,(t-.70)/.30);}}
+      root.dataset.flight=f.phase;if(t>=1){camera=f.target;flight=null;buildScene();root.dataset.flight='idle';updateHead();save();}
+    }
+    function updateHead(){$('#pf-zonetitle').textContent=flight?.transfer?areas[flight.fromZone]+' → '+areas[currentZone]:currentZone===0?'第一片区 · 右侧有架区':'第二片区';$('#pf-zoneinfo').textContent=flight?'视角转场':currentZone===0?'第一排最低 · 第三排最高':'盆位待录入';root.dataset.zone=String(currentZone);}
+    function refresh(){
+      if(!pairsOf(tasks).some(p=>p.key===activePair))activePair='';
+      $('#pf-phase').value=phase;$('#pf-hand-legend').hidden=!tasks.some(t=>kind(t)==='hand');$('#pf-task-legend').hidden=!tasks.length;$('#pf-source').textContent=taskLabel;$('#pf-layout-status').textContent=pendingSecondRow?'部分盆位待确认':layout.size+'株盆位已录入';
+      root.querySelectorAll('[data-zone]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.zone)===currentZone)));
+      const group=$('#pf-labels'),pair=getPair(),filter=new Set(queryIds);group.replaceChildren();
+      for(const [id,p]of layout){const t=records(id)[0],k=t?kind(t):'other',c=colors[k],button=document.createElement('button');button.type='button';button.className='pf-label cursor-interaction';button.dataset.id=id;button.dataset.elevation=String(p.y);button.dataset.row=String(p.row+1);button.dataset.col=String(p.col+1);button.dataset.x=String(p.x);button.dataset.z=String(p.z);button.textContent=id;button.style.setProperty('--task-color','rgb('+c.slice(0,3).map(v=>Math.round(v*255)).join(',')+')');button.setAttribute('aria-pressed',String(id===selected));button.setAttribute('aria-label',id+'号，'+p.area+'右侧有架区第'+(p.row+1)+'排左起第'+(p.col+1)+'株，'+['南侧低台阶','中间台阶','北侧高台阶'][p.row]+'，左右顺序已录入、间距示意，'+(t?'第'+t.flower+'朵，'+t[phase]:tasks.length?'当天无任务':'未载入当天任务'));if(pair&&(id===pair.donor||id===pair.mother))button.classList.add('pf-related');button.addEventListener('click',()=>selectPlant(id));group.append(button);}
+      const results=$('#pf-results'),resultButtons=$('#pf-result-buttons');resultButtons.replaceChildren();results.hidden=!queryIds.length&&!$('#pf-search').value.trim();
+      const known=queryIds.filter(id=>layout.has(id)),missing=queryIds.filter(id=>!layout.has(id));$('#pf-searchmsg').textContent=queryIds.length?'定位 '+known.length+'/'+queryIds.length+(missing.length?' · 未录入 '+missing.join('、'):''):'';
+      for(const id of known){const b=document.createElement('button');b.type='button';b.className='pf-result cursor-interaction';b.textContent=id;b.setAttribute('aria-pressed',String(id===selected));b.setAttribute('aria-label','查看'+id+'号的盆位');b.addEventListener('click',()=>selectPlant(id));resultButtons.append(b);}
+      renderDetail();updateHead();buildScene();requestRender();
+    }
+    function renderDetail(){
+      const p=layout.get(selected),detail=$('#pf-detail');if(!p){detail.innerHTML='<span class="pf-position">'+(currentZone===1?'第二片区盆位待录入':'点选花盆核对位置')+'</span>';return;}
+      const ts=records(selected),pair=getPair();let action=ts.map(t=>'第'+escape(t.flower)+'朵 · '+escape(t[phase])).join('<br>');const text='<div><div class="pf-detail-title"><span>'+escape(selected)+'</span><span class="pf-position">右侧有架区 · 第'+(p.row+1)+'排 · 左起第'+(p.col+1)+'株</span></div><div class="pf-action">'+(action||(tasks.length?'当天无任务':'仅核对盆位 · 当日任务尚未载入'))+'</div></div>';
+      detail.innerHTML=text;if(pair&&(selected===pair.donor||selected===pair.mother)){const partner=selected===pair.donor?pair.mother:pair.donor;if(layout.has(partner)){const b=document.createElement('button');b.type='button';b.className='pf-partner cursor-interaction';b.dataset.partner=partner;b.textContent=pair.donor+' → '+pair.mother+' · '+(selected===pair.donor?'看母本':'看父本');b.addEventListener('click',()=>selectPlant(partner));detail.append(b);}}
+    }
+    function selectPlant(id){if(!layout.has(id))return;selected=id;activePair=pairsOf(tasks).find(p=>p.donor===id||p.mother===id)?.key??'';const zone=layout.get(id).zone;refresh();if(zone!==currentZone)flyTo(zone);else requestRender();save();}
+    function findPlants(){const input=$('#pf-search').value.normalize('NFKC').trim();if(input&&!/^[\d\s,，、;；]+$/.test(input)){$('#pf-results').hidden=false;$('#pf-searchmsg').textContent='仅输入编号，以空格或逗号分隔';return;}queryIds=[...new Set(input.match(/\d+/g)??[])].slice(0,300);const first=queryIds.find(id=>layout.has(id));if(first){selected=first;activePair=pairsOf(tasks).find(p=>p.donor===first||p.mother===first)?.key??'';}else if(!queryIds.length){activePair='';}refresh();if(first&&layout.get(first).zone!==currentZone)flyTo(layout.get(first).zone);save();}
+    let searchTimer=0;$('#pf-search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(findPlants,280);});$('#pf-search').addEventListener('keydown',e=>{if(e.key==='Enter'){clearTimeout(searchTimer);findPlants();}if(e.key==='Escape'){$('#pf-search').value='';findPlants();}});
+    $('#pf-search').addEventListener('paste',event=>{const text=event.clipboardData?.getData('text/plain');if(text&&/[\r\n\t]/.test(text)){event.preventDefault();const input=event.currentTarget;input.setRangeText(text.replace(/[\r\n\t]+/g,' '),input.selectionStart??input.value.length,input.selectionEnd??input.value.length,'end');clearTimeout(searchTimer);searchTimer=setTimeout(findPlants,100);}});
+    $('#pf-phase').addEventListener('change',()=>{phase=$('#pf-phase').value;refresh();save();});root.querySelectorAll('[data-zone]').forEach(b=>b.addEventListener('click',()=>flyTo(Number(b.dataset.zone))));$('#pf-home').addEventListener('click',()=>flyTo(currentZone,true));
+    $('#pf-import-toggle').addEventListener('click',()=>{const panel=$('#pf-import');panel.hidden=!panel.hidden;$('#pf-import-toggle').setAttribute('aria-expanded',String(!panel.hidden));});
+
+    // Orbit, pinch, and wheel zoom all operate the same perspective camera.
+    const pointers=new Map();let drag=null,pinch=null;
+    canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);const cancel=!!flight;flight=null;if(cancel)buildScene();root.dataset.flight='idle';updateHead();if(pointers.size===1)drag={x:e.clientX,y:e.clientY,yaw:camera.yaw,pitch:camera.pitch,moved:false};if(pointers.size===2){const a=[...pointers.values()];pinch={span:Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]),distance:camera.distance};if(drag)drag.moved=true;}});
+    canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===2&&pinch){const a=[...pointers.values()],span=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);camera.distance=clamp(pinch.distance*pinch.span/Math.max(span,15),9,70);}else if(pointers.size===1&&drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.hypot(dx,dy)>4)drag.moved=true;camera.yaw=drag.yaw-dx*.006;camera.pitch=clamp(drag.pitch+dy*.005,.23,1.43);}requestRender();});
+    function endPointer(e){const wasDrag=drag?.moved;pointers.delete(e.pointerId);if(!wasDrag&&drag){const rect=canvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;let best=null,bestD=32;for(const p of pots){if(!p.id)continue;const s=project([p.x,p.y+.4,p.z]),d=Math.hypot(s.x-x,s.y-y);if(s.visible&&d<bestD){bestD=d;best=p;}}if(best)selectPlant(best.id);}if(!pointers.size){drag=null;pinch=null;save();}else if(pointers.size===1){const [x,y]=[...pointers.values()][0];drag={x,y,yaw:camera.yaw,pitch:camera.pitch,moved:true};pinch=null;}}
+    canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointercancel',()=>{pointers.clear();drag=null;pinch=null;save();});canvas.addEventListener('wheel',e=>{e.preventDefault();const cancel=!!flight;flight=null;if(cancel)buildScene();root.dataset.flight='idle';camera.distance=clamp(camera.distance*Math.exp(e.deltaY*.0011),9,70);updateHead();requestRender();},{passive:false});
+    function resize(){const r=stage.getBoundingClientRect();if(!r.width||!r.height)return;const oldDefault=distanceForWidth();cssWidth=r.width;cssHeight=r.height;const ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(cssWidth*ratio);canvas.height=Math.round(cssHeight*ratio);if(!flight)camera.distance=clamp(camera.distance*distanceForWidth()/oldDefault,9,70);$('#pf-camera-note').textContent=matchMedia('(pointer:coarse)').matches?'拖动旋转 · 双指缩放':'拖动旋转 · 滚动缩放';requestRender();}
+    new ResizeObserver(resize).observe(stage);
+    canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();$('#pf-zoneinfo').textContent='画面暂停，刷新可恢复';});
+
+    async function unzip(buffer){const bytes=new Uint8Array(buffer),dv=new DataView(buffer),files=new Map(),decoder=new TextDecoder();let end=-1;for(let i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--)if(dv.getUint32(i,true)===0x06054b50){end=i;break;}if(end<0)throw Error('不是有效的xlsx文件');const count=dv.getUint16(end+10,true);let off=dv.getUint32(end+16,true),total=0;if(count>4000)throw Error('工作簿文件项过多');for(let i=0;i<count;i++){if(off+46>bytes.length||dv.getUint32(off,true)!==0x02014b50)throw Error('xlsx目录损坏');const flags=dv.getUint16(off+8,true),method=dv.getUint16(off+10,true),packed=dv.getUint32(off+20,true),size=dv.getUint32(off+24,true),nl=dv.getUint16(off+28,true),el=dv.getUint16(off+30,true),cl=dv.getUint16(off+32,true),local=dv.getUint32(off+42,true),name=decoder.decode(bytes.subarray(off+46,off+46+nl));off+=46+nl+el+cl;if(flags&1)throw Error('不支持加密工作簿');if(!/^xl\/(worksheets\/sheet\d+\.xml|sharedStrings\.xml|workbook\.xml|_rels\/workbook\.xml\.rels)$/.test(name))continue;total+=size;if(total>12000000||size>8000000)throw Error('请只保留当天任务');if(local+30>bytes.length||dv.getUint32(local,true)!==0x04034b50)throw Error('xlsx条目损坏');const start=local+30+dv.getUint16(local+26,true)+dv.getUint16(local+28,true);if(start+packed>bytes.length)throw Error('xlsx内容不完整');const data=bytes.subarray(start,start+packed);let raw;if(method===0)raw=data;else if(method===8){if(!globalThis.DecompressionStream)throw Error('此浏览器请改用TSV文本');raw=new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());}else throw Error('不支持的压缩格式');if(raw.length!==size)throw Error('xlsx解压校验失败');files.set(name,decoder.decode(raw));}return files;}
+    function xml(text){const doc=new DOMParser().parseFromString(text,'application/xml');if(doc.querySelector('parsererror'))throw Error('工作表XML有误');return doc;}
+    const elements=(node,name)=>[...node.getElementsByTagNameNS('*',name)];
+    async function readXlsx(file){const files=await unzip(await file.arrayBuffer()),shared=files.has('xl/sharedStrings.xml')?elements(xml(files.get('xl/sharedStrings.xml')),'si').map(si=>elements(si,'t').map(n=>n.textContent).join('')):[],names=new Map();if(files.has('xl/workbook.xml')&&files.has('xl/_rels/workbook.xml.rels')){const rels=elements(xml(files.get('xl/_rels/workbook.xml.rels')),'Relationship');for(const s of elements(xml(files.get('xl/workbook.xml')),'sheet')){const rid=s.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id'),rel=rels.find(r=>r.getAttribute('Id')===rid);if(rel){const target=rel.getAttribute('Target').replace(/^\//,'');names.set(target.startsWith('xl/')?target:'xl/'+target,s.getAttribute('name'));}}}const sheets=[];for(const [path,text]of files){if(!path.startsWith('xl/worksheets/'))continue;const rows=elements(xml(text),'row').map(r=>{const cells=[];for(const c of elements(r,'c')){const letters=c.getAttribute('r')?.match(/^[A-Z]+/i)?.[0];if(!letters)continue;let index=0;for(const ch of letters.toUpperCase())index=index*26+ch.charCodeAt(0)-64;if(index>30)continue;if(elements(c,'f').length){cells[index-1]='[公式，需确认]';continue;}const type=c.getAttribute('t'),v=elements(c,'v')[0]?.textContent??'';cells[index-1]=type==='s'?(shared[Number(v)]??''):type==='inlineStr'?elements(c,'t').map(t=>t.textContent).join(''):v;}return cells;});sheets.push({name:names.get(path)??path,rows});}return sheets;}
+    function parseRows(rows){let area='',headers=null;const result=[],warnings=[];for(let i=0;i<rows.length;i++){const row=rows[i].map(clean);if(row.every(x=>!x))continue;const first=row.find(x=>x);if(/^第[一二三四五六七八九十\d]+片区$/.test(first)&&row.filter(Boolean).length===1){area=first;continue;}const idCol=row.findIndex(x=>/^(植株|植株编号|编号)$/.test(x));if(idCol>=0){headers={id:idCol,flower:row.findIndex(x=>/^(第几朵|花号|花朵编号)$/.test(x)),evening:row.indexOf('今晚'),morning:row.indexOf('明早')};if(headers.flower<0||headers.evening<0||headers.morning<0)headers=null;continue;}if(!headers)continue;const id=row[headers.id];if(!id)continue;if(!/^\d+$/.test(id)){warnings.push('第'+(i+1)+'行编号无法识别');continue;}const t={area,id,flower:row[headers.flower]??'',evening:row[headers.evening]??'',morning:row[headers.morning]??''};if(!/^\d+$/.test(t.flower)||!t.evening||!t.morning){warnings.push(id+'号花号或操作缺失');continue;}if(kind(t)==='other'){warnings.push(id+'号处理待确认');continue;}result.push(t);}if(!result.length)throw Error('表头需含：植株、第几朵、今晚、明早');const keys=new Set();for(const t of result){const key=t.id+'#'+t.flower;if(keys.has(key))warnings.push('重复任务：'+key);keys.add(key);if(!layout.has(t.id))warnings.push(t.id+'号未录入盆位');else if(t.area&&layout.get(t.id).area!==t.area)warnings.push(t.id+'号片区不一致');}for(const t of result){const receive=t.morning.match(/接\s*(\d+)\s*花粉/),give=t.morning.match(/给\s*(\d+)\s*供粉/);if(receive){if(receive[1]===t.id)warnings.push(t.id+'号异交亲本相同');if(!result.some(x=>x.id===receive[1]&&new RegExp('给\\s*'+t.id+'\\s*供粉').test(x.morning)))warnings.push(receive[1]+' → '+t.id+'缺供粉行');}if(give&&!result.some(x=>x.id===give[1]&&new RegExp('接\\s*'+t.id+'\\s*花粉').test(x.morning)))warnings.push(t.id+' → '+give[1]+'缺接粉行');}return{tasks:result,warnings:[...new Set(warnings)]};}
+    $('#pf-file').addEventListener('change',async event=>{const file=event.target.files[0];pending=null;$('#pf-apply').disabled=true;$('#pf-import-error').hidden=true;$('#pf-preview').hidden=true;if(!file)return;try{if(file.size>5000000)throw Error('请使用5MB以内的当天任务表');let sheets;if(/\.xlsx$/i.test(file.name))sheets=await readXlsx(file);else if(/\.(tsv|txt)$/i.test(file.name))sheets=[{name:'文本',rows:(await file.text()).replace(/^\uFEFF/,'').split(/\r?\n/).map(r=>r.split('\t'))}];else throw Error('仅支持xlsx、TSV、TXT');const candidates=[];for(const s of sheets){try{candidates.push({...parseRows(s.rows),sheet:s.name});}catch(e){}}if(candidates.length!==1)throw Error(candidates.length?'请只保留要导入的一张工作表':'未识别任务表，请检查表头');pending={...candidates[0],file:file.name};$('#pf-preview').textContent=file.name+' · '+pending.tasks.length+'项任务 / '+new Set(pending.tasks.map(t=>t.id)).size+'株 / '+pairsOf(pending.tasks).length+'组异交'+(pending.warnings.length?'\n'+pending.warnings.join('\n'):'\n可以应用');$('#pf-preview').hidden=false;$('#pf-apply').disabled=!!pending.warnings.length;}catch(e){$('#pf-import-error').textContent=e.message;$('#pf-import-error').hidden=false;}});
+    $('#pf-apply').addEventListener('click',()=>{if(!pending||pending.warnings.length)return;tasks=pending.tasks;taskLabel=pending.file;queryIds=[];$('#pf-search').value='';selected=tasks.find(t=>layout.has(t.id))?.id??'';activePair=pairsOf(tasks).find(p=>p.donor===selected||p.mother===selected)?.key??'';$('#pf-import').hidden=true;$('#pf-import-toggle').setAttribute('aria-expanded','false');const zone=layout.get(selected)?.zone??0;refresh();if(zone!==currentZone)flyTo(zone);save();});
+    $('#pf-export-close').addEventListener('click',()=>$('#pf-export-dialog').close());
+    $('#pf-export-download').addEventListener('click',event=>{event.preventDefault();window.parent.postMessage({type:'plant-png-download',png:$('#pf-export-image').src},'*');});
+    $('#pf-export').addEventListener('click',()=>{
+      if(flight){camera=flight.target;flight=null;buildScene();updateHead();}
+      drawScene();
+      const scale=2,head=76,foot=tasks.length?72:48;
+      const output=document.createElement('canvas');output.width=Math.round(cssWidth*scale);output.height=Math.round((cssHeight+head+foot)*scale);
+      const g=output.getContext('2d');g.scale(scale,scale);g.fillStyle='#101318';g.fillRect(0,0,cssWidth,cssHeight+head+foot);
+      const bg=g.createRadialGradient(cssWidth/2,head+cssHeight*.55,0,cssWidth/2,head+cssHeight*.55,cssWidth*.7);bg.addColorStop(0,'#1b232b');bg.addColorStop(1,'#101318');g.fillStyle=bg;g.fillRect(0,head,cssWidth,cssHeight);
+      g.fillStyle='#e3eaf0';g.font='500 17px system-ui, "Microsoft YaHei", sans-serif';g.fillText(areas[currentZone]+' · 盆位与处理',16,28);
+      g.fillStyle='#97a5b2';g.font='12px system-ui, "Microsoft YaHei", sans-serif';g.fillText(taskLabel,16,52,cssWidth-32);
+      g.drawImage(canvas,0,head,cssWidth,cssHeight);
+      const stageRect=stage.getBoundingClientRect();
+      for(const el of stage.querySelectorAll('.pf-label,.pf-annotation,.pf-pairtag,.pf-north')){
+        if(el.hidden||getComputedStyle(el).display==='none')continue;
+        const r=el.getBoundingClientRect(),s=getComputedStyle(el),x=r.left-stageRect.left,y=r.top-stageRect.top+head;
+        if(x+r.width<0||x>cssWidth||y<head||y+r.height>head+cssHeight)continue;
+        g.fillStyle=s.backgroundColor;g.fillRect(x,y,r.width,r.height);g.strokeStyle=s.borderColor;if(parseFloat(s.borderWidth)>0)g.strokeRect(x,y,r.width,r.height);
+        g.fillStyle=s.color;g.font=s.font;g.textAlign='center';g.textBaseline='middle';g.fillText(el.textContent,x+r.width/2,y+r.height/2);
+        if(el.classList.contains('pf-label')){g.fillStyle=s.getPropertyValue('--task-color')||'#a5d5ef';g.beginPath();g.arc(x+5,y+r.height/2,2,0,Math.PI*2);g.fill();}
+      }
+      g.textAlign='left';g.textBaseline='alphabetic';g.font='11px system-ui, "Microsoft YaHei", sans-serif';g.fillStyle='#97a5b2';
+      const status=currentZone===0?'第一排最低 · 第三排最高 · 间距示意':'盆位待录入';g.fillText(status,16,head+cssHeight+23);
+      if(tasks.length){const marks=[['#f19b9d','异交母本'],['#e4c189','供粉'],['#96d1ae','自主'],['#dce5eb','开放'],['#96c5ee','采样'],['#c3afe8','人工自交']];let x=16,y=head+cssHeight+45;for(const [c,label]of marks){const w=g.measureText(label).width+23;if(x+w>cssWidth-12){x=16;y+=18;}g.fillStyle=c;g.fillRect(x,y-7,6,6);g.fillStyle='#97a5b2';g.fillText(label,x+10,y);x+=w;}}
+      const png=output.toDataURL('image/png');$('#pf-export-image').src=png;
+      const download=$('#pf-export-download');if(download.dataset.blob)URL.revokeObjectURL(download.dataset.blob);
+      const bytes=Uint8Array.from(atob(png.split(',')[1]),c=>c.charCodeAt(0));const blob=URL.createObjectURL(new Blob([bytes],{type:'image/png'}));
+      download.href=blob;download.dataset.blob=blob;download.download='同质园_'+areas[currentZone]+'.png';$('#pf-export-dialog').showModal();
+    });
+    $('#pf-search').value=queryIds.join(' ');root.dataset.flight='idle';resize();refresh();
+    if(globalThis.Tweak){const tweak=new Tweak({container:root,onChange:()=>{buildScene();requestRender();save();}});tweak.addToggle(settings,'greenhouse',{label:'显示玻璃大棚'});tweak.addSlider(settings,'frameHeight',{label:'架子高度（示意）',min:2,max:4.4,step:.1});tweak.addSlider(settings,'duration',{label:'切区镜头时长',min:900,max:3000,step:100,unit:'ms'});tweak.addSlider(settings,'brightness',{label:'线框亮度',min:.7,max:1.3,step:.1});}
+  })();
+  </script>
+</section>

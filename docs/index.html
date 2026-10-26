@@ -1,0 +1,3013 @@
+<!doctype html>
+<html lang="zh-CN" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>同质园 · 盆位与处理</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:0;background:#101318}iframe{display:block;width:100%;height:100vh;margin:0 auto;border:0}</style>
+
+<meta name="description" content="同质园盆位定位、每日处理与异交配对查看器。"><meta name="theme-color" content="#101318"></head>
+<body>
+<iframe id="codex-visualization" sandbox="allow-scripts allow-downloads" referrerpolicy="no-referrer" title="同质园 · 盆位与处理" data-srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;zh-CN&quot; data-visualize-standalone&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'&quot;&gt;
+&lt;title&gt;同质园 · 盆位与处理&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 16px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans:
+    -apple-system-body, ui-sans-serif, -apple-system, system-ui, &quot;Segoe UI&quot;,
+    Helvetica, &quot;Apple Color Emoji&quot;, Arial, sans-serif, &quot;Segoe UI Emoji&quot;,
+    &quot;Segoe UI Symbol&quot;;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --icon-size: 16px;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --corner-shape: round;
+  --radius: var(--border-radius-lg, 8px);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: var(--visualize-paint-gutter, 0px);
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  -webkit-font-smoothing: antialiased;
+  font-size: var(--font-size-base);
+  line-height: calc(var(--font-size-base) * 1.625);
+  font-weight: var(--font-weight-normal);
+}
+
+.cursor-interaction {
+  cursor: var(--cursor-interaction, pointer);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: var(--cursor-interaction, pointer);
+  text-decoration: none;
+  text-underline-offset: 2px;
+  font-weight: inherit;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+.table {
+  font-family: var(--font-sans);
+}
+
+h1 {
+  font-size: calc(var(--font-size-base) * 1.5);
+  line-height: 1.3333333333;
+}
+
+h2 {
+  font-size: calc(var(--font-size-base) * 1.25);
+  line-height: 1.4;
+}
+h3 {
+  font-size: calc(var(--font-size-base) * 1.125);
+  line-height: 1.5555555556;
+}
+h4 {
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+}
+h5,
+h6 {
+  font-size: var(--font-size-base);
+  line-height: calc(var(--font-size-base) * 1.625);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+b,
+strong,
+th {
+  font-weight: 600;
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+pre,
+pre code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: calc(var(--font-size-base) * 0.875);
+  line-height: calc(var(--font-size-base) * 1.625);
+  font-family: var(--font-sans);
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 5%, transparent);
+}
+.table :is(th, td):not(:last-child) {
+  padding-inline-end: calc(var(--font-size-base) * 1.5);
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead :is(th, td) {
+  border-bottom-color: var(--border-strong, var(--input));
+  padding-block: calc(var(--font-size-base) / 2);
+  line-height: var(--font-size-base);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+.table tbody :is(th, td) {
+  padding-block: calc(var(--font-size-base) * 0.625);
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 8px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: var(--corner-shape);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+.widget {
+  min-width: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  box-shadow: 0 0 0 0.5px var(--border-strong, var(--border));
+  color: var(--foreground);
+  background: var(--background);
+}
+
+#widget &gt; :not(.card, .widget, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  border: 1px solid var(--border);
+  corner-shape: var(--corner-shape);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-sans);
+  padding: 5px 12px;
+  border-color: color-mix(
+    in oklab,
+    light-dark(var(--primary-foreground), var(--foreground)) 5%,
+    transparent
+  );
+  border-radius: var(--radius-2xl);
+  color: light-dark(var(--primary-foreground), var(--foreground));
+  background: light-dark(var(--foreground), var(--popover));
+  box-shadow: 0 8px 18px rgb(15 23 42 / 20%);
+  letter-spacing: -0.15px;
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+hr {
+  width: 100%;
+  height: 1px;
+  margin-block: 6px;
+  border: 0;
+  background: var(--border);
+}
+
+.nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.progress {
+  display: flex;
+  height: 8px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 8px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar:only-child {
+  border-radius: var(--radius-full);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  color: color-mix(in srgb, var(--foreground) 40%, var(--muted-foreground));
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  font-family: var(--font-sans);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 1;
+}
+
+small,
+.text-small {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.nav-link,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+/* Match inline alignment without overriding a containing flex or grid layout. */
+.btn,
+.nav-link,
+.form-control,
+.form-select,
+.form-range,
+.form-check {
+  vertical-align: middle;
+}
+
+.btn,
+.nav-link {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  corner-shape: var(--corner-shape);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: inherit;
+  font-family: var(--font-sans);
+  height: fit-content;
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  padding-inline: var(--control-spacing, 12px);
+  border-color: transparent;
+  border-radius: var(--radius-full);
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+}
+
+.btn {
+  border-color: var(--border);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: var(--cursor-interaction, pointer);
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: light-dark(
+    color-mix(in srgb, var(--foreground) 5.5%, transparent),
+    color-mix(in srgb, var(--foreground) 8%, transparent)
+  );
+}
+
+.nav-link:not(:disabled):not([aria-disabled=&quot;true&quot;]):hover {
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.btn-primary {
+  border-color: var(--border);
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: border-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: border-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--muted-foreground);
+  background: light-dark(
+    color-mix(in srgb, var(--foreground) 5.5%, transparent),
+    color-mix(in srgb, var(--foreground) 8%, transparent)
+  );
+}
+
+.nav-pills .nav-link {
+  min-width: 0;
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.nav-justified .nav-link {
+  flex: 1 1 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.nav-pills .nav-link.active {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+/* Shared preview chrome; product styles stay inside each variant. */
+.viz-dotted-background {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--foreground) 14%, transparent) 0.8px,
+    transparent 0.8px
+  );
+  background-position: center;
+  background-size: 16px 16px;
+}
+
+.viz-carousel {
+  position: relative;
+  min-width: 0;
+}
+
+.viz-carousel:has(&gt; .viz-carousel-controls) {
+  min-height: calc(60px + var(--viz-carousel-picker-height, 0px));
+  padding-bottom: 60px;
+}
+
+.viz-carousel &gt; [data-variant][hidden] {
+  display: none !important;
+}
+
+.viz-carousel &gt; [data-variant] {
+  isolation: isolate;
+}
+
+.viz-carousel-controls {
+  --viz-carousel-hover: light-dark(
+    color-mix(in srgb, var(--foreground) 5.4%, transparent),
+    color-mix(in srgb, var(--foreground) 7.8%, transparent)
+  );
+  position: absolute;
+  z-index: 2;
+  bottom: 8px;
+  left: 50%;
+  display: flex;
+  width: max-content;
+  /* Leave room for the host's design-controls launcher at the trailing edge. */
+  max-width: calc(100% - 96px);
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  /* Match the settings dropdown chrome independently of the content font size. */
+  font-size: 13px;
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+/* Keep authored mockup button styles out of the shared carousel chrome. */
+.viz-carousel-controls button,
+.viz-carousel-picker &gt; summary {
+  display: flex !important;
+  height: auto !important;
+  min-height: 30px;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px;
+  padding: 0 6px !important;
+  -webkit-app-region: no-drag;
+  border: 0 !important;
+  border-radius: 14px !important;
+  color: inherit !important;
+  background: transparent !important;
+  font: inherit !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.viz-carousel-controls &gt; button,
+.viz-carousel-picker &gt; summary {
+  position: relative;
+  isolation: isolate;
+}
+
+.viz-carousel-controls &gt; button {
+  --icon-size: 16px;
+  width: 30px !important;
+  padding: 0 !important;
+}
+
+.viz-carousel-picker &gt; summary {
+  padding-inline: 12px !important;
+}
+
+.viz-carousel-controls .viz-carousel-caret {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  margin: 0;
+  color: inherit;
+  transform: rotate(180deg);
+}
+
+.viz-carousel-controls &gt; button &gt; svg,
+.viz-carousel-controls .viz-carousel-caret,
+.viz-carousel-count {
+  opacity: 0.5;
+}
+
+.viz-carousel-controls &gt; button::before,
+.viz-carousel-picker &gt; summary::before {
+  position: absolute;
+  z-index: -1;
+  inset: 3px;
+  border-radius: 12px;
+  content: &quot;&quot;;
+  pointer-events: none;
+}
+
+.viz-carousel-controls &gt; button:hover::before,
+.viz-carousel-picker &gt; summary:hover::before {
+  background: var(--viz-carousel-hover);
+}
+
+.viz-carousel-controls &gt; button,
+.viz-carousel-controls [data-lucide],
+.viz-carousel-controls .lucide {
+  flex-shrink: 0;
+}
+
+.viz-carousel-picker {
+  min-width: 0;
+}
+
+.viz-carousel-picker &gt; summary {
+  min-width: 0;
+  list-style: none;
+}
+
+.viz-carousel-picker &gt; summary::-webkit-details-marker {
+  display: none;
+}
+
+.viz-carousel-count {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.viz-carousel-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viz-carousel-options {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 4px);
+  left: 0;
+  display: flex;
+  max-height: 240px;
+  flex-direction: column;
+  gap: 2px;
+  overflow: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--background);
+  box-shadow: 0 4px 12px light-dark(rgb(0 0 0 / 6%), rgb(0 0 0 / 25%));
+}
+
+.viz-carousel-options &gt; button {
+  border-radius: max(0px, calc(var(--radius-lg) - 5px)) !important;
+  width: 100% !important;
+  min-height: 28px;
+  justify-content: flex-start !important;
+  padding: 4px 8px !important;
+  font-size: var(--font-size-small) !important;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.viz-carousel-options &gt; [aria-current=&quot;true&quot;],
+.viz-carousel-options &gt; button:hover {
+  background: var(--viz-carousel-hover) !important;
+}
+
+.btn:disabled,
+.nav-link:disabled,
+.nav-link[aria-disabled=&quot;true&quot;] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  padding-inline: calc(4px + var(--control-spacing, 12px) / 2);
+  border-color: var(--input);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--popover) 96%, transparent);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.4285714286;
+}
+.form-control:is(
+  [type=&quot;file&quot;],
+  [type=&quot;date&quot;],
+  [type=&quot;datetime-local&quot;],
+  [type=&quot;month&quot;],
+  [type=&quot;week&quot;],
+  [type=&quot;color&quot;]
+) {
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  line-height: 18px;
+}
+.form-control:is(
+  [type=&quot;date&quot;],
+  [type=&quot;datetime-local&quot;],
+  [type=&quot;month&quot;],
+  [type=&quot;week&quot;]
+) {
+  padding-inline: var(--control-spacing, 12px);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+  padding: 0;
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+  min-height: calc(10px + 2 * var(--control-spacing, 12px));
+  padding-inline: var(--control-spacing, 12px);
+  margin-inline-end: var(--control-spacing, 12px);
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: var(--corner-shape);
+}
+
+textarea.form-control {
+  height: auto;
+  resize: vertical;
+  min-height: 96px;
+  padding: 8px 10px;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: none;
+}
+.form-control:disabled {
+  color: var(--muted-foreground);
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  opacity: 1;
+}
+.form-control[aria-invalid=&quot;true&quot;] {
+  border-color: var(--red);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--red) 20%, transparent);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: fit-content;
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  margin: 0;
+  /* The secondary icon role is 14px at compact density and 16px at web density. */
+  --icon-size: calc(10px + var(--control-spacing, 12px) / 2);
+  /* Settings dropdowns retain a 12px inset and a 4px text-to-chevron gap. */
+  padding: 0 calc(16px + var(--icon-size)) 0 12px;
+  outline: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent calc(50% - 0.6px),
+      var(--muted-foreground) calc(50% - 0.6px) calc(50% + 0.6px),
+      transparent calc(50% + 0.6px)
+    ),
+    linear-gradient(
+      135deg,
+      transparent calc(50% - 0.6px),
+      var(--muted-foreground) calc(50% - 0.6px) calc(50% + 0.6px),
+      transparent calc(50% + 0.6px)
+    );
+  background-position:
+    calc(100% - 12px - var(--icon-size) / 2) 50%,
+    calc(100% - 12px - var(--icon-size) * 0.18) 50%;
+  background-repeat: no-repeat;
+  background-size: calc(var(--icon-size) * 0.32) calc(var(--icon-size) * 0.32);
+  cursor: var(--cursor-interaction, default);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+}
+
+.form-select option {
+  color: var(--popover-foreground);
+  background-color: var(--popover);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: light-dark(
+    color-mix(in srgb, var(--foreground) 5.5%, transparent),
+    color-mix(in srgb, var(--foreground) 8%, transparent)
+  );
+}
+
+.form-select:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+.form-select:disabled {
+  opacity: 0.4;
+}
+
+.form-check {
+  display: flex;
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  corner-shape: round;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  width: calc(10px + var(--control-spacing, 12px) / 2);
+  height: calc(10px + var(--control-spacing, 12px) / 2);
+  border-color: var(--border-strong, var(--input));
+  border-radius: calc(var(--radius-sm) / 2);
+  background-color: transparent;
+  color: var(--foreground);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:is(:checked, :indeterminate) {
+  border-color: var(--border-strong, var(--input));
+  background-color: color-mix(in srgb, var(--popover) 96%, transparent);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+  background-color: var(--foreground);
+}
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:indeterminate::before {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 65%;
+  height: 6.65%;
+  margin: auto;
+  border-radius: var(--radius-full);
+  background: var(--foreground);
+  mask: none;
+  content: &quot;&quot;;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  border-radius: var(--radius-full);
+  width: 16px;
+  height: 16px;
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--input);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 0;
+  background: radial-gradient(
+    circle,
+    var(--primary-foreground) 0 3px,
+    var(--foreground) 3px
+  );
+  box-shadow: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:focus-visible {
+  border-color: var(--ring);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+.form-check:not(.form-switch) .form-check-input[type=&quot;radio&quot;]:disabled,
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;radio&quot;]:disabled
+  + .form-check-label {
+  opacity: 0.5;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+  border-color: #fff;
+  background: #fff;
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--blue);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+  outline: none;
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  accent-color: var(--primary);
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  outline: none;
+  border-radius: var(--radius-full);
+  color: var(--foreground);
+  background: transparent;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  background: var(--form-range-track, var(--border));
+  height: 2px;
+  border-radius: var(--radius-full);
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  margin-top: -9px;
+  border-color: transparent;
+  background: currentColor;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Outline the native track and thumb, preserving the larger input hit area. */
+.form-range:focus-visible::-webkit-slider-runnable-track {
+  outline: 2px auto Highlight;
+  outline-color: -webkit-focus-ring-color;
+}
+
+.form-range::-moz-range-track {
+  background: var(--form-range-track, var(--border));
+  height: 2px;
+  border-radius: var(--radius-full);
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  border-color: transparent;
+  background: currentColor;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  outline: 2px solid Highlight;
+  outline-offset: 2px;
+}
+
+.form-range:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed=&quot;true&quot;],
+  [aria-selected=&quot;true&quot;],
+  .is-selected
+) {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--blue);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible,
+.nav-link:focus-visible {
+  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.viz-carousel-controls :is(button, summary):focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
+}
+
+/* Web recipes are the default, including on renderers without inline style queries. */
+@supports (border-radius: if(style(--corner-shape: round): 1px; else: 2px)) {
+  /* Match the host's proportional text-sm scale at every text preference. */
+  .tooltip,
+  .viz-badge,
+  .btn,
+  .nav-link,
+  .form-control,
+  .form-select {
+    font-size: if(
+      style(--corner-shape: round): round(
+          nearest,
+          calc(var(--font-size-base) * 14 / 16),
+          1px
+        );
+        else: round(nearest, calc(var(--font-size-base) * 13 / 14), 1px)
+    );
+  }
+
+  .btn,
+  .nav-link,
+  .form-select {
+    border-radius: if(
+      style(--corner-shape: round): var(--radius-full); else: var(--radius-lg)
+    );
+  }
+
+  .form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+    border-radius: if(
+      style(--corner-shape: round): calc(var(--radius-sm) / 2);
+        else: calc(var(--radius-lg) * 0.4)
+    );
+  }
+
+  .tooltip {
+    font-weight: if(
+      style(--corner-shape: round): 600; else: var(--font-weight-normal)
+    );
+  }
+}
+
+@media (pointer: coarse) {
+  .viz-carousel:has(&gt; .viz-carousel-controls) {
+    min-height: calc(76px + var(--viz-carousel-picker-height, 0px));
+    padding-bottom: 76px;
+  }
+
+  .btn,
+  .nav-link,
+  .viz-carousel-controls button,
+  .viz-carousel-picker &gt; summary,
+  .form-control,
+  .form-select {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Keep small-screen WebKit from zooming when a text field receives focus. */
+  .form-control,
+  .form-select {
+    font-size: max(16px, calc(var(--font-size-base) * 14 / 16));
+    font-size: max(
+      16px,
+      round(nearest, calc(var(--font-size-base) * 14 / 16), 1px)
+    );
+  }
+  .form-control:is(
+    [type=&quot;file&quot;],
+    [type=&quot;date&quot;],
+    [type=&quot;datetime-local&quot;],
+    [type=&quot;month&quot;],
+    [type=&quot;week&quot;],
+    [type=&quot;time&quot;],
+    [type=&quot;color&quot;]
+  ) {
+    height: 44px;
+    min-height: 44px;
+    font-size: max(16px, calc(var(--font-size-base) * 14 / 16));
+    font-size: max(
+      16px,
+      round(nearest, calc(var(--font-size-base) * 14 / 16), 1px)
+    );
+  }
+
+  .form-control[type=&quot;file&quot;]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type=&quot;color&quot;] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type=&quot;date&quot;],
+    [type=&quot;datetime-local&quot;],
+    [type=&quot;month&quot;],
+    [type=&quot;time&quot;],
+    [type=&quot;week&quot;]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: &quot;&quot;;
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: var(--icon-size) !important;
+  height: var(--icon-size) !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;style&gt;html,html&gt;body{padding:0!important;background:#101318!important}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;application/json&quot; id=&quot;codex-visualization-widget-state&quot;&gt;__CODEX_VISUALIZATION_WIDGET_STATE__&lt;/script&gt;
+&lt;script&gt;(() =&gt; {
+  const root = document.documentElement;
+  const mediaQuery = globalThis.matchMedia(&quot;(prefers-color-scheme: dark)&quot;);
+  const apply = Reflect.apply;
+  const isArray = Array.isArray;
+  const hasOwn = Object.hasOwn;
+  const parentWindow = globalThis.parent;
+  const stringify = JSON.stringify;
+  const parse = JSON.parse;
+  const encode = TextEncoder.prototype.encode.bind(new TextEncoder());
+  const initialStateElement = document.getElementById(
+    &quot;codex-visualization-widget-state&quot;,
+  );
+  const initialGlobals = parse(initialStateElement?.textContent ?? &quot;{}&quot;);
+  initialStateElement?.remove();
+  /** @type {Record&lt;string, unknown&gt; | null} */
+  let state = initialGlobals.widgetState ?? null;
+  const statePersistence = initialGlobals.statePersistence ?? &quot;none&quot;;
+  let nextStateRequestId = 0;
+  /** @type {Map&lt;number, { resolve: () =&gt; void; reject: (error: Error) =&gt; void; timeout: ReturnType&lt;typeof globalThis.setTimeout&gt;; serializedState: string }&gt;} */
+  const pendingStateWrites = new Map();
+  const persistenceError = () =&gt;
+    Object.assign(
+      new Error(&quot;The host could not persist the widget state update&quot;),
+      {
+        code: -32000,
+        data: { code: &quot;widget_state_persistence_failed&quot;, retryable: false },
+      },
+    );
+  /**
+   * @param {object} prototype
+   * @param {string} property
+   */
+  const getPrototypeGetter = (prototype, property) =&gt; {
+    // oxlint-disable-next-line typescript/unbound-method -- invoked through captured Reflect.apply
+    const getter = Object.getOwnPropertyDescriptor(prototype, property)?.get;
+    if (getter == null) {
+      throw new Error(`Missing ${property} getter`);
+    }
+    return getter;
+  };
+  const getMessageData = getPrototypeGetter(MessageEvent.prototype, &quot;data&quot;);
+  const getMessagePorts = getPrototypeGetter(MessageEvent.prototype, &quot;ports&quot;);
+  const getMessageSource = getPrototypeGetter(MessageEvent.prototype, &quot;source&quot;);
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const addHostMessageListener = MessagePort.prototype.addEventListener;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const postHostMessage = MessagePort.prototype.postMessage;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const startHostPort = MessagePort.prototype.start;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const stopMessagePropagation = Event.prototype.stopImmediatePropagation;
+  /** @type {MessagePort | null} */
+  let hostPort = null;
+  const postToHost = (type, payload) =&gt; {
+    if (hostPort != null) {
+      apply(postHostMessage, hostPort, [{ type, ...payload }]);
+    }
+  };
+  const openExternal = ({ href }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;open-external&quot;, { href });
+    }
+  };
+  const sendFollowUpMessage = ({ context, prompt, title }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;follow-up&quot;, { context, prompt, title });
+    }
+    return Promise.resolve();
+  };
+  /**
+   * @param {Record&lt;string, unknown&gt; | ((previous: Record&lt;string, unknown&gt; | null) =&gt; Record&lt;string, unknown&gt;)} next
+   * @returns {Promise&lt;void&gt;}
+   */
+  const setWidgetState = async (next) =&gt; {
+    const nextState = typeof next === &quot;function&quot; ? next(state) : next;
+    if (
+      nextState == null ||
+      typeof nextState !== &quot;object&quot; ||
+      isArray(nextState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const inputState = stringify(
+      nextState,
+      (_key, /** @type {unknown} */ value) =&gt; {
+        if (
+          typeof value === &quot;undefined&quot; ||
+          typeof value === &quot;function&quot; ||
+          typeof value === &quot;symbol&quot; ||
+          (typeof value === &quot;number&quot; &amp;&amp; !Number.isFinite(value))
+        ) {
+          throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+        }
+        return value;
+      },
+    );
+    const parsedState = parse(inputState);
+    if (
+      parsedState == null ||
+      typeof parsedState !== &quot;object&quot; ||
+      isArray(parsedState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const storedState = {
+      modelContent: null,
+      privateContent: null,
+      ...parsedState,
+    };
+    const serializedState = stringify(storedState);
+    if (encode(serializedState).length &gt; 16 * 1024) {
+      throw new TypeError(
+        &quot;Widget state must be a JSON object of at most 16 KiB&quot;,
+      );
+    }
+    if (
+      hasOwn(storedState, &quot;imageIds&quot;) &amp;&amp;
+      (!isArray(storedState.imageIds) ||
+        storedState.imageIds.some(
+          (/** @type {unknown} */ id) =&gt; typeof id !== &quot;string&quot;,
+        ))
+    ) {
+      throw new TypeError(&quot;Widget state imageIds must be an array of strings&quot;);
+    }
+    if (storedState.imageIds?.length &gt; 0) {
+      throw Object.assign(
+        new TypeError(&quot;Visualization state does not support image attachments&quot;),
+        { code: -32602, data: { code: &quot;images_unsupported&quot; } },
+      );
+    }
+    state = storedState;
+    globalThis.openai.widgetState = state;
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: { widgetState: state } },
+      }),
+    );
+    if (statePersistence === &quot;none&quot;) {
+      throw persistenceError();
+    }
+    const id = ++nextStateRequestId;
+    return new Promise((resolve, reject) =&gt; {
+      const timeout = globalThis.setTimeout(() =&gt; {
+        pendingStateWrites.delete(id);
+        reject(persistenceError());
+      }, 30_000);
+      pendingStateWrites.set(id, { resolve, reject, timeout, serializedState });
+      postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+    });
+  };
+  const syncTheme = () =&gt; {
+    const theme = mediaQuery.matches ? &quot;dark&quot; : &quot;light&quot;;
+    root.dataset.theme = theme;
+    globalThis.openai = {
+      ...globalThis.openai,
+      openExternal,
+      sendFollowUpMessage,
+      setWidgetState,
+      theme,
+      visualizationStyleVariables: {},
+      visualizationTheme: theme,
+      widgetState: state,
+      statePersistence,
+      stateModelContext: &quot;none&quot;,
+    };
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: globalThis.openai },
+      }),
+    );
+  };
+  const sendHeight = () =&gt; {
+    postToHost(&quot;height&quot;, {
+      height: Math.ceil(
+        Math.max(
+          document.body.scrollHeight,
+          document.body.getBoundingClientRect().height,
+        ),
+      ),
+    });
+  };
+
+  globalThis.addEventListener(
+    &quot;message&quot;,
+    (event) =&gt; {
+      const data = apply(getMessageData, event, []);
+      const ports = apply(getMessagePorts, event, []);
+      const source = apply(getMessageSource, event, []);
+      if (
+        hostPort != null ||
+        source !== parentWindow ||
+        typeof data !== &quot;object&quot; ||
+        data?.type !== &quot;codex-visualization-initialize&quot; ||
+        !isArray(ports) ||
+        ports.length !== 1
+      ) {
+        return;
+      }
+      apply(stopMessagePropagation, event, []);
+      const nextHostPort = ports[0];
+      try {
+        apply(addHostMessageListener, nextHostPort, [
+          &quot;message&quot;,
+          (event) =&gt; {
+            const data = apply(getMessageData, event, []);
+            if (typeof data === &quot;object&quot; &amp;&amp; data?.type === &quot;measure&quot;) {
+              sendHeight();
+            } else if (
+              typeof data === &quot;object&quot; &amp;&amp;
+              data?.type === &quot;widget-state-result&quot;
+            ) {
+              /** @type {unknown} */
+              const id = data.id;
+              if (typeof id !== &quot;number&quot;) {
+                return;
+              }
+              const pending = pendingStateWrites.get(id);
+              if (pending != null) {
+                pendingStateWrites.delete(id);
+                globalThis.clearTimeout(pending.timeout);
+                if (data.ok === true) {
+                  pending.resolve();
+                } else {
+                  pending.reject(persistenceError());
+                }
+              }
+            }
+          },
+        ]);
+        apply(startHostPort, nextHostPort, []);
+      } catch {
+        return;
+      }
+      hostPort = nextHostPort;
+      for (const [id, { serializedState }] of pendingStateWrites) {
+        postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+      }
+      sendHeight();
+    },
+    { capture: true },
+  );
+  document.currentScript?.remove();
+  mediaQuery.addEventListener(&quot;change&quot;, syncTheme);
+  globalThis.addEventListener(&quot;click&quot;, (event) =&gt; {
+    if (event.defaultPrevented) {
+      return;
+    }
+    let element = null;
+    if (event.target instanceof globalThis.Element) {
+      element = event.target;
+    } else if (event.target instanceof globalThis.Node) {
+      element = event.target.parentElement;
+    }
+    const link = element?.closest(&quot;a[href]&quot;);
+    const href = link?.getAttribute(&quot;href&quot;);
+    if (href == null) {
+      return;
+    }
+    if (href.startsWith(&quot;#&quot;)) {
+      let id;
+      try {
+        id = decodeURIComponent(href.slice(1));
+      } catch {
+        return;
+      }
+      const target = id.length === 0 ? root : document.getElementById(id);
+      if (
+        target == null ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      event.preventDefault();
+      postToHost(&quot;scroll-to&quot;, {
+        top: target.getBoundingClientRect().top + globalThis.scrollY,
+      });
+      return;
+    }
+    event.preventDefault();
+    openExternal({ href });
+  });
+  new ResizeObserver(sendHeight).observe(document.body);
+  syncTheme();
+})();
+&lt;/script&gt;
+&lt;section id=&quot;plant-field-3d&quot; aria-label=&quot;同质园三维盆位预览&quot;&gt;
+  &lt;style&gt;
+    #plant-field-3d{--pf-bg:#101318;--pf-panel:#181d24;--pf-panel2:#202731;--pf-fg:#e3eaf0;--pf-muted:#97a5b2;--pf-border:#303a45;--pf-wire:#a5d5ef;--pf-red:#f19b9d;--pf-green:#96d1ae;--pf-yellow:#e4c189;--pf-purple:#c3afe8;--pf-blue:#96c5ee;background:var(--pf-bg);color:var(--pf-fg);font:400 14px/1.5 system-ui,&quot;Microsoft YaHei&quot;,sans-serif;border-radius:16px;overflow:hidden;isolation:isolate;color-scheme:dark;width:100%;position:relative}
+    #plant-field-3d *{box-sizing:border-box}
+    #plant-field-3d button,#plant-field-3d input,#plant-field-3d select{font:inherit;color:inherit}
+    #plant-field-3d button{font-weight:500}
+    #plant-field-3d [hidden]{display:none!important}
+    #plant-field-3d .pf-header{padding:18px 20px 12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-height:62px}
+    #plant-field-3d .pf-export{margin-left:auto;border:1px solid var(--pf-border);background:var(--pf-panel);border-radius:8px;padding:7px 12px;min-height:42px;white-space:nowrap}
+    #plant-field-3d .pf-export-dialog{color:var(--pf-fg);background:var(--pf-panel);border:1px solid var(--pf-border);border-radius:12px;max-width:min(96vw,1000px);max-height:94vh;padding:14px}
+    #plant-field-3d .pf-export-dialog::backdrop{background:#000b}
+    #plant-field-3d .pf-export-dialog img{display:block;max-width:100%;max-height:70vh;object-fit:contain;margin:10px auto}
+    #plant-field-3d .pf-export-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    #plant-field-3d .pf-export-actions a{color:var(--pf-wire)}
+    #plant-field-3d .pf-brand{font-size:18px;font-weight:500;letter-spacing:.06em;white-space:nowrap}
+    #plant-field-3d .pf-demo{font-size:11px;letter-spacing:.04em;color:var(--pf-muted);padding:3px 7px;border:1px solid var(--pf-border);border-radius:4px;white-space:nowrap}
+    #plant-field-3d .pf-toolbar{padding:0 20px 14px;display:flex;gap:8px;align-items:center}
+    #plant-field-3d .pf-searchbox{display:flex;align-items:center;gap:8px;flex:1;min-width:0;padding:0 11px;background:var(--pf-panel);border:1px solid var(--pf-border);border-radius:9px;height:42px}
+    #plant-field-3d .pf-searchbox&gt;svg{width:17px;height:17px;color:var(--pf-muted);flex-shrink:0}
+    #plant-field-3d .pf-searchbox input{width:100%;min-width:0;border:0;outline-offset:4px;background:transparent;padding:8px 0;font-size:16px}
+    #plant-field-3d input::placeholder{color:var(--pf-muted);opacity:.85}
+    #plant-field-3d .pf-iconbutton{display:flex;align-items:center;justify-content:center;gap:6px;min-width:42px;min-height:42px;background:var(--pf-panel);border:1px solid var(--pf-border);border-radius:9px;padding:8px 11px}
+    #plant-field-3d .pf-iconbutton svg{width:17px;height:17px}
+    #plant-field-3d .pf-iconbutton:hover{background:var(--pf-panel2)}
+    #plant-field-3d .pf-phase{border:1px solid var(--pf-border);border-radius:9px;min-height:42px;padding:8px;background:var(--pf-panel);width:78px;flex-shrink:0}
+    #plant-field-3d .pf-results{padding:0 20px 12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px}
+    #plant-field-3d .pf-result{border:1px solid var(--pf-border);border-radius:6px;background:var(--pf-panel);padding:5px 10px;min-height:34px;font-variant-numeric:tabular-nums}
+    #plant-field-3d .pf-result[aria-pressed=&quot;true&quot;]{background:#344654;border-color:#9ecce7}
+    #plant-field-3d .pf-searchmsg{color:var(--pf-muted);font-size:12px;overflow-wrap:anywhere}
+    #plant-field-3d .pf-import{margin:0 20px 14px;padding:14px;background:var(--pf-panel);border:1px solid var(--pf-border);border-radius:10px;display:grid;gap:10px}
+    #plant-field-3d .pf-import-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    #plant-field-3d .pf-import input{width:100%;min-width:0}
+    #plant-field-3d .pf-preview{font-size:12px;white-space:pre-line;overflow-wrap:anywhere;color:var(--pf-muted)}
+    #plant-field-3d .pf-error{color:var(--pf-red);font-size:12px;white-space:pre-line;overflow-wrap:anywhere}
+    #plant-field-3d .pf-apply{justify-self:start;border:1px solid #648194;background:#2d424f;border-radius:7px;padding:8px 14px;min-height:42px}
+    #plant-field-3d .pf-apply:disabled{opacity:.4}
+    #plant-field-3d .pf-stage{position:relative;width:100%;height:clamp(430px,65vw,560px);background:radial-gradient(ellipse at 50% 55%,#1b232b 0%,#13181f 52%,#101318 88%);overflow:hidden}
+    #plant-field-3d canvas{display:block;width:100%;height:100%;touch-action:none}
+    #plant-field-3d .pf-labels{position:absolute;inset:0;pointer-events:none}
+    #plant-field-3d .pf-label{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;font-size:12px;font-variant-numeric:tabular-nums;font-weight:400;min-width:40px;min-height:30px;padding:3px 5px;color:#cbd9e3;background:#121921d9;border:1px solid transparent;border-radius:5px;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:4px}
+    #plant-field-3d .pf-label::before{content:&quot;&quot;;width:4px;height:4px;border-radius:50%;background:var(--task-color,#a5d5ef);flex-shrink:0}
+    #plant-field-3d .pf-label:hover{border-color:#7d9bad;background:#24333f}
+    #plant-field-3d .pf-label[aria-pressed=&quot;true&quot;]{color:#edf5fa;border-color:#b5dcef;background:#2a3b48;box-shadow:0 0 16px #93c9ee15;z-index:4}
+    #plant-field-3d .pf-label.pf-related{border-color:#7b7360}
+    #plant-field-3d .pf-label.pf-dim{opacity:.35}
+    #plant-field-3d .pf-stagehead{position:absolute;left:20px;top:12px;pointer-events:none;display:grid;gap:4px}
+    #plant-field-3d .pf-zonetitle{font-size:14px;font-weight:500;letter-spacing:.03em}
+    #plant-field-3d .pf-zoneinfo{color:var(--pf-muted);font-size:11px}
+    #plant-field-3d .pf-annotation{position:absolute;transform:translate(-50%,-50%);color:#7e8f9d;font-size:11px;white-space:nowrap;pointer-events:none}
+    #plant-field-3d .pf-frame-label{color:#9faeb9;background:#151c23d9;padding:3px 7px;border:1px dashed #51616f;border-radius:4px}
+    #plant-field-3d .pf-pole-label{color:#91a5b4;font-size:11px;background:#131a21d9;padding:2px 5px;border-radius:3px}
+    #plant-field-3d .pf-greenhouse-label{color:#98aab4;letter-spacing:.1em;background:#131a21c9;padding:3px 8px;border-radius:4px}
+    #plant-field-3d .pf-north{position:absolute;top:14px;right:20px;color:#a7b8c4;font-size:11px;display:flex;gap:5px;align-items:center;pointer-events:none}
+    #plant-field-3d .pf-north-arrow{display:inline-block;font-size:18px;transform-origin:center}
+    #plant-field-3d .pf-pairtag{position:absolute;pointer-events:none;transform:translate(-50%,-50%);padding:4px 9px;font-size:12px;font-variant-numeric:tabular-nums;border:1px solid #6b6151;background:#29261f;color:#ead2a6;border-radius:5px;white-space:nowrap}
+    #plant-field-3d .pf-camera-note{position:absolute;bottom:17px;left:20px;font-size:11px;color:#758592;pointer-events:none}
+    #plant-field-3d .pf-home{position:absolute;right:16px;bottom:12px;min-width:40px;min-height:40px;background:#1a222b;border-color:#34414d}
+    #plant-field-3d .pf-legend{display:flex;align-items:center;flex-wrap:wrap;gap:7px 15px;padding:10px 20px 12px;color:var(--pf-muted);font-size:11px}
+    #plant-field-3d .pf-legend span{display:inline-flex;gap:5px;align-items:center;white-space:nowrap}
+    #plant-field-3d .pf-legend i{display:inline-block;width:6px;height:6px;background:var(--mark);border-radius:50%}
+    #plant-field-3d .pf-bottom{display:flex;gap:8px;align-items:center;justify-content:center;padding:12px 20px;border-top:1px solid #242e38;background:#14191f}
+    #plant-field-3d .pf-zonebutton{background:transparent;border:1px solid transparent;border-radius:8px;display:flex;align-items:center;gap:9px;padding:9px 15px;min-height:44px;color:var(--pf-muted)}
+    #plant-field-3d .pf-zonebutton[aria-pressed=&quot;true&quot;]{border-color:#475966;background:#26323d;color:var(--pf-fg)}
+    #plant-field-3d .pf-zonebutton small{font-size:11px;font-weight:400;color:#a2b4c1;font-variant-numeric:tabular-nums}
+    #plant-field-3d .pf-detail{border-top:1px solid #29333d;padding:14px 20px;background:#181e26;display:grid;grid-template-columns:1fr auto;align-items:center;gap:9px 14px;min-height:82px}
+    #plant-field-3d .pf-detail-title{font-size:14px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+    #plant-field-3d .pf-position{font-size:11px;color:var(--pf-muted)}
+    #plant-field-3d .pf-action{font-size:12px;color:#c1cdd6;margin-top:4px;overflow-wrap:anywhere}
+    #plant-field-3d .pf-partner{font-size:12px;background:#252e39;border:1px solid #43515f;border-radius:7px;padding:8px 10px;min-height:40px;white-space:nowrap}
+    #plant-field-3d .pf-credit{padding:8px 20px;color:#748592;font-size:11px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    @media(max-width:480px){#plant-field-3d{border-radius:11px}#plant-field-3d .pf-header{padding-left:13px;gap:8px}#plant-field-3d .pf-toolbar{padding:0 12px 12px;gap:6px}#plant-field-3d .pf-searchbox{padding:0 8px;gap:5px}#plant-field-3d .pf-searchbox input{font-size:16px}#plant-field-3d .pf-iconbutton{padding:8px;min-width:42px}#plant-field-3d .pf-phase{width:70px}#plant-field-3d .pf-stagehead{left:14px}#plant-field-3d .pf-legend{padding-left:14px;padding-right:14px;gap:7px 12px}#plant-field-3d .pf-detail{padding:12px 14px;grid-template-columns:1fr}#plant-field-3d .pf-partner{justify-self:start}#plant-field-3d .pf-results{padding-left:14px;padding-right:14px}#plant-field-3d .pf-import{margin-left:12px;margin-right:12px}#plant-field-3d .pf-camera-note{left:14px;bottom:16px}#plant-field-3d .pf-bottom{padding:10px 12px}#plant-field-3d .pf-zonebutton{padding:8px 12px}#plant-field-3d .pf-credit{padding:8px 14px}}
+    @media(pointer:coarse){#plant-field-3d .pf-label{min-width:44px;min-height:44px}#plant-field-3d .pf-iconbutton,#plant-field-3d .pf-phase,#plant-field-3d .pf-result,#plant-field-3d .pf-partner{min-height:44px}}
+  &lt;/style&gt;
+  &lt;header class=&quot;pf-header&quot;&gt;&lt;span class=&quot;pf-brand&quot;&gt;同质园&lt;/span&gt;&lt;span class=&quot;pf-demo&quot; id=&quot;pf-layout-status&quot;&gt;右侧盆位核对&lt;/span&gt;&lt;button type=&quot;button&quot; class=&quot;pf-export&quot; id=&quot;pf-export&quot;&gt;保存PNG&lt;/button&gt;&lt;/header&gt;
+  &lt;div class=&quot;pf-toolbar&quot;&gt;
+    &lt;div class=&quot;pf-searchbox&quot; role=&quot;search&quot; aria-label=&quot;搜索植株&quot;&gt;&lt;span aria-hidden=&quot;true&quot;&gt;⌕&lt;/span&gt;&lt;input id=&quot;pf-search&quot; type=&quot;text&quot; aria-label=&quot;输入植株编号定位&quot; data-tooltip=&quot;定位光圈不改变处理颜色&quot; placeholder=&quot;输入编号定位&quot; autocomplete=&quot;off&quot;&gt;&lt;/div&gt;
+    &lt;select id=&quot;pf-phase&quot; class=&quot;pf-phase cursor-interaction&quot; aria-label=&quot;操作时段&quot;&gt;&lt;option value=&quot;morning&quot;&gt;明早&lt;/option&gt;&lt;option value=&quot;evening&quot;&gt;今晚&lt;/option&gt;&lt;/select&gt;
+    &lt;button id=&quot;pf-import-toggle&quot; class=&quot;pf-iconbutton cursor-interaction&quot; type=&quot;button&quot; aria-label=&quot;导入当天任务表&quot; aria-expanded=&quot;false&quot; data-tooltip=&quot;导入任务表&quot; hidden&gt;&lt;i data-lucide=&quot;upload&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;pf-results&quot; id=&quot;pf-results&quot; hidden&gt;&lt;span id=&quot;pf-searchmsg&quot; class=&quot;pf-searchmsg&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;&lt;/span&gt;&lt;div id=&quot;pf-result-buttons&quot; style=&quot;display:contents&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;section class=&quot;pf-import&quot; id=&quot;pf-import&quot; aria-label=&quot;导入任务表&quot; hidden&gt;
+    &lt;div class=&quot;pf-import-top&quot;&gt;&lt;span&gt;当天任务表&lt;/span&gt;&lt;span style=&quot;font-size:11px;color:var(--pf-muted)&quot;&gt;本机读取 · 不上传&lt;/span&gt;&lt;/div&gt;
+    &lt;input type=&quot;file&quot; id=&quot;pf-file&quot; accept=&quot;.xlsx,.tsv,.txt&quot; aria-label=&quot;选择Excel或制表符文本任务表&quot;&gt;
+    &lt;div id=&quot;pf-preview&quot; class=&quot;pf-preview&quot; aria-live=&quot;polite&quot; hidden&gt;&lt;/div&gt;&lt;div id=&quot;pf-import-error&quot; class=&quot;pf-error&quot; role=&quot;alert&quot; hidden&gt;&lt;/div&gt;
+    &lt;button type=&quot;button&quot; id=&quot;pf-apply&quot; class=&quot;pf-apply cursor-interaction&quot; disabled&gt;应用任务&lt;/button&gt;
+  &lt;/section&gt;
+  &lt;div class=&quot;pf-stage&quot; id=&quot;pf-stage&quot;&gt;
+    &lt;canvas id=&quot;pf-canvas&quot; aria-label=&quot;第一片区右侧有架区实际编号预览。第一排最低、第三排最高；前两排中间留空，第三排连续。左右顺序按用户录入，间距依照片示意；其他区域待录入。&quot;&gt;&lt;/canvas&gt;
+    &lt;div class=&quot;pf-labels&quot; id=&quot;pf-labels&quot; aria-label=&quot;植株编号&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;pf-stagehead&quot;&gt;&lt;span id=&quot;pf-zonetitle&quot; class=&quot;pf-zonetitle&quot;&gt;第一片区 · 三排&lt;/span&gt;&lt;span id=&quot;pf-zoneinfo&quot; class=&quot;pf-zoneinfo&quot;&gt;有架 / 无架&lt;/span&gt;&lt;/div&gt;
+    &lt;span class=&quot;pf-annotation pf-frame-label&quot; id=&quot;pf-frame-label&quot;&gt;有架&lt;/span&gt;
+    &lt;span class=&quot;pf-annotation pf-frame-label&quot; id=&quot;pf-frame-label-2&quot; hidden&gt;有架&lt;/span&gt;
+    &lt;span class=&quot;pf-annotation pf-pole-label&quot; id=&quot;pf-pole-label&quot; hidden&gt;连接杆&lt;/span&gt;
+    &lt;span class=&quot;pf-annotation pf-greenhouse-label&quot; id=&quot;pf-greenhouse-label&quot;&gt;玻璃大棚&lt;/span&gt;
+    &lt;span class=&quot;pf-north&quot; aria-label=&quot;北方方向&quot;&gt;&lt;span id=&quot;pf-north-arrow&quot; class=&quot;pf-north-arrow&quot;&gt;↑&lt;/span&gt;北&lt;/span&gt;
+    &lt;span class=&quot;pf-annotation&quot; id=&quot;pf-row-0&quot;&gt;一排&lt;/span&gt;&lt;span class=&quot;pf-annotation&quot; id=&quot;pf-row-1&quot;&gt;二排&lt;/span&gt;&lt;span class=&quot;pf-annotation&quot; id=&quot;pf-row-2&quot;&gt;三排&lt;/span&gt;
+    &lt;span class=&quot;pf-annotation&quot; id=&quot;pf-pending-label&quot; style=&quot;color:#cfb68b&quot; hidden&gt;左段编号待确认&lt;/span&gt;
+    &lt;span class=&quot;pf-pairtag&quot; id=&quot;pf-pairtag&quot; hidden&gt;&lt;/span&gt;
+    &lt;div class=&quot;pf-camera-note&quot; id=&quot;pf-camera-note&quot;&gt;拖动旋转 · 滚动缩放&lt;/div&gt;
+    &lt;button class=&quot;pf-iconbutton pf-home cursor-interaction&quot; id=&quot;pf-home&quot; type=&quot;button&quot; aria-label=&quot;复位视角&quot; data-tooltip=&quot;复位视角&quot;&gt;&lt;span aria-hidden=&quot;true&quot;&gt;↺&lt;/span&gt;&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;pf-legend&quot; id=&quot;pf-task-legend&quot; aria-label=&quot;任务颜色&quot; hidden&gt;&lt;span&gt;&lt;i style=&quot;--mark:var(--pf-red)&quot;&gt;&lt;/i&gt;异交母本&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;--mark:var(--pf-yellow)&quot;&gt;&lt;/i&gt;供粉&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;--mark:var(--pf-green)&quot;&gt;&lt;/i&gt;自主&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;--mark:#dce5eb&quot;&gt;&lt;/i&gt;开放&lt;/span&gt;&lt;span&gt;&lt;i style=&quot;--mark:var(--pf-blue)&quot;&gt;&lt;/i&gt;采样&lt;/span&gt;&lt;span id=&quot;pf-hand-legend&quot; hidden&gt;&lt;i style=&quot;--mark:var(--pf-purple)&quot;&gt;&lt;/i&gt;人工自交&lt;/span&gt;&lt;/div&gt;
+  &lt;nav class=&quot;pf-bottom&quot; aria-label=&quot;片区切换，第二片区在第一片区北侧&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;pf-zonebutton cursor-interaction&quot; data-zone=&quot;0&quot; aria-pressed=&quot;true&quot;&gt;&lt;small&gt;南&lt;/small&gt;第一片区&lt;/button&gt;&lt;button type=&quot;button&quot; class=&quot;pf-zonebutton cursor-interaction&quot; data-zone=&quot;1&quot; aria-pressed=&quot;false&quot;&gt;&lt;small&gt;北&lt;/small&gt;第二片区&lt;/button&gt;&lt;/nav&gt;
+  &lt;div class=&quot;pf-detail&quot; id=&quot;pf-detail&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
+  &lt;footer class=&quot;pf-credit&quot;&gt;&lt;span id=&quot;pf-source&quot;&gt;盆位核对 · 未载入当日任务&lt;/span&gt;&lt;span&gt;左右顺序已录入 · 间距示意&lt;/span&gt;&lt;/footer&gt;
+  &lt;dialog id=&quot;pf-export-dialog&quot; class=&quot;pf-export-dialog&quot; aria-label=&quot;保存盆位图片&quot;&gt;&lt;div class=&quot;pf-export-actions&quot;&gt;&lt;span&gt;微信内可长按图片保存&lt;/span&gt;&lt;a id=&quot;pf-export-download&quot; download=&quot;同质园盆位.png&quot;&gt;下载PNG&lt;/a&gt;&lt;button type=&quot;button&quot; class=&quot;pf-export&quot; id=&quot;pf-export-close&quot;&gt;关闭&lt;/button&gt;&lt;/div&gt;&lt;img id=&quot;pf-export-image&quot; alt=&quot;当前片区的盆位、处理颜色和异交配对示意图&quot;&gt;&lt;/dialog&gt;
+  &lt;script&gt;
+  (()=&gt;{
+    const root=document.getElementById('plant-field-3d');
+    const $=s=&gt;root.querySelector(s),stage=$('#pf-stage'),canvas=$('#pf-canvas');
+    const escape=s=&gt;String(s).replace(/[&amp;&lt;&gt;&quot;']/g,c=&gt;({'&amp;':'&amp;amp;','&lt;':'&amp;lt;','&gt;':'&amp;gt;','&quot;':'&amp;quot;',&quot;'&quot;:'&amp;#39;'}[c]));
+    const clean=s=&gt;String(s??'').normalize('NFKC').trim();
+    let tasks=[];
+    const publishedTasks={&quot;date&quot;:null,&quot;label&quot;:&quot;盆位核对 · 尚未发布当天任务&quot;,&quot;tasks&quot;:[]};
+    // Row numbers follow the user: first = south/lowest, third = north/highest.
+    // Only this right-hand bay is entered. No illustrative ID is assigned elsewhere.
+    const areas=['第一片区','第二片区'],centers=[{x:0,z:0},{x:0,z:-25}],columns=12,spacing=1.62,rowSpacing=1.45,rowElevations=[0,.5,1],frameDepth=rowSpacing*1.5-.15,layout=new Map(),pots=[];
+    const frameRegions=[[{left:-10,right:-3.8},{left:2,right:10}],[{left:-2,right:10}]];
+    const isFramed=p=&gt;frameRegions[p.zone].some(f=&gt;p.x-centers[p.zone].x&gt;=f.left&amp;&amp;p.x-centers[p.zone].x&lt;=f.right);
+    const actualRows=[
+      {ids:['59','56','49','224','36','1166','1131'],xs:[2.55,3.45,4.35,5.25,7.2,8.35,9.5],groups:[0,0,0,0,1,1,1]},
+      {ids:['157','542','792','46','298','227','922','78'],xs:[2.55,3.45,4.35,5.25,6.8,7.7,8.6,9.5],groups:[0,0,0,0,1,1,1,1]},
+      {ids:['515','694','82','47','320','287','207','79'],xs:[2.55,3.55,4.55,5.55,6.55,7.55,8.55,9.55],groups:[0,0,0,0,0,0,0,0]}
+    ];
+    const pendingSecondRow=false;
+    actualRows.forEach((data,row)=&gt;data.ids.forEach((id,col)=&gt;{const p={id,zone:0,area:areas[0],section:'右侧有架区',slot:row*12+col,row,col,group:data.groups[col],x:data.xs[col],y:rowElevations[row],z:(1-row)*rowSpacing,confirmed:!!id};pots.push(p);if(id){if(layout.has(id))throw Error('重复盆位编号：'+id);layout.set(id,p);}}));
+    const colors={wire:[.64,.83,.94,1],grid:[.25,.31,.37,.46],frame:[.47,.57,.64,.72],cross:[.95,.57,.59,1],donor:[.90,.76,.51,1],auto:[.56,.82,.65,1],open:[.85,.90,.94,1],measure:[.53,.75,.96,1],hand:[.77,.67,.92,1],other:[.45,.57,.66,1]};
+    const settings={frameHeight:3.35,duration:1900,brightness:1,greenhouse:true};
+    let phase='morning',queryIds=[],selected='56',activePair='',currentZone=0,pending=null,taskLabel='盆位核对 · 未载入当日任务';
+    if(typeof publishedTasks!=='undefined'){tasks=publishedTasks.tasks;taskLabel=publishedTasks.label+(publishedTasks.date?' · '+publishedTasks.date:'');}
+    let camera={cx:0,cz:0,yaw:.43,pitch:.69,distance:31},flight=null,frameRequested=false,mvp=null,cssWidth=736,cssHeight=560,sceneBuffers=null,lastSavedSignature='';
+    const motion=matchMedia('(prefers-reduced-motion: reduce)');
+    function kind(t){const s=t.morning;if(/接\s*\d+\s*花粉/.test(s))return'cross';if(/给\s*\d+\s*供粉/.test(s))return'donor';if(s.includes('自主自交'))return'auto';if(s.includes('人工自交'))return'hand';if(s.includes('自然开放'))return'open';if(/摘取|测量|采样/.test(s))return'measure';return'other';}
+    function pairsOf(ts){const pairs=new Map();for(const t of ts){let m=t.morning.match(/接\s*(\d+)\s*花粉/);if(m){const key=m[1]+'&gt;'+t.id;pairs.set(key,{key,donor:m[1],mother:t.id});}m=t.morning.match(/给\s*(\d+)\s*供粉/);if(m){const key=t.id+'&gt;'+m[1];if(!pairs.has(key))pairs.set(key,{key,donor:t.id,mother:m[1]});}}return [...pairs.values()];}
+    const records=id=&gt;tasks.filter(t=&gt;t.id===id);
+    const getPair=()=&gt;pairsOf(tasks).find(p=&gt;p.key===activePair);
+    const rgba=(c,a)=&gt;[c[0],c[1],c[2],a],mix=(a,b,t)=&gt;a+(b-a)*t;
+    const ease=t=&gt;t*t*(3-2*t),clamp=(v,a,b)=&gt;Math.max(a,Math.min(b,v));
+    const distanceForWidth=(zone=currentZone)=&gt;Math.max(zone===0?13.5:29,(zone===0?5.9:15)/(Math.tan(38*Math.PI/360)*(cssWidth/cssHeight)));
+    const defaultCamera=zone=&gt;({cx:zone===0?6.05:centers[zone].x,cz:centers[zone].z,yaw:zone===0?.08:.43,pitch:zone===0?.85:.69,distance:distanceForWidth(zone)});
+    function restore(s){const p=s?.privateContent??s;if(![2,3,4,5].includes(p?.version))return false;if(['morning','evening'].includes(p.phase))phase=p.phase;if(p.version===5&amp;&amp;Array.isArray(p.queryIds))queryIds=p.queryIds.map(String).filter(x=&gt;/^\d+$/.test(x)).slice(0,300);if(layout.has(String(p.selected)))selected=String(p.selected);if(p.version===5&amp;&amp;typeof p.activePair==='string')activePair=p.activePair;currentZone=p.version===5&amp;&amp;[0,1].includes(p.zone)?p.zone:0;camera=defaultCamera(currentZone);if(p.version===5&amp;&amp;typeof p.greenhouse==='boolean')settings.greenhouse=p.greenhouse;if(p.version===5&amp;&amp;p.camera&amp;&amp;['cx','cz','yaw','pitch','distance'].every(k=&gt;Number.isFinite(p.camera[k]))){camera={cx:clamp(p.camera.cx,-20,20),cz:clamp(p.camera.cz,-45,10),yaw:p.camera.yaw,pitch:clamp(p.camera.pitch,.23,1.43),distance:clamp(p.camera.distance,9,85)};}return true;}
+    function save(){const privateContent={version:5,selected,phase,activePair,queryIds,zone:currentZone,greenhouse:settings.greenhouse,camera:{...(flight?flight.target:camera)}};lastSavedSignature=JSON.stringify(privateContent);try{window.openai?.setWidgetState?.({modelContent:{version:5,selectedPlant:selected,phase,selectedPair:activePair,filterPlantIds:queryIds,zone:areas[currentZone],positions:'partial-real',section:'第一片区右侧有架区',confirmedPlants:layout.size,pendingSecondRow,view:'3d-wireframe',arrangement:'zone2-north-of-zone1',firstZoneFrames:2,roofConnectingPoles:2,greenhouseNorth:settings.greenhouse,terraces:'row1-south-low-row3-north-high'},privateContent})?.catch(()=&gt;{});}catch(e){}}
+    if(!restore(window.openai?.widgetState))camera=defaultCamera(0);
+    window.addEventListener('openai:set_globals',event=&gt;{const state=event.detail?.globals?.widgetState;if(state&amp;&amp;JSON.stringify(state.privateContent??state)===lastSavedSignature)return;if(restore(state)){flight=null;$('#pf-search').value=queryIds.join(' ');refresh();requestRender();}});
+
+    // Model geometry and camera are genuinely three-dimensional; no external libraries.
+    function normal(v){const d=Math.hypot(...v)||1;return v.map(x=&gt;x/d);}
+    const sub=(a,b)=&gt;a.map((x,i)=&gt;x-b[i]);
+    const cross=(a,b)=&gt;[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+    const dot=(a,b)=&gt;a.reduce((s,x,i)=&gt;s+x*b[i],0);
+    function multiply(a,b){const out=new Float32Array(16);for(let c=0;c&lt;4;c++)for(let r=0;r&lt;4;r++)for(let k=0;k&lt;4;k++)out[c*4+r]+=a[k*4+r]*b[c*4+k];return out;}
+    function viewMatrix(eye,at){const f=normal(sub(at,eye)),s=normal(cross(f,[0,1,0])),u=cross(s,f);return new Float32Array([s[0],u[0],-f[0],0,s[1],u[1],-f[1],0,s[2],u[2],-f[2],0,-dot(s,eye),-dot(u,eye),dot(f,eye),1]);}
+    function projection(){const f=1/Math.tan(38*Math.PI/360),aspect=cssWidth/cssHeight,n=.1,far=140;return new Float32Array([f/aspect,0,0,0,0,f,0,0,0,0,(far+n)/(n-far),-1,0,0,2*far*n/(n-far),0]);}
+    function updateCamera(){const cp=Math.cos(camera.pitch),eye=[camera.cx+Math.sin(camera.yaw)*cp*camera.distance,Math.sin(camera.pitch)*camera.distance,camera.cz+Math.cos(camera.yaw)*cp*camera.distance];mvp=multiply(projection(),viewMatrix(eye,[camera.cx,1.2,camera.cz-1.2]));root.dataset.cameraHeight=eye[1].toFixed(2);root.dataset.cameraX=camera.cx.toFixed(2);root.dataset.cameraZ=camera.cz.toFixed(2);}
+    function project(p){if(!mvp)return{x:0,y:0,visible:false,depth:0};const q=[0,0,0,0];for(let r=0;r&lt;4;r++)q[r]=mvp[r]*p[0]+mvp[4+r]*p[1]+mvp[8+r]*p[2]+mvp[12+r];const x=(q[0]/q[3]*.5+.5)*cssWidth,y=(-q[1]/q[3]*.5+.5)*cssHeight;return{x,y,depth:q[3],visible:q[3]&gt;.1&amp;&amp;q[2]/q[3]&lt;1&amp;&amp;x&gt;12&amp;&amp;x&lt;cssWidth-12&amp;&amp;y&gt;30&amp;&amp;y&lt;cssHeight-25};}
+    let gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false}),ctx=null,program=null,glPosition=null,glColor=null,glMatrix=null,glBrightness=null;
+    if(gl){
+      const compile=(type,source)=&gt;{const shader=gl.createShader(type);gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(shader));return shader;};
+      program=gl.createProgram();gl.attachShader(program,compile(gl.VERTEX_SHADER,'attribute vec3 aPosition;attribute vec4 aColor;uniform mat4 uMatrix;varying vec4 vColor;void main(){gl_Position=uMatrix*vec4(aPosition,1.0);vColor=aColor;}'));gl.attachShader(program,compile(gl.FRAGMENT_SHADER,'precision mediump float;varying vec4 vColor;uniform float uBrightness;void main(){gl_FragColor=vec4(vColor.rgb*uBrightness,vColor.a);}'));gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));glPosition=gl.getAttribLocation(program,'aPosition');glColor=gl.getAttribLocation(program,'aColor');glMatrix=gl.getUniformLocation(program,'uMatrix');glBrightness=gl.getUniformLocation(program,'uBrightness');gl.enable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);root.dataset.renderer='webgl';
+    }else{ctx=canvas.getContext('2d');root.dataset.renderer='perspective-canvas';}
+    let flatLines=[],flatTriangles=[],flatGlass=[];
+    function buildScene(){
+      const lines=[],triangles=[],glass=[];flatLines=[];flatTriangles=[];flatGlass=[];
+      function vertex(arr,p,c){arr.push(...p,...c);}
+      function line(a,b,c){vertex(lines,a,c);vertex(lines,b,c);flatLines.push([a,b,c]);}
+      function triangle(a,b,c,color){vertex(triangles,a,color);vertex(triangles,b,color);vertex(triangles,c,color);flatTriangles.push([a,b,c,color]);}
+      function rect(x0,z0,x1,z1,y,c){triangle([x0,y,z0],[x1,y,z0],[x1,y,z1],c);triangle([x0,y,z0],[x1,y,z1],[x0,y,z1],c);}
+      function quad(a,b,c,d,color){triangle(a,b,c,color);triangle(a,c,d,color);}
+      function pane(a,b,c,d,color){for(const p of [a,b,c,a,c,d])vertex(glass,p,color);flatGlass.push([a,b,c,color],[a,c,d,color]);}
+      function dashed(a,b,c,unit=.25){const d=sub(b,a),len=Math.hypot(...d),n=Math.ceil(len/unit);for(let i=0;i&lt;n;i+=2){const from=i/n,to=Math.min((i+1)/n,1);line(a.map((v,k)=&gt;v+d[k]*from),a.map((v,k)=&gt;v+d[k]*to),c);}}
+      function ring(x,z,y,r,c,segments=40){for(let i=0;i&lt;segments;i++){const a=2*Math.PI*i/segments,b=2*Math.PI*(i+1)/segments;line([x+r*Math.cos(a),y,z+r*Math.sin(a)],[x+r*Math.cos(b),y,z+r*Math.sin(b)],c);}}
+      for(let zone=0;zone&lt;2;zone++){
+        if(zone!==currentZone&amp;&amp;!flight?.transfer)continue;
+        const {x:cx,z:cz}=centers[zone],stepLeft=cx-10.7,stepRight=cx+10.7;
+        // Three broad landings. The pots sit on their own level, not on a flat overlay.
+        rect(stepLeft-.15,cz-rowSpacing*1.5-.2,stepRight+.15,cz+rowSpacing*1.5+.2,-.06,[.06,.077,.095,1]);
+        for(let band=0;band&lt;3;band++){
+          const row=2-band,z=cz+(1-row)*rowSpacing,y=rowElevations[row],back=z-rowSpacing/2,front=z+rowSpacing/2,next=rowElevations[row-1]??-.055;
+          rect(stepLeft,back,stepRight,front,y,[.087+row*.003,.11+row*.003,.135+row*.003,1]);
+          quad([stepLeft,y,front],[stepRight,y,front],[stepRight,next,front],[stepLeft,next,front],[.057,.075,.095,1]);
+          for(const x of [stepLeft,stepRight])quad([x,-.055,back],[x,y,back],[x,y,front],[x,-.055,front],[.065,.085,.106,1]);
+          line([stepLeft,y+.012,front],[stepRight,y+.012,front],[.44,.55,.62,.61]);
+          for(const x of [stepLeft,stepRight]){line([x,y+.012,back],[x,y+.012,front],[.38,.48,.56,.56]);line([x,y,front],[x,next,front],[.42,.52,.60,.57]);}
+          for(let x=-10.5;x&lt;=10.6;x+=.81)line([cx+x,y+.005,back+.05],[cx+x,y+.005,front-.05],rgba(colors.grid,.12));
+          for(let dz=-rowSpacing*.4;dz&lt;rowSpacing*.45;dz+=rowSpacing/3)line([stepLeft+.05,y+.005,z+dz],[stepRight-.05,y+.005,z+dz],rgba(colors.grid,.12));
+        }
+        const front=cz+frameDepth,back=cz-frameDepth,h=settings.frameHeight,frame=colors.frame;
+        for(const region of frameRegions[zone]){
+          const left=cx+region.left,right=cx+region.right;
+          for(const z of [back,front]){const y=z===back?rowElevations[2]:rowElevations[0];dashed([left,y+.04,z],[right,y+.04,z],frame);dashed([left,h,z],[right,h,z],frame);for(const x of [left,right])dashed([x,y+.04,z],[x,h,z],frame);}
+          for(const x of [left,right]){dashed([x,h,back],[x,h,front],frame);for(let row=0;row&lt;3;row++){const z=cz+(1-row)*rowSpacing,y=rowElevations[row],z0=Math.max(back,z-rowSpacing/2),z1=Math.min(front,z+rowSpacing/2);dashed([x,y+.04,z0],[x,y+.04,z1],rgba(frame,.6));if(row&gt;0)dashed([x,y+.04,z1],[x,rowElevations[row-1]+.04,z1],rgba(frame,.6));}}
+          for(let row=0;row&lt;3;row++){const z=cz+(1-row)*rowSpacing,y=rowElevations[row];rect(left,Math.max(back,z-rowSpacing/2),right,Math.min(front,z+rowSpacing/2),y+.009,[.13,.18,.21,.13]);dashed([left,h,z],[right,h,z],rgba(frame,.5));for(const p of pots){if(p.zone===zone&amp;&amp;p.row===row&amp;&amp;p.x&gt;left&amp;&amp;p.x&lt;right)dashed([p.x,y+.69,z],[p.x,h,z],[.39,.48,.55,.22],.16);}}
+        }
+        if(zone===0){
+          // Exactly two overhead connecting poles. The gap has no frame volume,
+          // ground shading, extra legs, or intermediate transverse beams.
+          const from=cx+frameRegions[0][0].right,to=cx+frameRegions[0][1].left;
+          for(const z of [back,front])dashed([from,h,z],[to,h,z],[.57,.67,.74,.82],.38);
+        }
+        if(settings.greenhouse){
+          // A restrained glasshouse sits immediately north of each three-tier strip.
+          // Its solid mullions remain visually distinct from the dashed plant scaffold.
+          const left=cx-11.15,right=cx+11.15,south=cz-rowSpacing*1.5-.25,north=south-5.2,ridge=(south+north)/2,eave=4.85,peak=6.2;
+          const outline=[.50,.63,.70,.58],mullion=[.44,.57,.65,.39],tint=[.27,.46,.55,.065];
+          pane([left,0,north],[right,0,north],[right,eave,north],[left,eave,north],tint);
+          pane([left,0,south],[left,0,north],[left,eave,north],[left,eave,south],tint);
+          pane([right,0,north],[right,0,south],[right,eave,south],[right,eave,north],tint);
+          pane([left,eave,north],[right,eave,north],[right,peak,ridge],[left,peak,ridge],[.29,.48,.56,.065]);
+          pane([left,peak,ridge],[right,peak,ridge],[right,eave,south],[left,eave,south],[.27,.45,.54,.075]);
+          pane([left,0,south],[right,0,south],[right,eave,south],[left,eave,south],tint);
+          for(const z of [south,north]){for(const y of [0,eave])line([left,y,z],[right,y,z],outline);for(const y of [1.6,3.2])line([left,y,z],[right,y,z],mullion);}
+          line([left,peak,ridge],[right,peak,ridge],outline);
+          for(let i=0;i&lt;=12;i++){const x=mix(left,right,i/12),c=i===0||i===12?outline:mullion;for(const z of [south,north])line([x,0,z],[x,eave,z],c);line([x,eave,north],[x,peak,ridge],c);line([x,peak,ridge],[x,eave,south],c);}
+          for(const x of [left,right]){line([x,0,north],[x,0,south],outline);for(const y of [1.6,3.2,eave])line([x,y,north],[x,y,south],mullion);line([x,0,ridge],[x,peak,ridge],mullion);}
+          for(const t of [.5]){const zn=mix(north,ridge,t),zs=mix(south,ridge,t),y=mix(eave,peak,t);line([left,y,zn],[right,y,zn],mullion);line([left,y,zs],[right,y,zs],mullion);}
+          // Two slightly open vent panels recall the reference photo without adding detail noise.
+          for(const col of [3,8]){const x0=mix(left,right,col/12),x1=mix(left,right,(col+1)/12),y0=2.45,y1=3.9,z=south+.52;for(const x of [x0,x1]){line([x,y1,south],[x,y0,z],outline);}line([x0,y0,z],[x1,y0,z],outline);line([x0,y1,south],[x1,y1,south],outline);}
+        }
+      }
+      const pair=getPair(),filter=new Set(queryIds);
+      for(const p of pots){
+        if(p.zone!==currentZone&amp;&amp;!flight?.transfer)continue;
+        const task=records(p.id)[0],category=task?kind(task):'other',related=pair&amp;&amp;(p.id===pair.donor||p.id===pair.mother),matched=filter.size===0||filter.has(p.id),dim=false;
+        const a=p.id?(dim?.16:.88):.2,wire=rgba(colors.wire,a),taskColor=rgba(colors[category],dim?.12:1),x=p.x,z=p.z;
+        const rt=.43,rb=.275,top=p.y+.64,bottom=p.y+.055;
+        if(p.id){for(let i=0;i&lt;16;i++){const t=i/16*2*Math.PI,t2=(i+1)/16*2*Math.PI,s=.86+.14*Math.cos(t-.5),c=[.093*s,.134*s,.167*s,1];const at=[x+rt*Math.cos(t),top,z+rt*Math.sin(t)],bt=[x+rb*Math.cos(t),bottom,z+rb*Math.sin(t)],at2=[x+rt*Math.cos(t2),top,z+rt*Math.sin(t2)],bt2=[x+rb*Math.cos(t2),bottom,z+rb*Math.sin(t2)];triangle(at,bt,bt2,c);triangle(at,bt2,at2,c);}}
+        ring(x,z,top,rt,wire);ring(x,z,top-.065,rt-.012,rgba(wire,wire[3]*.55));ring(x,z,bottom,rb,rgba(wire,wire[3]*.65));
+        for(let i=0;i&lt;8;i++){const t=i/8*2*Math.PI;line([x+rt*Math.cos(t),top,z+rt*Math.sin(t)],[x+rb*Math.cos(t),bottom,z+rb*Math.sin(t)],rgba(wire,wire[3]*.65));}
+        if(task){ring(x,z,top+.014,rt+.012,rgba(taskColor,.92));line([x-.11,p.y+.07,z+.56],[x+.11,p.y+.07,z+.56],taskColor);}
+        if(p.id&amp;&amp;(p.id===selected||related||filter.has(p.id))){const located=p.id===selected||filter.has(p.id);ring(x,z,p.y+.025,.59,located?[.87,.94,1,.95]:[.85,.72,.5,.75]);ring(x,z,p.y+.03,.66,located?[.68,.84,.96,.23]:[.8,.7,.5,.17]);}
+      }
+      if(pair){const a=layout.get(pair.donor),b=layout.get(pair.mother);if(a&amp;&amp;b){let previous=null;const same=a.zone===b.zone,raise=same?2.25:5;const points=[];for(let i=0;i&lt;=60;i++){const t=i/60,p=[mix(a.x,b.x,t),mix(a.y,b.y,t)+.82+Math.sin(Math.PI*t)*raise,mix(a.z,b.z,t)];if(previous)line(previous,p,[.91,.78,.55,.88]);previous=p;points.push(p);}const end=points[60],dir=normal(sub(end,points[56])),side=normal(cross(dir,[0,1,0]));for(const sign of [-1,1])line(end,end.map((v,k)=&gt;v-dir[k]*.36+side[k]*.17*sign),[1,.86,.62,1]);}}
+      if(gl){if(sceneBuffers){for(const key of ['line','triangle','glass'])gl.deleteBuffer(sceneBuffers[key]);}const make=data=&gt;{const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);return b;};sceneBuffers={line:make(lines),triangle:make(triangles),glass:make(glass),lineCount:lines.length/7,triangleCount:triangles.length/7,glassCount:glass.length/7};}
+      root.dataset.pots=String(pots.length);root.dataset.taskPlants=String(layout.size);root.dataset.pairs=String(pairsOf(tasks).length);root.dataset.columns=String(columns);root.dataset.frames='2,1';root.dataset.roofPoles='2';root.dataset.arrangement='zone2-north-of-zone1';root.dataset.terraces='row1-south-low-row3-north-high';root.dataset.rowElevations=rowElevations.join(',');root.dataset.greenhouses=settings.greenhouse?'2':'0';root.dataset.pendingSecondRow=String(pendingSecondRow);root.dataset.positions='partial-real';
+    }
+    function drawScene(){
+      updateCamera();
+      if(gl){gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);gl.uniformMatrix4fv(glMatrix,false,mvp);gl.uniform1f(glBrightness,settings.brightness);const draw=(buffer,n,type)=&gt;{gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.enableVertexAttribArray(glPosition);gl.enableVertexAttribArray(glColor);gl.vertexAttribPointer(glPosition,3,gl.FLOAT,false,28,0);gl.vertexAttribPointer(glColor,4,gl.FLOAT,false,28,12);gl.drawArrays(type,0,n);};if(sceneBuffers){draw(sceneBuffers.triangle,sceneBuffers.triangleCount,gl.TRIANGLES);gl.depthMask(false);draw(sceneBuffers.glass,sceneBuffers.glassCount,gl.TRIANGLES);gl.depthMask(true);draw(sceneBuffers.line,sceneBuffers.lineCount,gl.LINES);}}
+      else if(ctx){const ratio=canvas.width/cssWidth;ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,cssWidth,cssHeight);const color=c=&gt;'rgba('+c.slice(0,3).map(x=&gt;Math.round(x*255*settings.brightness)).join(',')+','+c[3]+')';const faces=[...flatTriangles,...flatGlass].map(t=&gt;({t,p:t.slice(0,3).map(project)})).filter(f=&gt;f.p.every(p=&gt;p.depth&gt;0)).sort((a,b)=&gt;b.p.reduce((s,p)=&gt;s+p.depth,0)-a.p.reduce((s,p)=&gt;s+p.depth,0));for(const {t,p}of faces){ctx.beginPath();p.forEach((v,i)=&gt;i?ctx.lineTo(v.x,v.y):ctx.moveTo(v.x,v.y));ctx.closePath();ctx.fillStyle=color(t[3]);ctx.fill();}for(const [a,b,c]of flatLines){const aa=project(a),bb=project(b);if(aa.depth&lt;=0||bb.depth&lt;=0)continue;ctx.beginPath();ctx.moveTo(aa.x,aa.y);ctx.lineTo(bb.x,bb.y);ctx.strokeStyle=color(c);ctx.lineWidth=1;ctx.stroke();}}
+      placeLabels();
+    }
+    function position(el,p){const s=project(p);el.hidden=!s.visible;if(s.visible){el.style.left=s.x+'px';el.style.top=s.y+'px';}return s;}
+    function placeLabels(){
+      const filter=new Set(queryIds),pair=getPair(),occupied=[];const labels=[...$('#pf-labels').children].map(el=&gt;{const p=layout.get(el.dataset.id);return{el,p,s:project([p.x,p.y+.97,p.z]),priority:p.id===selected?10:filter.has(p.id)?8:pair&amp;&amp;(p.id===pair.donor||p.id===pair.mother)?6:1};}).sort((a,b)=&gt;b.priority-a.priority||a.s.depth-b.s.depth);
+      for(const {el,p,s,priority}of labels){let show=s.visible&amp;&amp;(p.zone===currentZone||flight?.phase==='transfer')&amp;&amp;(!flight||flight.phase==='land'||s.depth&lt;85);if(show){el.hidden=false;const w=el.offsetWidth,h=el.offsetHeight;const box={x:s.x-w/2,y:s.y-h/2,w,h};if(s.x&lt;w/2+6||s.x&gt;cssWidth-w/2-6||s.y&lt;63||s.y&gt;cssHeight-45)show=false;if(show&amp;&amp;occupied.some(b=&gt;box.x&lt;b.x+b.w+2&amp;&amp;box.x+box.w+2&gt;b.x&amp;&amp;box.y&lt;b.y+b.h+2&amp;&amp;box.y+box.h+2&gt;b.y))show=false;if(show){occupied.push(box);el.style.left=s.x+'px';el.style.top=s.y+'px';el.style.zIndex=String(priority);}}
+        el.hidden=!show;
+      }
+      const center=centers[currentZone],flying=!!flight&amp;&amp;flight.phase!=='land',regions=frameRegions[currentZone];
+      for(let i=0;i&lt;2;i++){const el=$(i?'#pf-frame-label-2':'#pf-frame-label'),region=regions[i];if(!region){el.hidden=true;continue;}el.textContent=currentZone===0&amp;&amp;i===1?'右侧有架':'待录入';position(el,[center.x+(region.left+region.right)/2,settings.frameHeight+.38,center.z-frameDepth]);el.hidden=flying||el.hidden;}
+      const pole=$('#pf-pole-label');if(currentZone===0){position(pole,[center.x-.9,settings.frameHeight+.38,center.z-frameDepth]);pole.hidden=flying||pole.hidden;}else pole.hidden=true;
+      const greenhouseLabel=$('#pf-greenhouse-label');position(greenhouseLabel,[center.x+(currentZone===0?6:0),5.35,center.z-rowSpacing*1.5-.25]);greenhouseLabel.hidden=!settings.greenhouse||flying||greenhouseLabel.hidden;
+      const northFrom=project([camera.cx,0,camera.cz]),northTo=project([camera.cx,0,camera.cz-1]);$('#pf-north-arrow').style.transform='rotate('+(Math.atan2(northTo.y-northFrom.y,northTo.x-northFrom.x)*180/Math.PI+90)+'deg)';
+      for(let r=0;r&lt;3;r++){const el=$('#pf-row-'+r);el.textContent=['第一排 · 低','第二排','第三排 · 高'][r];position(el,[center.x+(currentZone===0?1.1:-10.5),rowElevations[r]+.18,center.z+(1-r)*rowSpacing]);el.hidden=flying||el.hidden;}
+      const pendingLabel=$('#pf-pending-label');position(pendingLabel,[3.85,.99,0]);pendingLabel.hidden=!pendingSecondRow||currentZone!==0||flying||pendingLabel.hidden;
+      const tag=$('#pf-pairtag');if(pair&amp;&amp;!flying){const a=layout.get(pair.donor),b=layout.get(pair.mother);if(a&amp;&amp;b){tag.textContent=pair.donor+' → '+pair.mother;const anchor=position(tag,[(a.x+b.x)/2,(a.y+b.y)/2+.98+(a.zone===b.zone?2.25:5),(a.z+b.z)/2]);if(!tag.hidden){const w=tag.offsetWidth,h=tag.offsetHeight;let placed=false;for(const [dx,dy]of [[0,0],[0,-34],[0,34],[0,-64],[0,64],[50,0],[-50,0]]){const x=clamp(anchor.x+dx,w/2+8,cssWidth-w/2-8),y=anchor.y+dy,box={x:x-w/2,y:y-h/2,w,h};if(y&lt;75||y&gt;cssHeight-55)continue;if(occupied.some(b=&gt;box.x&lt;b.x+b.w+4&amp;&amp;box.x+box.w+4&gt;b.x&amp;&amp;box.y&lt;b.y+b.h+4&amp;&amp;box.y+box.h+4&gt;b.y))continue;tag.style.left=x+'px';tag.style.top=y+'px';placed=true;break;}tag.hidden=!placed;}}else tag.hidden=true;}else tag.hidden=true;
+    }
+    function requestRender(){if(frameRequested)return;frameRequested=true;requestAnimationFrame(t=&gt;{frameRequested=false;if(flight)advanceFlight(t);drawScene();if(flight)requestRender();});}
+    function cameraMix(a,b,t){const out={};for(const key of ['cx','cz','yaw','pitch','distance'])out[key]=mix(a[key],b[key],ease(t));return out;}
+    function flyTo(zone,reset=false){
+      if(zone===currentZone&amp;&amp;!reset&amp;&amp;!flight)return;
+      const target=defaultCamera(zone),start={...camera},fromZone=currentZone;
+      if(layout.get(selected)?.zone!==zone){selected=queryIds.find(id=&gt;layout.get(id)?.zone===zone)??tasks.find(t=&gt;layout.get(t.id)?.zone===zone)?.id??'';activePair=pairsOf(tasks).find(p=&gt;p.donor===selected||p.mother===selected)?.key??'';}
+      currentZone=zone;root.dataset.zone=String(zone);root.querySelectorAll('[data-zone]').forEach(b=&gt;b.setAttribute('aria-pressed',String(Number(b.dataset.zone)===zone)));
+      if(motion.matches){camera=target;flight=null;root.dataset.flight='idle';refresh();save();return;}
+      const transfer=Math.hypot(start.cx-target.cx,start.cz-target.cz)&gt;3;
+      flight={start,target,fromZone,t0:performance.now(),duration:transfer?settings.duration:650,transfer,phase:transfer?'rise':'land'};root.dataset.flight=flight.phase;refresh();
+    }
+    function advanceFlight(now){
+      const f=flight;if(!f)return;const t=clamp((now-f.t0)/f.duration,0,1);if(!f.transfer){camera=cameraMix(f.start,f.target,t);}
+      else {const highA={...f.start,pitch:1.28,distance:Math.max(35,f.target.distance+10)},highB={...f.target,pitch:1.28,distance:Math.max(35,f.target.distance+10)};if(t&lt;.30){f.phase='rise';camera=cameraMix(f.start,highA,t/.30);}else if(t&lt;.70){f.phase='transfer';camera=cameraMix(highA,highB,(t-.30)/.40);}else {f.phase='land';camera=cameraMix(highB,f.target,(t-.70)/.30);}}
+      root.dataset.flight=f.phase;if(t&gt;=1){camera=f.target;flight=null;buildScene();root.dataset.flight='idle';updateHead();save();}
+    }
+    function updateHead(){$('#pf-zonetitle').textContent=flight?.transfer?areas[flight.fromZone]+' → '+areas[currentZone]:currentZone===0?'第一片区 · 右侧有架区':'第二片区';$('#pf-zoneinfo').textContent=flight?'视角转场':currentZone===0?'第一排最低 · 第三排最高':'盆位待录入';root.dataset.zone=String(currentZone);}
+    function refresh(){
+      if(!pairsOf(tasks).some(p=&gt;p.key===activePair))activePair='';
+      $('#pf-phase').value=phase;$('#pf-hand-legend').hidden=!tasks.some(t=&gt;kind(t)==='hand');$('#pf-task-legend').hidden=!tasks.length;$('#pf-source').textContent=taskLabel;$('#pf-layout-status').textContent=pendingSecondRow?'部分盆位待确认':layout.size+'株盆位已录入';
+      root.querySelectorAll('[data-zone]').forEach(b=&gt;b.setAttribute('aria-pressed',String(Number(b.dataset.zone)===currentZone)));
+      const group=$('#pf-labels'),pair=getPair(),filter=new Set(queryIds);group.replaceChildren();
+      for(const [id,p]of layout){const t=records(id)[0],k=t?kind(t):'other',c=colors[k],button=document.createElement('button');button.type='button';button.className='pf-label cursor-interaction';button.dataset.id=id;button.dataset.elevation=String(p.y);button.dataset.row=String(p.row+1);button.dataset.col=String(p.col+1);button.dataset.x=String(p.x);button.dataset.z=String(p.z);button.textContent=id;button.style.setProperty('--task-color','rgb('+c.slice(0,3).map(v=&gt;Math.round(v*255)).join(',')+')');button.setAttribute('aria-pressed',String(id===selected));button.setAttribute('aria-label',id+'号，'+p.area+'右侧有架区第'+(p.row+1)+'排左起第'+(p.col+1)+'株，'+['南侧低台阶','中间台阶','北侧高台阶'][p.row]+'，左右顺序已录入、间距示意，'+(t?'第'+t.flower+'朵，'+t[phase]:tasks.length?'当天无任务':'未载入当天任务'));if(pair&amp;&amp;(id===pair.donor||id===pair.mother))button.classList.add('pf-related');button.addEventListener('click',()=&gt;selectPlant(id));group.append(button);}
+      const results=$('#pf-results'),resultButtons=$('#pf-result-buttons');resultButtons.replaceChildren();results.hidden=!queryIds.length&amp;&amp;!$('#pf-search').value.trim();
+      const known=queryIds.filter(id=&gt;layout.has(id)),missing=queryIds.filter(id=&gt;!layout.has(id));$('#pf-searchmsg').textContent=queryIds.length?'定位 '+known.length+'/'+queryIds.length+(missing.length?' · 未录入 '+missing.join('、'):''):'';
+      for(const id of known){const b=document.createElement('button');b.type='button';b.className='pf-result cursor-interaction';b.textContent=id;b.setAttribute('aria-pressed',String(id===selected));b.setAttribute('aria-label','查看'+id+'号的盆位');b.addEventListener('click',()=&gt;selectPlant(id));resultButtons.append(b);}
+      renderDetail();updateHead();buildScene();requestRender();
+    }
+    function renderDetail(){
+      const p=layout.get(selected),detail=$('#pf-detail');if(!p){detail.innerHTML='&lt;span class=&quot;pf-position&quot;&gt;'+(currentZone===1?'第二片区盆位待录入':'点选花盆核对位置')+'&lt;/span&gt;';return;}
+      const ts=records(selected),pair=getPair();let action=ts.map(t=&gt;'第'+escape(t.flower)+'朵 · '+escape(t[phase])).join('&lt;br&gt;');const text='&lt;div&gt;&lt;div class=&quot;pf-detail-title&quot;&gt;&lt;span&gt;'+escape(selected)+'&lt;/span&gt;&lt;span class=&quot;pf-position&quot;&gt;右侧有架区 · 第'+(p.row+1)+'排 · 左起第'+(p.col+1)+'株&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;pf-action&quot;&gt;'+(action||(tasks.length?'当天无任务':'仅核对盆位 · 当日任务尚未载入'))+'&lt;/div&gt;&lt;/div&gt;';
+      detail.innerHTML=text;if(pair&amp;&amp;(selected===pair.donor||selected===pair.mother)){const partner=selected===pair.donor?pair.mother:pair.donor;if(layout.has(partner)){const b=document.createElement('button');b.type='button';b.className='pf-partner cursor-interaction';b.dataset.partner=partner;b.textContent=pair.donor+' → '+pair.mother+' · '+(selected===pair.donor?'看母本':'看父本');b.addEventListener('click',()=&gt;selectPlant(partner));detail.append(b);}}
+    }
+    function selectPlant(id){if(!layout.has(id))return;selected=id;activePair=pairsOf(tasks).find(p=&gt;p.donor===id||p.mother===id)?.key??'';const zone=layout.get(id).zone;refresh();if(zone!==currentZone)flyTo(zone);else requestRender();save();}
+    function findPlants(){const input=$('#pf-search').value.normalize('NFKC').trim();if(input&amp;&amp;!/^[\d\s,，、;；]+$/.test(input)){$('#pf-results').hidden=false;$('#pf-searchmsg').textContent='仅输入编号，以空格或逗号分隔';return;}queryIds=[...new Set(input.match(/\d+/g)??[])].slice(0,300);const first=queryIds.find(id=&gt;layout.has(id));if(first){selected=first;activePair=pairsOf(tasks).find(p=&gt;p.donor===first||p.mother===first)?.key??'';}else if(!queryIds.length){activePair='';}refresh();if(first&amp;&amp;layout.get(first).zone!==currentZone)flyTo(layout.get(first).zone);save();}
+    let searchTimer=0;$('#pf-search').addEventListener('input',()=&gt;{clearTimeout(searchTimer);searchTimer=setTimeout(findPlants,280);});$('#pf-search').addEventListener('keydown',e=&gt;{if(e.key==='Enter'){clearTimeout(searchTimer);findPlants();}if(e.key==='Escape'){$('#pf-search').value='';findPlants();}});
+    $('#pf-search').addEventListener('paste',event=&gt;{const text=event.clipboardData?.getData('text/plain');if(text&amp;&amp;/[\r\n\t]/.test(text)){event.preventDefault();const input=event.currentTarget;input.setRangeText(text.replace(/[\r\n\t]+/g,' '),input.selectionStart??input.value.length,input.selectionEnd??input.value.length,'end');clearTimeout(searchTimer);searchTimer=setTimeout(findPlants,100);}});
+    $('#pf-phase').addEventListener('change',()=&gt;{phase=$('#pf-phase').value;refresh();save();});root.querySelectorAll('[data-zone]').forEach(b=&gt;b.addEventListener('click',()=&gt;flyTo(Number(b.dataset.zone))));$('#pf-home').addEventListener('click',()=&gt;flyTo(currentZone,true));
+    $('#pf-import-toggle').addEventListener('click',()=&gt;{const panel=$('#pf-import');panel.hidden=!panel.hidden;$('#pf-import-toggle').setAttribute('aria-expanded',String(!panel.hidden));});
+
+    // Orbit, pinch, and wheel zoom all operate the same perspective camera.
+    const pointers=new Map();let drag=null,pinch=null;
+    canvas.addEventListener('pointerdown',e=&gt;{canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);const cancel=!!flight;flight=null;if(cancel)buildScene();root.dataset.flight='idle';updateHead();if(pointers.size===1)drag={x:e.clientX,y:e.clientY,yaw:camera.yaw,pitch:camera.pitch,moved:false};if(pointers.size===2){const a=[...pointers.values()];pinch={span:Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]),distance:camera.distance};if(drag)drag.moved=true;}});
+    canvas.addEventListener('pointermove',e=&gt;{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===2&amp;&amp;pinch){const a=[...pointers.values()],span=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);camera.distance=clamp(pinch.distance*pinch.span/Math.max(span,15),9,70);}else if(pointers.size===1&amp;&amp;drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.hypot(dx,dy)&gt;4)drag.moved=true;camera.yaw=drag.yaw-dx*.006;camera.pitch=clamp(drag.pitch+dy*.005,.23,1.43);}requestRender();});
+    function endPointer(e){const wasDrag=drag?.moved;pointers.delete(e.pointerId);if(!wasDrag&amp;&amp;drag){const rect=canvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;let best=null,bestD=32;for(const p of pots){if(!p.id)continue;const s=project([p.x,p.y+.4,p.z]),d=Math.hypot(s.x-x,s.y-y);if(s.visible&amp;&amp;d&lt;bestD){bestD=d;best=p;}}if(best)selectPlant(best.id);}if(!pointers.size){drag=null;pinch=null;save();}else if(pointers.size===1){const [x,y]=[...pointers.values()][0];drag={x,y,yaw:camera.yaw,pitch:camera.pitch,moved:true};pinch=null;}}
+    canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointercancel',()=&gt;{pointers.clear();drag=null;pinch=null;save();});canvas.addEventListener('wheel',e=&gt;{e.preventDefault();const cancel=!!flight;flight=null;if(cancel)buildScene();root.dataset.flight='idle';camera.distance=clamp(camera.distance*Math.exp(e.deltaY*.0011),9,70);updateHead();requestRender();},{passive:false});
+    function resize(){const r=stage.getBoundingClientRect();if(!r.width||!r.height)return;const oldDefault=distanceForWidth();cssWidth=r.width;cssHeight=r.height;const ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(cssWidth*ratio);canvas.height=Math.round(cssHeight*ratio);if(!flight)camera.distance=clamp(camera.distance*distanceForWidth()/oldDefault,9,70);$('#pf-camera-note').textContent=matchMedia('(pointer:coarse)').matches?'拖动旋转 · 双指缩放':'拖动旋转 · 滚动缩放';requestRender();}
+    new ResizeObserver(resize).observe(stage);
+    canvas.addEventListener('webglcontextlost',e=&gt;{e.preventDefault();$('#pf-zoneinfo').textContent='画面暂停，刷新可恢复';});
+
+    async function unzip(buffer){const bytes=new Uint8Array(buffer),dv=new DataView(buffer),files=new Map(),decoder=new TextDecoder();let end=-1;for(let i=bytes.length-22;i&gt;=Math.max(0,bytes.length-65557);i--)if(dv.getUint32(i,true)===0x06054b50){end=i;break;}if(end&lt;0)throw Error('不是有效的xlsx文件');const count=dv.getUint16(end+10,true);let off=dv.getUint32(end+16,true),total=0;if(count&gt;4000)throw Error('工作簿文件项过多');for(let i=0;i&lt;count;i++){if(off+46&gt;bytes.length||dv.getUint32(off,true)!==0x02014b50)throw Error('xlsx目录损坏');const flags=dv.getUint16(off+8,true),method=dv.getUint16(off+10,true),packed=dv.getUint32(off+20,true),size=dv.getUint32(off+24,true),nl=dv.getUint16(off+28,true),el=dv.getUint16(off+30,true),cl=dv.getUint16(off+32,true),local=dv.getUint32(off+42,true),name=decoder.decode(bytes.subarray(off+46,off+46+nl));off+=46+nl+el+cl;if(flags&amp;1)throw Error('不支持加密工作簿');if(!/^xl\/(worksheets\/sheet\d+\.xml|sharedStrings\.xml|workbook\.xml|_rels\/workbook\.xml\.rels)$/.test(name))continue;total+=size;if(total&gt;12000000||size&gt;8000000)throw Error('请只保留当天任务');if(local+30&gt;bytes.length||dv.getUint32(local,true)!==0x04034b50)throw Error('xlsx条目损坏');const start=local+30+dv.getUint16(local+26,true)+dv.getUint16(local+28,true);if(start+packed&gt;bytes.length)throw Error('xlsx内容不完整');const data=bytes.subarray(start,start+packed);let raw;if(method===0)raw=data;else if(method===8){if(!globalThis.DecompressionStream)throw Error('此浏览器请改用TSV文本');raw=new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());}else throw Error('不支持的压缩格式');if(raw.length!==size)throw Error('xlsx解压校验失败');files.set(name,decoder.decode(raw));}return files;}
+    function xml(text){const doc=new DOMParser().parseFromString(text,'application/xml');if(doc.querySelector('parsererror'))throw Error('工作表XML有误');return doc;}
+    const elements=(node,name)=&gt;[...node.getElementsByTagNameNS('*',name)];
+    async function readXlsx(file){const files=await unzip(await file.arrayBuffer()),shared=files.has('xl/sharedStrings.xml')?elements(xml(files.get('xl/sharedStrings.xml')),'si').map(si=&gt;elements(si,'t').map(n=&gt;n.textContent).join('')):[],names=new Map();if(files.has('xl/workbook.xml')&amp;&amp;files.has('xl/_rels/workbook.xml.rels')){const rels=elements(xml(files.get('xl/_rels/workbook.xml.rels')),'Relationship');for(const s of elements(xml(files.get('xl/workbook.xml')),'sheet')){const rid=s.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id'),rel=rels.find(r=&gt;r.getAttribute('Id')===rid);if(rel){const target=rel.getAttribute('Target').replace(/^\//,'');names.set(target.startsWith('xl/')?target:'xl/'+target,s.getAttribute('name'));}}}const sheets=[];for(const [path,text]of files){if(!path.startsWith('xl/worksheets/'))continue;const rows=elements(xml(text),'row').map(r=&gt;{const cells=[];for(const c of elements(r,'c')){const letters=c.getAttribute('r')?.match(/^[A-Z]+/i)?.[0];if(!letters)continue;let index=0;for(const ch of letters.toUpperCase())index=index*26+ch.charCodeAt(0)-64;if(index&gt;30)continue;if(elements(c,'f').length){cells[index-1]='[公式，需确认]';continue;}const type=c.getAttribute('t'),v=elements(c,'v')[0]?.textContent??'';cells[index-1]=type==='s'?(shared[Number(v)]??''):type==='inlineStr'?elements(c,'t').map(t=&gt;t.textContent).join(''):v;}return cells;});sheets.push({name:names.get(path)??path,rows});}return sheets;}
+    function parseRows(rows){let area='',headers=null;const result=[],warnings=[];for(let i=0;i&lt;rows.length;i++){const row=rows[i].map(clean);if(row.every(x=&gt;!x))continue;const first=row.find(x=&gt;x);if(/^第[一二三四五六七八九十\d]+片区$/.test(first)&amp;&amp;row.filter(Boolean).length===1){area=first;continue;}const idCol=row.findIndex(x=&gt;/^(植株|植株编号|编号)$/.test(x));if(idCol&gt;=0){headers={id:idCol,flower:row.findIndex(x=&gt;/^(第几朵|花号|花朵编号)$/.test(x)),evening:row.indexOf('今晚'),morning:row.indexOf('明早')};if(headers.flower&lt;0||headers.evening&lt;0||headers.morning&lt;0)headers=null;continue;}if(!headers)continue;const id=row[headers.id];if(!id)continue;if(!/^\d+$/.test(id)){warnings.push('第'+(i+1)+'行编号无法识别');continue;}const t={area,id,flower:row[headers.flower]??'',evening:row[headers.evening]??'',morning:row[headers.morning]??''};if(!/^\d+$/.test(t.flower)||!t.evening||!t.morning){warnings.push(id+'号花号或操作缺失');continue;}if(kind(t)==='other'){warnings.push(id+'号处理待确认');continue;}result.push(t);}if(!result.length)throw Error('表头需含：植株、第几朵、今晚、明早');const keys=new Set();for(const t of result){const key=t.id+'#'+t.flower;if(keys.has(key))warnings.push('重复任务：'+key);keys.add(key);if(!layout.has(t.id))warnings.push(t.id+'号未录入盆位');else if(t.area&amp;&amp;layout.get(t.id).area!==t.area)warnings.push(t.id+'号片区不一致');}for(const t of result){const receive=t.morning.match(/接\s*(\d+)\s*花粉/),give=t.morning.match(/给\s*(\d+)\s*供粉/);if(receive){if(receive[1]===t.id)warnings.push(t.id+'号异交亲本相同');if(!result.some(x=&gt;x.id===receive[1]&amp;&amp;new RegExp('给\\s*'+t.id+'\\s*供粉').test(x.morning)))warnings.push(receive[1]+' → '+t.id+'缺供粉行');}if(give&amp;&amp;!result.some(x=&gt;x.id===give[1]&amp;&amp;new RegExp('接\\s*'+t.id+'\\s*花粉').test(x.morning)))warnings.push(t.id+' → '+give[1]+'缺接粉行');}return{tasks:result,warnings:[...new Set(warnings)]};}
+    $('#pf-file').addEventListener('change',async event=&gt;{const file=event.target.files[0];pending=null;$('#pf-apply').disabled=true;$('#pf-import-error').hidden=true;$('#pf-preview').hidden=true;if(!file)return;try{if(file.size&gt;5000000)throw Error('请使用5MB以内的当天任务表');let sheets;if(/\.xlsx$/i.test(file.name))sheets=await readXlsx(file);else if(/\.(tsv|txt)$/i.test(file.name))sheets=[{name:'文本',rows:(await file.text()).replace(/^\uFEFF/,'').split(/\r?\n/).map(r=&gt;r.split('\t'))}];else throw Error('仅支持xlsx、TSV、TXT');const candidates=[];for(const s of sheets){try{candidates.push({...parseRows(s.rows),sheet:s.name});}catch(e){}}if(candidates.length!==1)throw Error(candidates.length?'请只保留要导入的一张工作表':'未识别任务表，请检查表头');pending={...candidates[0],file:file.name};$('#pf-preview').textContent=file.name+' · '+pending.tasks.length+'项任务 / '+new Set(pending.tasks.map(t=&gt;t.id)).size+'株 / '+pairsOf(pending.tasks).length+'组异交'+(pending.warnings.length?'\n'+pending.warnings.join('\n'):'\n可以应用');$('#pf-preview').hidden=false;$('#pf-apply').disabled=!!pending.warnings.length;}catch(e){$('#pf-import-error').textContent=e.message;$('#pf-import-error').hidden=false;}});
+    $('#pf-apply').addEventListener('click',()=&gt;{if(!pending||pending.warnings.length)return;tasks=pending.tasks;taskLabel=pending.file;queryIds=[];$('#pf-search').value='';selected=tasks.find(t=&gt;layout.has(t.id))?.id??'';activePair=pairsOf(tasks).find(p=&gt;p.donor===selected||p.mother===selected)?.key??'';$('#pf-import').hidden=true;$('#pf-import-toggle').setAttribute('aria-expanded','false');const zone=layout.get(selected)?.zone??0;refresh();if(zone!==currentZone)flyTo(zone);save();});
+    $('#pf-export-close').addEventListener('click',()=&gt;$('#pf-export-dialog').close());
+    $('#pf-export-download').addEventListener('click',event=&gt;{event.preventDefault();window.parent.postMessage({type:'plant-png-download',png:$('#pf-export-image').src},'*');});
+    $('#pf-export').addEventListener('click',()=&gt;{
+      if(flight){camera=flight.target;flight=null;buildScene();updateHead();}
+      drawScene();
+      const scale=2,head=76,foot=tasks.length?72:48;
+      const output=document.createElement('canvas');output.width=Math.round(cssWidth*scale);output.height=Math.round((cssHeight+head+foot)*scale);
+      const g=output.getContext('2d');g.scale(scale,scale);g.fillStyle='#101318';g.fillRect(0,0,cssWidth,cssHeight+head+foot);
+      const bg=g.createRadialGradient(cssWidth/2,head+cssHeight*.55,0,cssWidth/2,head+cssHeight*.55,cssWidth*.7);bg.addColorStop(0,'#1b232b');bg.addColorStop(1,'#101318');g.fillStyle=bg;g.fillRect(0,head,cssWidth,cssHeight);
+      g.fillStyle='#e3eaf0';g.font='500 17px system-ui, &quot;Microsoft YaHei&quot;, sans-serif';g.fillText(areas[currentZone]+' · 盆位与处理',16,28);
+      g.fillStyle='#97a5b2';g.font='12px system-ui, &quot;Microsoft YaHei&quot;, sans-serif';g.fillText(taskLabel,16,52,cssWidth-32);
+      g.drawImage(canvas,0,head,cssWidth,cssHeight);
+      const stageRect=stage.getBoundingClientRect();
+      for(const el of stage.querySelectorAll('.pf-label,.pf-annotation,.pf-pairtag,.pf-north')){
+        if(el.hidden||getComputedStyle(el).display==='none')continue;
+        const r=el.getBoundingClientRect(),s=getComputedStyle(el),x=r.left-stageRect.left,y=r.top-stageRect.top+head;
+        if(x+r.width&lt;0||x&gt;cssWidth||y&lt;head||y+r.height&gt;head+cssHeight)continue;
+        g.fillStyle=s.backgroundColor;g.fillRect(x,y,r.width,r.height);g.strokeStyle=s.borderColor;if(parseFloat(s.borderWidth)&gt;0)g.strokeRect(x,y,r.width,r.height);
+        g.fillStyle=s.color;g.font=s.font;g.textAlign='center';g.textBaseline='middle';g.fillText(el.textContent,x+r.width/2,y+r.height/2);
+        if(el.classList.contains('pf-label')){g.fillStyle=s.getPropertyValue('--task-color')||'#a5d5ef';g.beginPath();g.arc(x+5,y+r.height/2,2,0,Math.PI*2);g.fill();}
+      }
+      g.textAlign='left';g.textBaseline='alphabetic';g.font='11px system-ui, &quot;Microsoft YaHei&quot;, sans-serif';g.fillStyle='#97a5b2';
+      const status=currentZone===0?'第一排最低 · 第三排最高 · 间距示意':'盆位待录入';g.fillText(status,16,head+cssHeight+23);
+      if(tasks.length){const marks=[['#f19b9d','异交母本'],['#e4c189','供粉'],['#96d1ae','自主'],['#dce5eb','开放'],['#96c5ee','采样'],['#c3afe8','人工自交']];let x=16,y=head+cssHeight+45;for(const [c,label]of marks){const w=g.measureText(label).width+23;if(x+w&gt;cssWidth-12){x=16;y+=18;}g.fillStyle=c;g.fillRect(x,y-7,6,6);g.fillStyle='#97a5b2';g.fillText(label,x+10,y);x+=w;}}
+      const png=output.toDataURL('image/png');$('#pf-export-image').src=png;
+      const download=$('#pf-export-download');if(download.dataset.blob)URL.revokeObjectURL(download.dataset.blob);
+      const bytes=Uint8Array.from(atob(png.split(',')[1]),c=&gt;c.charCodeAt(0));const blob=URL.createObjectURL(new Blob([bytes],{type:'image/png'}));
+      download.href=blob;download.dataset.blob=blob;download.download='同质园_'+areas[currentZone]+'.png';$('#pf-export-dialog').showModal();
+    });
+    $('#pf-search').value=queryIds.join(' ');root.dataset.flight='idle';resize();refresh();
+    if(globalThis.Tweak){const tweak=new Tweak({container:root,onChange:()=&gt;{buildScene();requestRender();save();}});tweak.addToggle(settings,'greenhouse',{label:'显示玻璃大棚'});tweak.addSlider(settings,'frameHeight',{label:'架子高度（示意）',min:2,max:4.4,step:.1});tweak.addSlider(settings,'duration',{label:'切区镜头时长',min:900,max:3000,step:100,unit:'ms'});tweak.addSlider(settings,'brightness',{label:'线框亮度',min:.7,max:1.3,step:.1});}
+  })();
+  &lt;/script&gt;
+&lt;/section&gt;
+
+
+
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+  let lastPointerWasTouch = false;
+  let pinnedByTouch = false;
+
+  const getTrigger = (event) =&gt; {
+    for (const target of event.composedPath()) {
+      if (target?.nodeType === Node.ELEMENT_NODE) {
+        const trigger = target.closest(&quot;[data-tooltip]&quot;);
+        if (trigger) return trigger;
+      }
+    }
+    return null;
+  };
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    pinnedByTouch = false;
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handlePointer = (event) =&gt; {
+    lastPointerWasTouch =
+      event.type === &quot;pointerdown&quot; &amp;&amp; event.pointerType === &quot;touch&quot;;
+  };
+  const handleTouchClick = (event) =&gt; {
+    const isTouch = event.pointerType === &quot;touch&quot; || lastPointerWasTouch;
+    lastPointerWasTouch = false;
+    if (!isTouch || event.detail === 0) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (
+      trigger == null ||
+      !trigger.isConnected ||
+      getContent(trigger).length === 0 ||
+      (pinnedByTouch &amp;&amp; activeTrigger === trigger)
+    ) {
+      if (pinnedByTouch) {
+        closeTooltip();
+      }
+      return;
+    }
+    openTooltip(trigger);
+    pinnedByTouch = activeTrigger === trigger;
+    window.setTimeout(() =&gt; {
+      if (activeTrigger === trigger &amp;&amp; !trigger.isConnected) {
+        closeTooltip(false);
+      }
+    }, 0);
+  };
+  const handleLeave = (event) =&gt; {
+    if (pinnedByTouch) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    lastPointerWasTouch = false;
+    const trigger = getTrigger(event);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handlers = {
+    pointerover: handlePointerOpen,
+    pointerdown: handlePointer,
+    pointercancel: handlePointer,
+    click: handleTouchClick,
+    pointerout: handleLeave,
+    focusin: handleFocusIn,
+    focusout: handleLeave,
+    keydown: handleKeyDown,
+    contextmenu: handleContextMenu,
+  };
+  const roots = new Map();
+  const handledEvents = new WeakSet();
+  const handleEvent = (event) =&gt; {
+    if (handledEvents.has(event)) return;
+    handledEvents.add(event);
+    handlers[event.type](event);
+  };
+  const discoverRoots = (node) =&gt; {
+    if (node.shadowRoot) listen(node.shadowRoot);
+    for (const element of node.querySelectorAll(&quot;*&quot;)) {
+      if (element.shadowRoot) listen(element.shadowRoot);
+    }
+  };
+  const listen = (root) =&gt; {
+    if (roots.has(root)) return;
+    for (const type of Object.keys(handlers)) root.addEventListener(type, handleEvent);
+    const observer = new window.MutationObserver((records) =&gt; {
+      for (const { addedNodes } of records) {
+        for (const node of addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) discoverRoots(node);
+        }
+      }
+      for (const [root, cleanup] of roots) {
+        if (root.host &amp;&amp; !root.host.isConnected) {
+          cleanup();
+          roots.delete(root);
+        }
+      }
+      if (activeTrigger &amp;&amp; !activeTrigger.isConnected) closeTooltip(false);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    roots.set(root, () =&gt; {
+      observer.disconnect();
+      for (const type of Object.keys(handlers)) root.removeEventListener(type, handleEvent);
+    });
+    discoverRoots(root);
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    lastPointerWasTouch = false;
+    for (const cleanup of roots.values()) cleanup();
+    roots.clear();
+    tooltip = null;
+  };
+
+  // Events between children of one shadow root never reach the document.
+  listen(document);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-tabs&quot;&gt;
+(() =&gt; {
+  const selector = '.nav[role=&quot;tablist&quot;] [role=&quot;tab&quot;]';
+  const disabled = ':disabled,[aria-disabled=&quot;true&quot;]';
+  const selectTab = (selected) =&gt; {
+    const panelId = selected.getAttribute(&quot;aria-controls&quot;);
+    for (const tab of selected.closest('[role=&quot;tablist&quot;]').querySelectorAll('[role=&quot;tab&quot;]')) {
+      const active = tab === selected;
+      tab.classList.toggle(&quot;active&quot;, active);
+      tab.setAttribute(&quot;aria-selected&quot;, String(active));
+      const id = tab.getAttribute(&quot;aria-controls&quot;);
+      const panel = id &amp;&amp; document.getElementById(id);
+      if (panel != null) {
+        panel.hidden = id !== panelId;
+        if (!panel.hidden &amp;&amp; selected.id) {
+          panel.setAttribute(&quot;aria-labelledby&quot;, selected.id);
+        }
+      }
+    }
+  };
+  const interact = (event) =&gt; {
+    const tab = event.target?.closest?.(selector);
+    if (event.defaultPrevented || tab == null || tab.matches(disabled)) {
+      return;
+    }
+    if (event.type === &quot;click&quot;) {
+      selectTab(tab);
+      return;
+    }
+    const tabs = Array.from(
+      tab.closest('[role=&quot;tablist&quot;]').querySelectorAll('[role=&quot;tab&quot;]'),
+    ).filter((candidate) =&gt; !candidate.matches(disabled));
+    const current = tabs.indexOf(tab);
+    let next;
+    if (event.key === &quot;ArrowRight&quot; || event.key === &quot;ArrowDown&quot;) {
+      next = (current + 1) % tabs.length;
+    } else if (event.key === &quot;ArrowLeft&quot; || event.key === &quot;ArrowUp&quot;) {
+      next = (current + tabs.length - 1) % tabs.length;
+    } else if (event.key === &quot;Home&quot;) {
+      next = 0;
+    } else if (event.key === &quot;End&quot;) {
+      next = tabs.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    tabs[next].focus();
+    selectTab(tabs[next]);
+  };
+
+  for (const list of document.querySelectorAll('.nav[role=&quot;tablist&quot;]')) {
+    const selected =
+      list.querySelector('[role=&quot;tab&quot;][aria-selected=&quot;true&quot;]') ??
+      list.querySelector('[role=&quot;tab&quot;].active') ??
+      list.querySelector('[role=&quot;tab&quot;]');
+    if (selected != null) {
+      selectTab(selected);
+    }
+  }
+  document.addEventListener(&quot;click&quot;, interact);
+  document.addEventListener(&quot;keydown&quot;, interact);
+  window.addEventListener(&quot;pagehide&quot;, () =&gt; {
+    document.removeEventListener(&quot;click&quot;, interact);
+    document.removeEventListener(&quot;keydown&quot;, interact);
+  }, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-carousel&quot;&gt;
+  (() =&gt; {
+    for (const root of document.querySelectorAll(&quot;.viz-carousel&quot;)) {
+      const panels = Array.from(
+        root.querySelectorAll(&quot;:scope &gt; [data-variant]&quot;),
+      );
+      if (panels.length === 0) {
+        continue;
+      }
+      root.setAttribute(&quot;role&quot;, &quot;group&quot;);
+      panels.forEach((panel, index) =&gt; {
+        panel.hidden = index !== 0;
+        panel.setAttribute(&quot;role&quot;, &quot;group&quot;);
+        if (!panel.hasAttribute(&quot;aria-label&quot;)) {
+          panel.setAttribute(&quot;aria-label&quot;, panel.dataset.variant);
+        }
+      });
+      root.dataset.activeVariant = panels[0].dataset.variant;
+      if (panels.length === 1) {
+        continue;
+      }
+
+      const controls = document.createElement(&quot;div&quot;);
+      controls.className = &quot;viz-carousel-controls&quot;;
+      // Portable copy of the settings dropdown's legacy glyph; no 14px icon-package preset matches it.
+      // https://github.com/openai/openai/blob/master/codex/codex-apps/webview/src/icons/chevron.svg
+      controls.innerHTML = `
+      &lt;button type=&quot;button&quot; class=&quot;viz-carousel-previous cursor-interaction&quot;&gt;&lt;i data-lucide=&quot;chevron-left&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+      &lt;details class=&quot;viz-carousel-picker&quot;&gt;
+        &lt;summary class=&quot;cursor-interaction&quot;&gt;
+          &lt;span class=&quot;viz-carousel-count tabular-nums&quot;&gt;&lt;/span&gt;
+          &lt;span class=&quot;viz-carousel-name&quot;&gt;&lt;/span&gt;
+          &lt;svg class=&quot;viz-carousel-caret&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 20 21&quot; fill=&quot;none&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;
+            &lt;path d=&quot;M15.2793 7.71101C15.539 7.45131 15.961 7.45131 16.2207 7.71101C16.4804 7.97071 16.4804 8.39272 16.2207 8.65242L10.4707 14.4024C10.211 14.6621 9.78902 14.6621 9.52932 14.4024L3.77932 8.65242L3.69436 8.54792C3.52385 8.28979 3.55205 7.93828 3.77932 7.71101C4.00659 7.48374 4.3581 7.45554 4.61623 7.62605L4.72073 7.71101L10 12.9903L15.2793 7.71101Z&quot; fill=&quot;currentColor&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;0.6&quot; /&gt;
+          &lt;/svg&gt;
+        &lt;/summary&gt;
+        &lt;div class=&quot;viz-carousel-options&quot;&gt;&lt;/div&gt;
+      &lt;/details&gt;
+      &lt;button type=&quot;button&quot; class=&quot;viz-carousel-next cursor-interaction&quot;&gt;&lt;i data-lucide=&quot;chevron-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;`;
+      const previous = controls.querySelector(&quot;.viz-carousel-previous&quot;);
+      const next = controls.querySelector(&quot;.viz-carousel-next&quot;);
+      const picker = controls.querySelector(&quot;.viz-carousel-picker&quot;);
+      const summary = picker.querySelector(&quot;summary&quot;);
+      const count = controls.querySelector(&quot;.viz-carousel-count&quot;);
+      const name = controls.querySelector(&quot;.viz-carousel-name&quot;);
+      const options = controls.querySelector(&quot;.viz-carousel-options&quot;);
+      const status = document.createElement(&quot;span&quot;);
+      status.className = &quot;sr-only&quot;;
+      status.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      status.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      status.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+      previous.setAttribute(
+        &quot;aria-label&quot;,
+        root.dataset.previousLabel ?? &quot;Previous variant&quot;,
+      );
+      next.setAttribute(&quot;aria-label&quot;, root.dataset.nextLabel ?? &quot;Next variant&quot;);
+
+      let active = 0;
+      let mousePointerId = null;
+      let summaryPointerHandled = false;
+      summary.addEventListener(&quot;pointerdown&quot;, (event) =&gt; {
+        summaryPointerHandled =
+          event.pointerType === &quot;mouse&quot; &amp;&amp; event.button === 0 &amp;&amp; !event.ctrlKey;
+        if (!summaryPointerHandled) {
+          return;
+        }
+        event.preventDefault();
+        summary.focus({ preventScroll: true });
+        picker.open = !picker.open;
+        mousePointerId = picker.open ? event.pointerId : null;
+      });
+      summary.addEventListener(&quot;click&quot;, (event) =&gt; {
+        if (summaryPointerHandled &amp;&amp; event.detail &gt; 0) {
+          event.preventDefault();
+        }
+      });
+      const choices = panels.map((panel, index) =&gt; {
+        const choice = document.createElement(&quot;button&quot;);
+        choice.type = &quot;button&quot;;
+        choice.className = &quot;cursor-interaction&quot;;
+        choice.textContent = panel.dataset.variant;
+        choice.addEventListener(&quot;click&quot;, () =&gt; {
+          select(index);
+          summary.focus();
+        });
+        choice.addEventListener(&quot;pointerup&quot;, (event) =&gt; {
+          if (
+            picker.open &amp;&amp;
+            event.pointerType === &quot;mouse&quot; &amp;&amp;
+            event.button === 0 &amp;&amp;
+            event.pointerId === mousePointerId
+          ) {
+            choice.click();
+          }
+        });
+        options.appendChild(choice);
+        return choice;
+      });
+      const select = (index) =&gt; {
+        const changed = active !== index;
+        active = index;
+        panels.forEach((panel, position) =&gt; {
+          panel.hidden = position !== active;
+          choices[position].setAttribute(
+            &quot;aria-current&quot;,
+            String(position === active),
+          );
+        });
+        root.dataset.activeVariant = panels[active].dataset.variant;
+        count.textContent = `${active + 1} / ${panels.length}`;
+        name.textContent = panels[active].dataset.variant;
+        picker.open = false;
+        mousePointerId = null;
+        if (changed) {
+          status.textContent = `${count.textContent}: ${name.textContent}`;
+        }
+      };
+      previous.addEventListener(&quot;click&quot;, () =&gt;
+        select((active + panels.length - 1) % panels.length),
+      );
+      next.addEventListener(&quot;click&quot;, () =&gt;
+        select((active + 1) % panels.length),
+      );
+      picker.addEventListener(&quot;keydown&quot;, (event) =&gt; {
+        if (event.key === &quot;Escape&quot; &amp;&amp; picker.open) {
+          event.preventDefault();
+          picker.open = false;
+          mousePointerId = null;
+          summary.focus();
+          return;
+        }
+        if (event.altKey || event.ctrlKey || event.metaKey) {
+          return;
+        }
+        const index = choices.indexOf(document.activeElement);
+        let nextIndex;
+        if (event.key === &quot;ArrowDown&quot;) {
+          nextIndex = index &lt; 0 ? active : (index + 1) % choices.length;
+        } else if (event.key === &quot;ArrowUp&quot;) {
+          nextIndex = index &lt; 0 ? active : (index + choices.length - 1) % choices.length;
+        } else if (picker.open &amp;&amp; event.key === &quot;Home&quot;) {
+          nextIndex = 0;
+        } else if (picker.open &amp;&amp; event.key === &quot;End&quot;) {
+          nextIndex = choices.length - 1;
+        } else {
+          return;
+        }
+        event.preventDefault();
+        picker.open = true;
+        choices[nextIndex].focus();
+      });
+      picker.addEventListener(&quot;focusout&quot;, (event) =&gt; {
+        if (!picker.contains(event.relatedTarget)) {
+          picker.open = false;
+          mousePointerId = null;
+        }
+      });
+      const dismiss = (event) =&gt; {
+        if (!summary.contains(event.target)) {
+          mousePointerId = null;
+        }
+        if (!picker.contains(event.target)) {
+          picker.open = false;
+        }
+      };
+      const endPointerSelection = () =&gt; {
+        mousePointerId = null;
+      };
+      const sizePicker = () =&gt; {
+        root.style.setProperty(
+          &quot;--viz-carousel-picker-height&quot;,
+          `${picker.open ? options.offsetHeight : 0}px`,
+        );
+      };
+      picker.addEventListener(&quot;toggle&quot;, sizePicker);
+      window.addEventListener(&quot;resize&quot;, sizePicker);
+      document.addEventListener(&quot;pointerdown&quot;, dismiss);
+      document.addEventListener(&quot;pointerup&quot;, endPointerSelection);
+      document.addEventListener(&quot;pointercancel&quot;, endPointerSelection);
+      window.addEventListener(&quot;blur&quot;, endPointerSelection);
+      window.addEventListener(
+        &quot;pagehide&quot;,
+        () =&gt; {
+          document.removeEventListener(&quot;pointerdown&quot;, dismiss);
+          document.removeEventListener(&quot;pointerup&quot;, endPointerSelection);
+          document.removeEventListener(&quot;pointercancel&quot;, endPointerSelection);
+          window.removeEventListener(&quot;blur&quot;, endPointerSelection);
+          window.removeEventListener(&quot;resize&quot;, sizePicker);
+        },
+        { once: true },
+      );
+      root.append(controls, status);
+      select(0);
+    }
+  })();
+&lt;/script&gt;
+
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+
+<script>(() => {
+  const frame = document.getElementById("codex-visualization");
+  if (!(frame instanceof HTMLIFrameElement)) {
+    return;
+  }
+  const isShare = document.documentElement.classList.contains(
+    "visualization-share-root",
+  );
+  let viewportHeight = globalThis.innerHeight;
+  let sizeFingerprint = null;
+  let sizeWriteTimeout;
+  let lastSize = null;
+  let pendingSize = null;
+  const storageKey = `codex:visualization-widget-state-v2:${JSON.stringify([
+    globalThis.location.pathname,
+    globalThis.location.search,
+  ])}`;
+  const sizeStorageKey = `${storageKey}:share-size-v1`;
+  const parseState = (serializedState) => {
+    if (
+      typeof serializedState !== "string" ||
+      new TextEncoder().encode(serializedState).length > 16 * 1024
+    ) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    /** @type {unknown} */
+    const state = JSON.parse(serializedState);
+    if (
+      state == null ||
+      typeof state !== "object" ||
+      Array.isArray(state) ||
+      ("imageIds" in state &&
+        (!Array.isArray(state.imageIds) || state.imageIds.length > 0))
+    ) {
+      throw new TypeError("Widget state must be a JSON object");
+    }
+    const storedState = { modelContent: null, privateContent: null, ...state };
+    const canonicalState = JSON.stringify(
+      storedState,
+      (_key, /** @type {unknown} */ value) => {
+        if (typeof value === "number" && !Number.isFinite(value)) {
+          throw new TypeError("Widget state must contain finite numbers");
+        }
+        return value;
+      },
+    );
+    if (new TextEncoder().encode(canonicalState).length > 16 * 1024) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    return storedState;
+  };
+  let storage = null;
+  let state = null;
+  try {
+    const localStorage = globalThis.localStorage;
+    const probeKey = `${storageKey}:probe`;
+    localStorage.setItem(probeKey, "1");
+    localStorage.removeItem(probeKey);
+    storage = localStorage;
+    const savedState = storage.getItem(storageKey);
+    if (savedState != null) {
+      try {
+        state = parseState(savedState);
+      } catch {
+        // Invalid saved state does not disable future writes.
+      }
+    }
+  } catch {
+    storage = null;
+  }
+  const persistSize = () => {
+    globalThis.clearTimeout(sizeWriteTimeout);
+    if (pendingSize == null) {
+      return;
+    }
+    try {
+      storage?.setItem(sizeStorageKey, pendingSize);
+    } catch {
+      // A denied or full cache must not affect the visualization.
+    }
+    pendingSize = null;
+  };
+  if (isShare) {
+    globalThis.addEventListener("pagehide", persistSize);
+  }
+  const initialGlobals = {
+    widgetState: state,
+    statePersistence: storage == null ? "none" : "local",
+  };
+
+  const channel = new MessageChannel();
+  channel.port1.addEventListener("message", (event) => {
+    const data = event.data;
+    if (typeof data !== "object" || data == null) {
+      return;
+    }
+    if (data.type === "widget-state-write") {
+      if (!Number.isSafeInteger(data.id) || data.id <= 0) {
+        return;
+      }
+      let ok = false;
+      try {
+        if (storage != null) {
+          const state = parseState(data.state);
+          storage.setItem(storageKey, JSON.stringify(state));
+          ok = true;
+        }
+      } catch {
+        // Storage denial, quota limits, and invalid state return a failed receipt.
+      }
+      channel.port1.postMessage({
+        type: "widget-state-result",
+        id: data.id,
+        ok,
+      });
+      return;
+    }
+    if (data.type === "height") {
+      const height = data.height;
+      if (
+        typeof height !== "number" ||
+        !Number.isFinite(height) ||
+        height < 0
+      ) {
+        return;
+      }
+      if (height <= 10_000) {
+        const width = isShare && storage != null ? frame.clientWidth : null;
+        frame.style.height = Math.ceil(height) + "px";
+        if (isShare && storage != null) {
+          const size = JSON.stringify({
+            fingerprint: sizeFingerprint,
+            width,
+            viewportHeight: globalThis.innerHeight,
+            dark: globalThis.matchMedia("(prefers-color-scheme: dark)").matches,
+            scale: globalThis.devicePixelRatio,
+            height: Math.ceil(height),
+          });
+          if (size !== lastSize) {
+            lastSize = size;
+            pendingSize = size;
+            globalThis.clearTimeout(sizeWriteTimeout);
+            sizeWriteTimeout = globalThis.setTimeout(persistSize, 100);
+          }
+        }
+      }
+      if (isShare) {
+        // Keep unusually tall content accessible without accepting an unbounded height.
+        if (height > 10_000 && Number.parseFloat(frame.style.height) === 0) {
+          frame.style.removeProperty("height");
+        }
+        frame.scrolling = height > 10_000 ? "auto" : "no";
+        document.documentElement.classList.add("visualization-share-ready");
+      }
+      return;
+    }
+    if (data.type === "scroll-to") {
+      const top = data.top;
+      if (
+        typeof top === "number" &&
+        Number.isFinite(top) &&
+        top >= 0 &&
+        globalThis.navigator.userActivation?.isActive === true
+      ) {
+        globalThis.scrollTo({
+          top: Math.ceil(
+            globalThis.scrollY + frame.getBoundingClientRect().top + top,
+          ),
+        });
+      }
+      return;
+    }
+    if (data.type === "open-external") {
+      const rawHref = data.href;
+      if (typeof rawHref !== "string") {
+        return;
+      }
+      let href;
+      try {
+        const url = new URL(rawHref, document.baseURI);
+        if (url.protocol !== "https:") {
+          return;
+        }
+        href = url.href;
+      } catch {
+        return;
+      }
+      if (globalThis.navigator.userActivation?.isActive === true) {
+        const anchor = document.createElement("a");
+        anchor.href = href;
+        anchor.rel = "noopener noreferrer";
+        anchor.target = "_blank";
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+      }
+      return;
+    }
+    if (data.type === "follow-up") {
+      const prompt = data.prompt;
+      if (
+        typeof prompt !== "string" ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      const title = data.title;
+      globalThis.prompt(typeof title === "string" ? title : prompt, prompt);
+    }
+  });
+  channel.port1.start();
+  const srcdoc = frame.dataset.srcdoc;
+  if (srcdoc == null) {
+    return;
+  }
+  globalThis.addEventListener("resize", () => {
+    const height = Number.parseFloat(frame.style.height);
+    if (!isShare && (!Number.isFinite(height) || height <= viewportHeight)) {
+      frame.style.removeProperty("height");
+    }
+    viewportHeight = globalThis.innerHeight;
+    channel.port1.postMessage({ type: "measure" });
+  });
+  frame.addEventListener(
+    "load",
+    () => {
+      frame.contentWindow?.postMessage(
+        { type: "codex-visualization-initialize" },
+        "*",
+        [channel.port2],
+      );
+    },
+    { once: true },
+  );
+  // Match the trusted bootstrap element, not the same text in an authored title.
+  const frameHtml = srcdoc.replace(
+    '<script type="application/json" id="codex-visualization-widget-state">__CODEX_VISUALIZATION_WIDGET_STATE__<\/script>',
+    () =>
+      '<script type="application/json" id="codex-visualization-widget-state">' +
+      JSON.stringify(initialGlobals).replaceAll("<", "\\u003c") +
+      "<\/script>",
+  );
+  if (isShare && storage != null) {
+    // Fingerprint the rendered document, including restored widget state, without
+    // storing its content. This is a layout cache, not a security identity.
+    let hash = 5381;
+    for (let index = 0; index < frameHtml.length; index += 1) {
+      hash = (hash * 33 + frameHtml.charCodeAt(index)) % 4_294_967_296;
+    }
+    sizeFingerprint = hash.toString(36);
+    try {
+      const size = JSON.parse(storage.getItem(sizeStorageKey) ?? "null");
+      if (
+        size?.fingerprint === sizeFingerprint &&
+        size.width === frame.clientWidth &&
+        size.viewportHeight === globalThis.innerHeight &&
+        size.dark ===
+          globalThis.matchMedia("(prefers-color-scheme: dark)").matches &&
+        size.scale === globalThis.devicePixelRatio &&
+        typeof size.height === "number" &&
+        Number.isFinite(size.height) &&
+        size.height >= 0 &&
+        size.height <= 10_000
+      ) {
+        frame.style.height = size.height + "px";
+      }
+    } catch {
+      // Ignore missing or invalid cache entries and measure the live frame.
+    }
+  }
+  frame.srcdoc = frameHtml;
+  delete frame.dataset.srcdoc;
+})();
+</script>
+<script>
+window.addEventListener('message', event => {
+  const frame=document.getElementById('codex-visualization'),data=event.data;
+  if(event.source!==frame.contentWindow||data?.type!=='plant-png-download'||typeof data.png!=='string'||!data.png.startsWith('data:image/png;base64,')||data.png.length>40000000)return;
+  const bytes=Uint8Array.from(atob(data.png.split(',')[1]),c=>c.charCodeAt(0));
+  const url=URL.createObjectURL(new Blob([bytes],{type:'image/png'})),a=document.createElement('a');
+  a.href=url;a.download='同质园盆位.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+});
+</script></body>
+</html>

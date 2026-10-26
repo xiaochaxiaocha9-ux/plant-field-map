@@ -1,0 +1,67 @@
+const { chromium } = require('playwright');
+const fs = require('fs'), path = require('path'), http = require('http'), assert = require('assert');
+const root = path.resolve(__dirname, '..'), out = path.join(root, 'qa-output');
+fs.mkdirSync(out, { recursive: true });
+const document = fs.readFileSync(path.join(root, 'docs/index.html'), 'utf8');
+assert(!/C:[\\/]|E:[\\/]|password=|ghp_/.test(document), '发布文件不得含本地路径或凭据');
+assert(!/src=&quot;https:/.test(document), '独立站不依赖外部CDN脚本');
+assert(!document.includes('给144供粉'), '旧演示任务不得发布');
+assert(document.includes('publishedTasks'), '应内嵌负责人发布的任务');
+(async () => {
+  const server = http.createServer((req, res) => { res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(document); });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  let browser, fallback;
+  const errors = [], tests = [];
+  try {
+    const executablePath = process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+    browser = await chromium.launch({ headless: true, executablePath, args: ['--enable-unsafe-swiftshader'] });
+    const page = await browser.newPage({ viewport: { width: 1024, height: 1100 }, acceptDownloads: true });
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('console', message => { if (message.type() === 'error' || message.type() === 'warning') console.log(message.type() + ': ' + message.text().slice(0, 300)); });
+    const url = 'http://127.0.0.1:' + server.address().port + '/';
+    await page.goto(url); const frame = page.frameLocator('iframe'), app = frame.locator('#plant-field-3d');
+    await frame.locator('.pf-label[data-id="56"]').waitFor({ state: 'visible' });
+    assert.equal(await app.getAttribute('data-pots'), '23');
+    assert.equal(await app.getAttribute('data-renderer'), 'webgl');
+    assert.equal(await frame.locator('#pf-import-toggle').isVisible(), false);
+    assert.equal(await frame.locator('#pf-task-legend').isVisible(), false);
+    assert.match(await frame.locator('#pf-source').innerText(), /尚未发布当天任务/);
+    for (const width of [320, 360, 736, 1024]) {
+      await page.setViewportSize({ width, height: 1100 }); await page.waitForTimeout(120);
+      const size = await app.evaluate(el => ({ width: el.clientWidth, content: el.scrollWidth }));
+      assert(size.content <= size.width + 1, '横向溢出：' + width);
+      await page.screenshot({ path: path.join(out, 'width-' + width + '.png'), fullPage: true });
+    }
+    await frame.locator('#pf-search').fill('1131'); await frame.locator('#pf-search').press('Enter');
+    assert.match(await frame.locator('#pf-detail').innerText(), /第1排.*第7株/);
+    assert.equal(await frame.locator('.pf-label.pf-dim').count(), 0);
+    await frame.locator('#pf-export').click();
+    const png = await frame.locator('#pf-export-image').getAttribute('src');
+    const image = Buffer.from(png.split(',')[1], 'base64');
+    assert.equal(image.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+    assert(image.readUInt32BE(16) > 600 && image.readUInt32BE(20) > 600);
+    fs.writeFileSync(path.join(out, 'exported.png'), image);
+    assert.match(await frame.locator('#pf-export-download').getAttribute('href'), /^blob:/);
+    const downloadPromise = page.waitForEvent('download', { timeout: 10000 }); await frame.locator('#pf-export-download').click();
+    const download = await downloadPromise; await download.saveAs(path.join(out, 'downloaded.png'));
+    assert(fs.statSync(path.join(out, 'downloaded.png')).size > 10000);
+    await frame.locator('#pf-export-close').click();
+    await page.emulateMedia({ reducedMotion: 'reduce' }); await frame.locator('[data-zone="1"]').click();
+    await frame.locator('.pf-label[data-id="56"]').waitFor({ state: 'hidden' });
+    assert.equal(await frame.locator('.pf-label:visible').count(), 0);
+    assert.match(await frame.locator('#pf-zoneinfo').innerText(), /待录入/);
+    tests.push('23 confirmed IDs; no stale tasks; no upload; 320-1024 responsive; search; PNG content and download; unmapped zone');
+    const context = await browser.newContext({ viewport: { width: 360, height: 1000 }, isMobile: true, hasTouch: true });
+    const mobile = await context.newPage(); mobile.on('pageerror', error => errors.push(error.message));
+    await mobile.goto(url); const mf = mobile.frameLocator('iframe'); await mf.locator('#pf-search').fill('207'); await mf.locator('#pf-search').press('Enter');
+    await mf.locator('#pf-export').click(); assert.equal(await mf.locator('#pf-export-dialog').isVisible(), true);
+    await mobile.screenshot({ path: path.join(out, 'mobile-export.png'), fullPage: true }); await context.close();
+    fallback = await chromium.launch({ headless: true, executablePath, args: ['--disable-webgl'] });
+    const fp = await fallback.newPage(); fp.on('pageerror', error => errors.push(error.message)); await fp.goto(url);
+    assert.equal(await fp.frameLocator('iframe').locator('#plant-field-3d').getAttribute('data-renderer'), 'perspective-canvas');
+    tests.push('touch search and PNG preview; no-WebGL fallback');
+    assert.deepEqual(errors, []);
+    fs.writeFileSync(path.join(out, 'checks.json'), JSON.stringify({ passed: true, tests, errors }, null, 2));
+    console.log(JSON.stringify({ passed: true, tests, errors }));
+  } finally { await browser?.close(); await fallback?.close(); server.close(); }
+})().catch(error => { console.error(error); process.exit(1); });
