@@ -24,7 +24,7 @@ function validateConfig(config, layout) {
   const periods = periodLabels(config.date);
   if (!config.label.includes(periods.evening) || !config.label.includes(periods.morning)) throw Error('任务说明须同时包含具体晚间和早晨日期');
   if (/[A-Z]:[\\/]|gh[pousr]_|github_pat_|password=|\.xlsx\b|\.jpe?g\b/i.test(JSON.stringify(config))) throw Error('任务中不得包含私有文件路径、工作簿、照片或凭据');
-  const keys = new Set(), pairs = new Set(), donors = new Map();
+  const keys = new Set(), pairs = new Set(), donors = new Map(), locatedPartnersMissingTasks=new Set();
   for (const t of config.tasks) {
     if (typeof t.id !== 'string' || !layout.has(t.id)) throw Error('任务植株尚未录入盆位：' + t.id);
     if (!/^\d+$/.test(String(t.flower)) || t.area !== layout.get(t.id) || !t.evening || !t.morning) throw Error('花号、片区或时段字段不完整：' + t.id);
@@ -40,7 +40,10 @@ function validateConfig(config, layout) {
       if (!flower) throw Error('缺父本花号：' + m[1] + '→' + t.id);
       const counterpart = config.tasks.find(x => x.id === m[1] && String(x.flower) === flower);
       if (layout.has(m[1])) {
-        if (!counterpart || !new RegExp('给\\s*' + t.id + '\\s*供粉（母本第' + t.flower + '朵').test(counterpart.morning)) throw Error('异交供受双方或花号不一致：' + m[1] + '→' + t.id);
+        // A previously published, explicitly unmapped parent can acquire a location later.
+        // Preserve that source record without fabricating a new parent task; expose the gap.
+        if(!counterpart&&/父本盆位未录入/.test(t.morning))locatedPartnersMissingTasks.add(m[1]);
+        else if (!counterpart || !new RegExp('给\\s*' + t.id + '\\s*供粉（母本第' + t.flower + '朵').test(counterpart.morning)) throw Error('异交供受双方或花号不一致：' + m[1] + '→' + t.id);
       } else if (!/父本盆位未录入/.test(t.morning)) throw Error('缺少未定位父本说明：' + m[1]);
       const relation = m[1] + '#' + flower + '>' + t.id + '#' + t.flower;
       pairs.add(relation);const dk = m[1] + '#' + flower;
@@ -58,6 +61,6 @@ function validateConfig(config, layout) {
   const plants = new Set(config.tasks.map(t => t.id)).size;
   const coverage = config.label.match(/仅展示已录入盆位的(\d+)\/(\d+)株/);
   if (!coverage || +coverage[1] !== plants || +coverage[2] < plants) throw Error('任务说明中的盆位覆盖数不一致');
-  return { plants, tasks: config.tasks.length, crosses: pairs.size, active: { evening: config.tasks.filter(t => needsAction(t.evening)).length, morning: config.tasks.filter(t => needsAction(t.morning)).length }, periods };
+  return { plants, tasks: config.tasks.length, crosses: pairs.size, active: { evening: config.tasks.filter(t => needsAction(t.evening)).length, morning: config.tasks.filter(t => needsAction(t.morning)).length }, periods,locatedPartnersMissingTasks:[...locatedPartnersMissingTasks] };
 }
 module.exports = { readLayout, periodLabels, needsAction, validateConfig };
