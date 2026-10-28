@@ -28,6 +28,7 @@ function validateConfig(config, layout) {
   for (const t of config.tasks) {
     if (typeof t.id !== 'string' || !layout.has(t.id)) throw Error('任务植株尚未录入盆位：' + t.id);
     if (!/^\d+$/.test(String(t.flower)) || t.area !== layout.get(t.id) || !t.evening || !t.morning) throw Error('花号、片区或时段字段不完整：' + t.id);
+    if(t.flowerId!==undefined&&!new RegExp('^'+t.id+'-[BFZ]'+t.flower+'$').test(t.flowerId))throw Error('短花号与植株/花序不一致：'+t.id);
     if (/已取消/.test(t.evening + t.morning)) throw Error('明确取消的任务应移除：' + t.id);
     const key = t.id + '#' + t.flower;
     if (keys.has(key)) throw Error('任务重复：' + key);

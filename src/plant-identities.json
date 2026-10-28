@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "plants": {
+    "2": {
+      "colorCode": "Z"
+    },
+    "36": {
+      "colorCode": "Z"
+    },
+    "46": {
+      "colorCode": "F"
+    },
+    "47": {
+      "colorCode": "F"
+    },
+    "49": {
+      "colorCode": "F"
+    },
+    "54": {
+      "colorCode": "F"
+    },
+    "56": {
+      "colorCode": "Z"
+    },
+    "59": {
+      "colorCode": "F"
+    },
+    "79": {
+      "colorCode": "F"
+    },
+    "81": {
+      "colorCode": "Z"
+    },
+    "82": {
+      "colorCode": "F"
+    },
+    "85": {
+      "colorCode": "F"
+    },
+    "143": {
+      "colorCode": "B"
+    },
+    "144": {
+      "colorCode": "B"
+    },
+    "156": {
+      "colorCode": "B"
+    },
+    "157": {
+      "colorCode": "B"
+    },
+    "159": {
+      "colorCode": "B"
+    },
+    "163": {
+      "colorCode": "B"
+    },
+    "207": {
+      "colorCode": "Z"
+    },
+    "208": {
+      "colorCode": "Z"
+    },
+    "210": {
+      "colorCode": "Z"
+    },
+    "215": {
+      "colorCode": "F"
+    },
+    "218": {
+      "colorCode": "F"
+    },
+    "220": {
+      "colorCode": "F"
+    },
+    "224": {
+      "colorCode": "F"
+    },
+    "227": {
+      "colorCode": "F"
+    },
+    "287": {
+      "colorCode": "Z"
+    },
+    "291": {
+      "colorCode": "Z"
+    },
+    "295": {
+      "colorCode": "Z"
+    },
+    "298": {
+      "colorCode": "Z"
+    },
+    "317": {
+      "colorCode": "Z"
+    },
+    "320": {
+      "colorCode": "Z"
+    },
+    "330": {
+      "colorCode": "Z"
+    },
+    "402": {
+      "colorCode": "B"
+    },
+    "416": {
+      "colorCode": "B"
+    },
+    "483": {
+      "colorCode": "Z"
+    },
+    "515": {
+      "colorCode": "Z"
+    },
+    "542": {
+      "colorCode": "F"
+    },
+    "585": {
+      "colorCode": "B"
+    },
+    "646": {
+      "colorCode": "F"
+    },
+    "648": {
+      "colorCode": "F"
+    },
+    "692": {
+      "colorCode": "F"
+    },
+    "694": {
+      "colorCode": "F"
+    },
+    "713": {
+      "colorCode": "F"
+    },
+    "782": {
+      "colorCode": "B"
+    },
+    "792": {
+      "colorCode": "B"
+    },
+    "794": {
+      "colorCode": "Z"
+    },
+    "795": {
+      "colorCode": "Z"
+    },
+    "821": {
+      "colorCode": "B"
+    },
+    "826": {
+      "colorCode": "B"
+    },
+    "834": {
+      "colorCode": "B"
+    },
+    "886": {
+      "colorCode": "Z"
+    },
+    "890": {
+      "colorCode": "B"
+    },
+    "907": {
+      "colorCode": "Z"
+    },
+    "922": {
+      "colorCode": "Z"
+    },
+    "928": {
+      "colorCode": "B"
+    },
+    "929": {
+      "colorCode": "Z"
+    },
+    "940": {
+      "colorCode": "B"
+    },
+    "1007": {
+      "colorCode": "B"
+    },
+    "1069": {
+      "colorCode": "F"
+    },
+    "1082": {
+      "colorCode": "B"
+    },
+    "1093": {
+      "colorCode": "Z"
+    },
+    "1130": {
+      "colorCode": "Z"
+    },
+    "1131": {
+      "colorCode": "Z"
+    }
+  }
+}

@@ -2,6 +2,7 @@ const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path'), http = require('http'), assert = require('assert');
 const root = path.resolve(__dirname, '..'), out = path.join(root, 'qa-output');
 fs.mkdirSync(out, { recursive: true });
+fs.writeFileSync(path.join(out,'checks.json'),JSON.stringify({passed:false,status:'running'},null,2));
 const document = fs.readFileSync(path.join(root, 'docs/index.html'), 'utf8');
 const currentTasks = JSON.parse(fs.readFileSync(path.join(root, 'src/daily-tasks.json'), 'utf8'));
 const { readLayout, validateConfig, periodLabels, needsAction } = require('./task-data.cjs');
@@ -51,13 +52,15 @@ const fixtureSummary = validateConfig(fixture, layout);
 const fixtureDocument = document.replace(embedded(currentTasks), embedded(fixture));
 const expiredFixture = { ...fixture, date: '2000-10-27', label: '10月26日晚／10月27日早 · 仅展示已录入盆位的8/8株' };
 const expiredDocument = document.replace(embedded(currentTasks), embedded(expiredFixture));
+const revisedFixture={...fixture,tasks:fixture.tasks.map(t=>t.id==='59'?{...t,morning:t.morning+'；增加套袋检查'}:t)};
+const revisedDocument=document.replace(embedded(currentTasks),embedded(revisedFixture));
 assert.notEqual(fixtureDocument, document);
 assert.equal(fixtureSummary.crosses, 2, '一父两母的两个关系必须分别保留');
 assert.equal(needsAction('不处理（不套袋，不去雄）'), false);
 assert.equal(needsAction('已完成：接157花粉；重新套袋'), false);
 assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t => t.id !== '157') }, layout), /双方|一致/);
 (async () => {
-  const server = http.createServer((req, res) => { res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(req.url.startsWith('/expired') ? expiredDocument : req.url.startsWith('/fixture') ? fixtureDocument : document); });
+  const server = http.createServer((req, res) => { res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(req.url.startsWith('/revised') ? revisedDocument : req.url.startsWith('/expired') ? expiredDocument : req.url.startsWith('/fixture') ? fixtureDocument : document); });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   let browser, fallback;
   const errors = [], tests = [];
@@ -86,7 +89,9 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     assert.equal(await frame.locator('#pf-left-length,#pf-middle-length,#pf-bay-length').count(),0,'比例保留在几何中，不画尺寸文字或尺寸线');
     assert.equal(await app.getAttribute('data-dimension-annotations'),'hidden');
     assert.equal(await app.getAttribute('data-pot-scale'),'0.86');
-    assert.equal(await app.getAttribute('data-label-layout'),'above-below-no-leaders');
+    assert.equal(await app.getAttribute('data-label-layout'),'fixed-anchors-task-first');
+    assert.equal(await app.getAttribute('data-label-scope'),'tasks');
+    assert.equal(await app.getAttribute('data-feedback-mode'),'manual-copy-no-cloud');
     assert(!source.includes('dimensionZ'),'不再画尺寸线');
     const coord=async id=>frame.locator(`.pf-label[data-id="${id}"]`).evaluate(el=>({x:+el.dataset.x,z:+el.dataset.z,row:+el.dataset.row,section:el.dataset.section,note:el.dataset.note}));
     const inner=await coord('210'),outer=await coord('968');assert.equal(inner.row,1);assert.equal(outer.row,1);assert(Math.abs(inner.x-outer.x)<1e-12);assert(inner.z<outer.z);assert.match(inner.note,/靠内/);assert.match(outer.note,/靠外/);
@@ -119,12 +124,12 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
         await frame.locator('#pf-search').fill(mother.id); await frame.locator('#pf-search').press('Enter');
         const donor=mother.morning.match(/接\s*(\d+)\s*花粉/)[1];
         if(layout.has(donor)){
-          assert.match(await frame.locator('#pf-detail').innerText(),/父本第\d+朵.*父本已定位/);
-          assert.match(await frame.locator('#pf-detail').innerText(),/供粉条目待同步/);
+          assert.match(await frame.locator('.pf-task-row').filter({has:frame.locator('.pf-task-code',{hasText:mother.id+'-'})}).locator('.pf-task-original').first().textContent(),/父本第\d+朵.*父本已定位/);
+          assert.match(await frame.locator('#pf-task-list').textContent(),/供粉条目待同步/);
           assert.equal(await frame.locator(`.pf-label[data-id="${donor}"]`).count(),1);
           assert(!currentTasks.tasks.some(t=>t.id===donor),'新增盆位不能冒造供粉任务');
         }else{
-          assert.match(await frame.locator('#pf-detail').innerText(), /父本第\d+朵.*父本盆位未录入/);
+          assert.match(await frame.locator('#pf-task-list').textContent(), /父本第\d+朵.*父本盆位未录入/);
           assert.equal(await frame.locator('#pf-pairtag').isVisible(), false, '未定位亲本不得虚构盆位连线');
         }
         await frame.locator('#pf-search').fill(''); await frame.locator('#pf-search').press('Enter');
@@ -142,12 +147,15 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     assert.equal(await app.getAttribute('data-navigation'), 'pan-tilt');
     assert.equal(await app.getAttribute('data-pitch-axis'), '1,0,0');
     const start = await cameraState();
+    const initialSides=await frame.locator('.pf-label').evaluateAll(nodes=>Object.fromEntries(nodes.map(el=>[el.dataset.id,el.dataset.labelSide])));
     await dragBy(120, 0); const pan = await cameraState();
+    assert.deepEqual(await frame.locator('.pf-label').evaluateAll(nodes=>Object.fromEntries(nodes.map(el=>[el.dataset.id,el.dataset.labelSide]))),initialSides,'平移不改变编号锚定的上下位置');
     assert(pan.x < start.x - .5, '横拖应平移摄像机，不绕盆位转动');
     near(pan.pitch, start.pitch); near(pan.yaw, start.yaw); near(pan.z, start.z); near(pan.distance, start.distance);
     vector(pan).forEach((n, i) => near(n, vector(start)[i], '平移不能改变观察方向'));
     await page.screenshot({ path: path.join(out, 'horizontal-pan.png'), fullPage: true });
     await dragBy(0, 48); const tilt = await cameraState();
+    if(Math.abs(tilt.distance-pan.distance)>.001){console.log(JSON.stringify({start,pan,tilt,resize:await app.getAttribute('data-distance-resize'),stage:await frame.locator('#pf-canvas').boundingBox()}));await page.screenshot({path:path.join(out,'gesture-error.png'),fullPage:true});}
     near(tilt.x, pan.x); near(tilt.z, pan.z); near(tilt.distance, pan.distance); assert(tilt.pitch > pan.pitch + .1);
     near(tilt.eye[0], pan.eye[0]); tilt.target.forEach((n, i) => near(n, pan.target[i]));
     near(Math.hypot(...vector(tilt)), Math.hypot(...vector(pan)), '俯仰须绕固定平行轴，不改变距离');
@@ -157,6 +165,8 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     const b = await frame.locator('#pf-canvas').boundingBox(); await page.mouse.move(b.x + b.width / 2, b.y + 80); await page.mouse.wheel(0, 100); await page.waitForTimeout(60);
     const zoom = await cameraState(); assert(zoom.distance > diagonal.distance); near(zoom.pitch, diagonal.pitch); near(zoom.x, diagonal.x);
     await frame.locator('#pf-home').click(); await page.waitForTimeout(750); const home = await cameraState(); near(home.x, (geometry.leftSpan.left+geometry.baySpan.right)/2); near(home.pitch, .85);
+    await frame.locator('#pf-stage').evaluate(el=>el.style.width='1px');await page.waitForTimeout(30);await frame.locator('#pf-stage').evaluate(el=>el.style.width='');await page.waitForTimeout(60);near((await cameraState()).distance,home.distance,'临时折叠尺寸不能改变镜头距离');
+    await frame.locator('[data-focus="middle"]').click();await page.waitForTimeout(650);const focused=await cameraState();assert(focused.distance<home.distance,'分段聚焦应放大');near(focused.x,(geometry.middleSpan.left+geometry.middleSpan.right)/2);await frame.locator('#pf-home').click();await page.waitForTimeout(750);
     tests.push('horizontal camera translation preserves orientation; vertical pitch axis parallel to steps; direction lock; wheel zoom; reset');
     for (const width of [320, 360, 736, 1024]) {
       await page.setViewportSize({ width, height: 1100 }); await page.waitForTimeout(120);
@@ -173,7 +183,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
       await page.screenshot({ path: path.join(out, 'width-' + width + '.png'), fullPage: true });
     }
     await frame.locator('#pf-search').fill('1131'); await frame.locator('#pf-search').press('Enter');
-    assert.match(await frame.locator('#pf-detail').innerText(), /第1排.*第7株/);
+    assert.equal(await frame.locator('#pf-detail').innerText(),'1131','无任务的选中盆只显示编号');
     assert.equal(await frame.locator('.pf-label.pf-dim').count(), 0);
     await frame.locator('#pf-export').click();
     const png = await frame.locator('#pf-export-image').getAttribute('src');
@@ -202,7 +212,9 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     }));
     assert(chipMetrics.length>0);
     const mobileOffsets=await mf.locator('.pf-label:visible').evaluateAll(nodes=>nodes.map(el=>Number(el.dataset.labelOffset)));
-    assert(mobileOffsets.some(n=>n<-10)&&mobileOffsets.some(n=>n>10),'完整编号标签须上下交错');
+    assert(mobileOffsets.every(n=>Math.abs(n)>10),'标签须位于盆的上方或下方');
+    const assignedSides=await mf.locator('.pf-label').evaluateAll(nodes=>nodes.map(el=>el.dataset.labelSide));
+    assert(assignedSides.includes('above')&&assignedSides.includes('below'),'所有盆的固定锚点须上下交错分配');
     const labelSides=await mf.locator('.pf-label:visible').evaluateAll(nodes=>nodes.map(el=>el.dataset.labelSide));
     assert(labelSides.every(side=>side==='above'||side==='below'),'只保留上方和下方两种位置');
     assert.equal(await mf.locator('#pf-label-guides').count(),0,'不绘制编号引线');
@@ -222,7 +234,8 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
       await mf.locator('#pf-search').fill(id);await mf.locator('#pf-search').press('Enter');await mobile.waitForTimeout(40);
       if(!await mf.locator(`.pf-label[data-id="${id}"]`).isVisible())console.log(JSON.stringify(await mc.evaluate((el,id)=>({id,camera:el.dataset.cameraX,label:el.querySelector(`.pf-label[data-id="${id}"]`).outerHTML,annotations:[...el.querySelectorAll('.pf-annotation')].filter(n=>!n.hidden).map(n=>({text:n.textContent,rect:n.getBoundingClientRect().toJSON()}))}),id)));
       assert.equal(await mf.locator(`.pf-label[data-id="${id}"]`).isVisible(),true,'手机搜索边侧植株须移入可读范围：'+id);
-      assert((await mf.locator('#pf-detail').innerText()).includes(section));
+      const expectedSection={'左架':'左侧有架区','中间区':'中间连接区','右架':'右侧有架区'}[section];
+      assert.equal(await mf.locator(`.pf-label[data-id="${id}"]`).getAttribute('data-section'),expectedSection);
     }
     assert.equal(await mf.locator('.pf-label[data-id="130584"]').count(),0,'不能把粘连编号当成一个植株');
     await mf.locator('#pf-batch-summary').click();assert.equal(await mf.locator('#pf-source').isVisible(),true);
@@ -242,7 +255,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     const touchZoom = await touchCamera(); assert(touchZoom.distance < touchPan.distance); near(touchZoom.pitch, touchPan.pitch); near(touchZoom.x, touchPan.x);
     await mf.locator('#pf-home').click(); await mobile.waitForTimeout(750);
     tests.push('real touch pointer pan and two-finger pinch keep orientation and do not jump');
-    tests.push('no visible dimensions; original scale and smaller pots intact; dot-plus-ID chips only above or below, without leaders or a middle lane; mobile 44px non-overlapping targets; selected priority and readable numbers');
+    tests.push('no visible dimensions; original scale and smaller pots intact; task-first labels with immutable above/below anchors; compact selected ID; mobile 44px non-overlapping targets; selected priority and readable numbers');
     await mf.locator('#pf-export').click(); assert.equal(await mf.locator('#pf-export-dialog').isVisible(), true);
     await mobile.screenshot({ path: path.join(out, 'mobile-export.png'), fullPage: true }); await context.close();
     fallback = await chromium.launch({ headless: true, executablePath, args: ['--disable-webgl'] });
@@ -276,10 +289,52 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     const crossColor = await ff.locator('.pf-label[data-id="49"]').evaluate(el => el.style.getPropertyValue('--task-color'));
     await ff.locator('#pf-search').fill('49'); await ff.locator('#pf-search').press('Enter');
     assert.equal(await ff.locator('.pf-label[data-id="49"]').evaluate(el => el.style.getPropertyValue('--task-color')), crossColor, '搜索定位不能覆盖处理色');
-    assert.match(await ff.locator('#pf-detail').innerText(), /第99朵/);
-    assert.match(await ff.locator('#pf-detail').innerText(), /第100朵/);
+    assert.match(await ff.locator('#pf-detail').innerText(), /49-F99/);
+    assert.match(await ff.locator('#pf-detail').innerText(), /49-F100/);
+    await ff.locator('#pf-search').fill('49-F99');await ff.locator('#pf-search').press('Enter');
+    assert.equal(await ff.locator('#pf-result-buttons button').count(),1,'短花号不能把花序当作另一个植株');
+    assert.equal(await ff.locator('#pf-result-buttons button').innerText(),'49');
+    const taskRow=id=>ff.locator('.pf-task-row[data-flower-id="'+id+'"]');
+    await taskRow('59-F99').locator('.pf-task-done').click();
+    assert.equal(await taskRow('59-F99').getAttribute('data-done'),'true');
+    await ff.locator('#pf-phase').selectOption('evening');assert.equal(await taskRow('59-F99').getAttribute('data-done'),'false','晚间和早晨完成状态独立');
+    await ff.locator('#pf-phase').selectOption('morning');assert.equal(await taskRow('59-F99').getAttribute('data-done'),'true');
+    await taskRow('49-F99').locator('summary').click();
+    await taskRow('49-F99').locator('select').selectOption('其他');
+    await taskRow('49-F99').locator('.pf-task-editor button').click();
+    assert.match(await ff.locator('#pf-feedback-message').innerText(),/写明原因/);
+    await taskRow('49-F99').getByRole('textbox',{name:'49-F99特殊情况',exact:true}).fill('父本花药未裂，改为观察；尚未确认受精');
+    await taskRow('49-F99').getByRole('textbox',{name:'49-F99实测数据',exact:true}).fill('花冠横径50.2 mm；纵径51.1 mm');
+    await taskRow('49-F99').locator('input[type="datetime-local"]').fill('2026-10-27T10:18');
+    await taskRow('49-F99').locator('.pf-task-editor button').click();
+    assert.match(await taskRow('49-F99').locator('summary').innerText(),/实际：其他/);
+    assert.match(await taskRow('49-F99').locator('.pf-task-original').first().textContent(),/接157花粉/,'原计划保持不变');
+    await taskRow('36-Z99').locator('summary').click();
+    await taskRow('36-Z99').getByRole('textbox',{name:'36-Z99实测数据',exact:true}).fill('花冠横径48 mm（未先点保存，复制时应自动收取）');
+    await ff.locator('#pf-operator').fill('测试队员');
+    await fixturePage.context().grantPermissions(['clipboard-read','clipboard-write'],{origin:url});
+    await ff.locator('#pf-copy-feedback').click();
+    const feedbackOutput=await ff.locator('#pf-feedback-text').inputValue();
+    assert.match(feedbackOutput,/同质园执行反馈 v1/);assert.match(feedbackOutput,/执行人：测试队员/);assert.match(feedbackOutput,/59-F99/);assert.match(feedbackOutput,/网页勾选：已完成/);assert.match(feedbackOutput,/实际处理：其他/);assert.match(feedbackOutput,/花冠横径50.2 mm/);assert.match(feedbackOutput,/实际操作时间（北京时间）：2026-10-27 10:18/);assert.match(feedbackOutput,/未列出不表示完成/);
+    await fixturePage.waitForTimeout(120);
+    assert.equal((await fixturePage.evaluate(()=>navigator.clipboard.readText())).replace(/\r\n/g,'\n'),feedbackOutput,'复制输出与显示文本一致（忽略系统换行符）');
+    assert.match(feedbackOutput,/36-Z99/);assert.match(feedbackOutput,/花冠横径48 mm/,'未先保存的输入在复制时仍应被收取');
+    fs.writeFileSync(path.join(out,'feedback-example.txt'),feedbackOutput);
+    await ff.locator('#pf-feedback-dialog').screenshot({path:path.join(out,'feedback-copy-dialog.png')});
+    await fixturePage.screenshot({path:path.join(out,'feedback-copy.png'),fullPage:false});
+    await fixturePage.evaluate(()=>Object.defineProperty(Clipboard.prototype,'writeText',{configurable:true,value:async()=>{throw new Error('Clipboard disabled in test');}}));
+    await ff.locator('#pf-feedback-recopy').click();
+    await ff.locator('#pf-copy-status').filter({hasText:'手动复制'}).waitFor({timeout:3000});assert.equal(await ff.locator('#pf-feedback-text').inputValue(),feedbackOutput,'剪贴板不可用时保留人工复制路径');
+    await ff.locator('#pf-feedback-close').click();
+    await fixturePage.reload();await ff.locator('#pf-task-list').waitFor();await fixturePage.waitForTimeout(100);
+    assert.equal(await taskRow('59-F99').getAttribute('data-done'),'true','当前浏览器刷新保留勾选');
+    assert.match(await taskRow('49-F99').locator('summary').innerText(),/实际：其他/);
+    await fixturePage.goto(url+'revised');await ff.locator('#plant-field-3d[data-feedback-loaded="true"]').waitFor({timeout:3000});await ff.locator('#pf-phase').selectOption('morning');
+    if(!(await taskRow('59-F99').locator('summary').innerText()).includes('计划有更新'))console.log(JSON.stringify({phase:await ff.locator('#pf-phase').inputValue(),loaded:await fa.getAttribute('data-feedback-loaded'),plan:await taskRow('59-F99').locator('.pf-task-original').first().textContent(),saved:await fixturePage.evaluate(()=>{const entries=JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}');return Object.fromEntries(Object.entries(entries).filter(([key])=>key.includes('|59#99|')));})}));
+    assert.match(await taskRow('59-F99').locator('summary').innerText(),/计划有更新/);assert.equal(await taskRow('59-F99').locator('.pf-task-done').isDisabled(),true,'计划变化须核对旧勾选');
+    tests.push('short flower IDs; copied structured feedback and clipboard; completion/notes/measurements/actual time; original plans immutable; phase-separated local persistence; changed-plan conflict protection; no cloud or AI');
     await fixturePage.goto(url + 'expired');
-    await ff.locator('.pf-label[data-id="56"]').waitFor({ state: 'visible' });
+    await ff.locator('#pf-task-list').waitFor({ state: 'visible' });
     await ff.locator('#pf-phase').selectOption('evening');
     assert.equal(await fa.getAttribute('data-batch-expired'), 'true');
     assert.equal(await fa.getAttribute('data-active-tasks'), '0');
@@ -291,4 +346,4 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     fs.writeFileSync(path.join(out, 'checks.json'), JSON.stringify({ passed: true, tests, errors }, null, 2));
     console.log(JSON.stringify({ passed: true, tests, errors }));
   } finally { await browser?.close(); await fallback?.close(); server.close(); }
-})().catch(error => { console.error(error); process.exit(1); });
+})().catch(error => { fs.writeFileSync(path.join(out,'checks.json'),JSON.stringify({passed:false,status:'failed',error:error.message},null,2));console.error(error); process.exit(1); });

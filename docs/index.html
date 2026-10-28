@@ -1863,8 +1863,43 @@ html&gt;body{padding:0}&lt;/style&gt;
     #plant-field-3d .pf-credit summary{padding:10px 0;min-height:40px;overflow-wrap:anywhere}
     #plant-field-3d .pf-source-full{padding:0 0 12px;display:grid;gap:6px;overflow-wrap:anywhere}
     #plant-field-3d .pf-mobile-only{display:none}
+    #plant-field-3d .pf-maptools{position:absolute;left:12px;bottom:12px;display:flex;gap:4px}
+    #plant-field-3d .pf-maptools button{min-width:40px;min-height:40px;padding:5px 8px;background:#17212b;border:1px solid #34414d;border-radius:7px;font-size:12px}
+    #plant-field-3d .pf-maptools button[aria-pressed=&quot;true&quot;]{background:#2a3b48;border-color:#8195a3}
+    #plant-field-3d .pf-camera-note{display:none}
+    #plant-field-3d .pf-detail{min-height:42px;padding:8px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    #plant-field-3d .pf-detail .pf-flower-ref{color:#b5c7d5;font-size:13px}
+    #plant-field-3d .pf-task-section{padding:8px 14px 4px;border-top:1px solid #29333d}
+    #plant-field-3d .pf-task-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 0 8px}
+    #plant-field-3d .pf-task-head h3{font-size:14px;font-weight:500;margin:0}
+    #plant-field-3d .pf-feedback-mode{font-size:11px;color:#b6a588}
+    #plant-field-3d .pf-task-row{border-top:1px solid #29333d;padding:5px 0;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:4px 8px;align-items:center}
+    #plant-field-3d .pf-task-main{border:0;background:transparent;text-align:left;padding:4px 0;display:flex;flex-wrap:wrap;gap:3px 9px;align-items:center;min-height:44px;min-width:0}
+    #plant-field-3d .pf-task-code{font-size:14px;font-variant-numeric:tabular-nums;color:#e3eaf0}
+    #plant-field-3d .pf-task-short{font-size:12px;color:#aabac7;overflow-wrap:anywhere}
+    #plant-field-3d .pf-task-done{border:1px solid #405361;background:#1b2933;border-radius:7px;font-size:12px;min-width:62px;min-height:44px;padding:5px 9px}
+    #plant-field-3d .pf-task-done[aria-pressed=&quot;true&quot;]{background:#254339;border-color:#719b87;color:#c6e8d7}
+    #plant-field-3d .pf-task-done:disabled{opacity:.6}
+    #plant-field-3d .pf-task-more{grid-column:3;font-size:12px;color:#9caebc;justify-self:end;min-width:0}
+    #plant-field-3d .pf-task-more[open]{grid-column:1/-1;justify-self:stretch}
+    #plant-field-3d .pf-task-more summary{width:max-content;min-width:36px;min-height:44px;display:flex;align-items:center;justify-content:center;gap:7px;list-style:none}
+    #plant-field-3d .pf-task-more[open] summary{margin-left:auto}
+    #plant-field-3d .pf-task-more summary::before{content:'···';font-size:18px;line-height:1}
+    #plant-field-3d .pf-task-editor{display:grid;gap:7px;padding:5px 0 8px}
+    #plant-field-3d .pf-task-editor textarea,#plant-field-3d .pf-task-editor select{width:100%;box-sizing:border-box;border:1px solid #40505d;background:#131c24;color:#dbe4ec;border-radius:6px;padding:8px;font:inherit;font-size:16px}
+    #plant-field-3d .pf-task-editor input{display:block;max-width:100%;box-sizing:border-box;border:1px solid #40505d;background:#131c24;color:#dbe4ec;border-radius:6px;padding:8px;font-size:16px;min-height:44px}
+    #plant-field-3d .pf-task-editor textarea{resize:vertical;min-height:68px}
+    #plant-field-3d .pf-task-editor button{justify-self:start;padding:6px 12px;min-height:40px;border:1px solid #40505d;background:#233442;border-radius:6px;font-size:12px}
+    #plant-field-3d .pf-task-original{color:#8699a8;font-size:11px;overflow-wrap:anywhere}
+    #plant-field-3d .pf-task-note{grid-column:1/-1;font-size:12px;color:#c6b18c;overflow-wrap:anywhere}
+    #plant-field-3d .pf-feedback-bar{display:flex;gap:8px;align-items:center;padding:6px 0 10px}
+    #plant-field-3d .pf-feedback-bar input{width:100%;min-width:0;flex:1;box-sizing:border-box;background:#131c24;border:1px solid #40505d;border-radius:6px;padding:9px;font-size:16px}
+    #plant-field-3d .pf-feedback-copy{flex-shrink:0;min-height:44px;padding:7px 12px;background:#2a3b48;border:1px solid #667e8f;border-radius:7px;font-size:13px}
+    #plant-field-3d .pf-feedback-dialog{width:min(92vw,640px);max-height:90vh;box-sizing:border-box;background:#181d24;color:#e3eaf0;border:1px solid #40505d;border-radius:10px;padding:14px}
+    #plant-field-3d .pf-feedback-dialog::backdrop{background:#000b}
+    #plant-field-3d .pf-feedback-dialog textarea{display:block;width:100%;height:300px;box-sizing:border-box;resize:vertical;font:400 14px/1.6 system-ui,'Microsoft YaHei',sans-serif;background:#101820;color:#dbe4ec;border:1px solid #40505d;border-radius:6px;padding:10px;margin:10px 0}
     @media(max-width:480px){#plant-field-3d{border-radius:11px}#plant-field-3d .pf-header{padding-left:13px;gap:8px}#plant-field-3d .pf-toolbar{padding:0 12px 12px;gap:6px}#plant-field-3d .pf-searchbox{padding:0 8px;gap:5px}#plant-field-3d .pf-searchbox input{font-size:16px}#plant-field-3d .pf-iconbutton{padding:8px;min-width:42px}#plant-field-3d .pf-phase{width:70px}#plant-field-3d .pf-stagehead{left:14px}#plant-field-3d .pf-legend{padding-left:14px;padding-right:14px;gap:7px 12px}#plant-field-3d .pf-detail{padding:12px 14px;grid-template-columns:1fr}#plant-field-3d .pf-partner{justify-self:start}#plant-field-3d .pf-results{padding-left:14px;padding-right:14px}#plant-field-3d .pf-import{margin-left:12px;margin-right:12px}#plant-field-3d .pf-camera-note{left:14px;bottom:16px}#plant-field-3d .pf-bottom{padding:10px 12px}#plant-field-3d .pf-zonebutton{padding:8px 12px}#plant-field-3d .pf-credit{padding:8px 14px}}
-    @media(pointer:coarse){#plant-field-3d .pf-label{min-width:44px;min-height:44px}#plant-field-3d .pf-iconbutton,#plant-field-3d .pf-phase,#plant-field-3d .pf-result,#plant-field-3d .pf-partner{min-height:44px}}
+    @media(pointer:coarse){#plant-field-3d .pf-label{min-width:44px;min-height:44px}#plant-field-3d .pf-task-more summary{min-width:44px}#plant-field-3d .pf-maptools button{min-width:44px;min-height:44px;padding:5px}#plant-field-3d .pf-iconbutton,#plant-field-3d .pf-phase,#plant-field-3d .pf-result,#plant-field-3d .pf-partner{min-height:44px}}
     @media(max-width:480px){
       #plant-field-3d .pf-header{padding:10px 12px 6px;min-height:52px;gap:7px}
       #plant-field-3d .pf-brand{font-size:16px;letter-spacing:.02em}
@@ -1885,7 +1920,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       #plant-field-3d .pf-bottom{padding:4px 12px;gap:6px}
       #plant-field-3d .pf-zonebutton{padding:7px 14px;min-height:44px;font-size:13px}
       #plant-field-3d .pf-legend{padding:6px 12px;gap:6px 12px}
-      #plant-field-3d .pf-detail{padding:10px 12px;min-height:62px;gap:5px}
+      #plant-field-3d .pf-detail{padding:7px 12px;min-height:40px;gap:8px}
       #plant-field-3d .pf-detail-title{gap:7px;font-size:14px}
       #plant-field-3d .pf-action{line-height:1.65;margin-top:3px}
       #plant-field-3d .pf-credit{padding:0 12px}
@@ -1921,21 +1956,26 @@ html&gt;body{padding:0}&lt;/style&gt;
     &lt;span class=&quot;pf-annotation&quot; id=&quot;pf-pending-label&quot; style=&quot;color:#cfb68b&quot; hidden&gt;两株编号待确认&lt;/span&gt;
     &lt;span class=&quot;pf-pairtag&quot; id=&quot;pf-pairtag&quot; hidden&gt;&lt;/span&gt;
     &lt;div class=&quot;pf-camera-note&quot; id=&quot;pf-camera-note&quot;&gt;左右平移 · 上下俯仰 · 滚轮缩放&lt;/div&gt;
+    &lt;div class=&quot;pf-maptools&quot; aria-label=&quot;视野与编号&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;cursor-interaction&quot; id=&quot;pf-label-mode&quot; aria-label=&quot;显示全部编号&quot; aria-pressed=&quot;false&quot;&gt;待办&lt;/button&gt;&lt;button type=&quot;button&quot; class=&quot;cursor-interaction&quot; data-focus=&quot;all&quot; aria-pressed=&quot;true&quot;&gt;总览&lt;/button&gt;&lt;button type=&quot;button&quot; class=&quot;cursor-interaction&quot; data-focus=&quot;left&quot; aria-pressed=&quot;false&quot;&gt;左&lt;/button&gt;&lt;button type=&quot;button&quot; class=&quot;cursor-interaction&quot; data-focus=&quot;middle&quot; aria-pressed=&quot;false&quot;&gt;中&lt;/button&gt;&lt;button type=&quot;button&quot; class=&quot;cursor-interaction&quot; data-focus=&quot;right&quot; aria-pressed=&quot;false&quot;&gt;右&lt;/button&gt;&lt;/div&gt;
     &lt;button class=&quot;pf-iconbutton pf-home cursor-interaction&quot; id=&quot;pf-home&quot; type=&quot;button&quot; aria-label=&quot;复位视角&quot; data-tooltip=&quot;复位视角&quot;&gt;&lt;span aria-hidden=&quot;true&quot;&gt;↺&lt;/span&gt;&lt;/button&gt;
   &lt;/div&gt;
   &lt;div class=&quot;pf-legend&quot; id=&quot;pf-task-legend&quot; aria-label=&quot;当前时段的任务颜色&quot; hidden&gt;&lt;span data-kind=&quot;cross&quot;&gt;&lt;i style=&quot;--mark:var(--pf-red)&quot;&gt;&lt;/i&gt;异交&lt;/span&gt;&lt;span data-kind=&quot;donor&quot;&gt;&lt;i style=&quot;--mark:var(--pf-yellow)&quot;&gt;&lt;/i&gt;供粉&lt;/span&gt;&lt;span data-kind=&quot;auto&quot;&gt;&lt;i style=&quot;--mark:var(--pf-green)&quot;&gt;&lt;/i&gt;自主&lt;/span&gt;&lt;span data-kind=&quot;open&quot;&gt;&lt;i style=&quot;--mark:#dce5eb&quot;&gt;&lt;/i&gt;开放&lt;/span&gt;&lt;span data-kind=&quot;measure&quot;&gt;&lt;i style=&quot;--mark:var(--pf-blue)&quot;&gt;&lt;/i&gt;采样&lt;/span&gt;&lt;span data-kind=&quot;hand&quot; id=&quot;pf-hand-legend&quot; hidden&gt;&lt;i style=&quot;--mark:var(--pf-purple)&quot;&gt;&lt;/i&gt;人工自交&lt;/span&gt;&lt;/div&gt;
   &lt;nav class=&quot;pf-bottom&quot; aria-label=&quot;片区切换，第二片区在第一片区北侧&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;pf-zonebutton cursor-interaction&quot; data-zone=&quot;0&quot; aria-pressed=&quot;true&quot; aria-label=&quot;第一片区，南侧&quot;&gt;&lt;small class=&quot;pf-desktop-only&quot;&gt;南&lt;/small&gt;&lt;span class=&quot;pf-desktop-only&quot;&gt;第一片区&lt;/span&gt;&lt;span class=&quot;pf-mobile-only&quot;&gt;一区&lt;/span&gt;&lt;/button&gt;&lt;button type=&quot;button&quot; class=&quot;pf-zonebutton cursor-interaction&quot; data-zone=&quot;1&quot; aria-pressed=&quot;false&quot; aria-label=&quot;第二片区，北侧&quot;&gt;&lt;small class=&quot;pf-desktop-only&quot;&gt;北&lt;/small&gt;&lt;span class=&quot;pf-desktop-only&quot;&gt;第二片区&lt;/span&gt;&lt;span class=&quot;pf-mobile-only&quot;&gt;二区&lt;/span&gt;&lt;/button&gt;&lt;/nav&gt;
   &lt;div class=&quot;pf-detail&quot; id=&quot;pf-detail&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
+  &lt;section class=&quot;pf-task-section&quot; id=&quot;pf-task-section&quot; aria-label=&quot;逐花任务清单&quot;&gt;&lt;div class=&quot;pf-task-head&quot;&gt;&lt;h3 id=&quot;pf-task-title&quot;&gt;任务&lt;/h3&gt;&lt;span id=&quot;pf-feedback-mode&quot; class=&quot;pf-feedback-mode&quot;&gt;勾选后复制反馈&lt;/span&gt;&lt;/div&gt;&lt;div id=&quot;pf-task-list&quot;&gt;&lt;/div&gt;&lt;div class=&quot;pf-feedback-bar&quot;&gt;&lt;input id=&quot;pf-operator&quot; type=&quot;text&quot; maxlength=&quot;20&quot; placeholder=&quot;执行人（选填）&quot; aria-label=&quot;执行人（选填）&quot;&gt;&lt;button type=&quot;button&quot; id=&quot;pf-copy-feedback&quot; class=&quot;pf-feedback-copy cursor-interaction&quot;&gt;复制反馈&lt;/button&gt;&lt;/div&gt;&lt;span id=&quot;pf-feedback-message&quot; class=&quot;pf-task-note&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;&lt;/span&gt;&lt;/section&gt;
   &lt;details class=&quot;pf-credit&quot; id=&quot;pf-data-details&quot;&gt;&lt;summary class=&quot;cursor-interaction&quot; id=&quot;pf-batch-summary&quot;&gt;任务信息&lt;/summary&gt;&lt;div class=&quot;pf-source-full&quot;&gt;&lt;span&gt;原发布说明（不随新增盆位分配任务）&lt;/span&gt;&lt;span id=&quot;pf-source&quot;&gt;未载入当日任务&lt;/span&gt;&lt;span&gt;区段长度按实测比例 · 盆距示意&lt;/span&gt;&lt;/div&gt;&lt;/details&gt;
   &lt;dialog id=&quot;pf-export-dialog&quot; class=&quot;pf-export-dialog&quot; aria-label=&quot;保存盆位图片&quot;&gt;&lt;div class=&quot;pf-export-actions&quot;&gt;&lt;span&gt;微信内可长按图片保存&lt;/span&gt;&lt;a id=&quot;pf-export-download&quot; download=&quot;同质园盆位.png&quot;&gt;下载PNG&lt;/a&gt;&lt;button type=&quot;button&quot; class=&quot;pf-export&quot; id=&quot;pf-export-close&quot;&gt;关闭&lt;/button&gt;&lt;/div&gt;&lt;img id=&quot;pf-export-image&quot; alt=&quot;当前片区的盆位、处理颜色和异交配对示意图&quot;&gt;&lt;/dialog&gt;
+  &lt;dialog id=&quot;pf-feedback-dialog&quot; class=&quot;pf-feedback-dialog&quot; aria-label=&quot;操作反馈文本&quot;&gt;&lt;div class=&quot;pf-export-actions&quot;&gt;&lt;span id=&quot;pf-copy-status&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;可长按下方文本复制&lt;/span&gt;&lt;button type=&quot;button&quot; class=&quot;pf-feedback-copy cursor-interaction&quot; id=&quot;pf-feedback-close&quot;&gt;关闭&lt;/button&gt;&lt;/div&gt;&lt;textarea id=&quot;pf-feedback-text&quot; readonly aria-label=&quot;操作反馈，可选中复制&quot;&gt;&lt;/textarea&gt;&lt;button type=&quot;button&quot; class=&quot;pf-feedback-copy cursor-interaction&quot; id=&quot;pf-feedback-recopy&quot;&gt;复制文本&lt;/button&gt;&lt;/dialog&gt;
   &lt;script&gt;
   (()=&gt;{
     const root=document.getElementById('plant-field-3d');
+    root.dataset.feedbackLoaded='false';
     const $=s=&gt;root.querySelector(s),stage=$('#pf-stage'),canvas=$('#pf-canvas');
     const escape=s=&gt;String(s).replace(/[&amp;&lt;&gt;&quot;']/g,c=&gt;({'&amp;':'&amp;amp;','&lt;':'&amp;lt;','&gt;':'&amp;gt;','&quot;':'&amp;quot;',&quot;'&quot;:'&amp;#39;'}[c]));
     const clean=s=&gt;String(s??'').normalize('NFKC').trim();
     let tasks=[];
     const publishedTasks={&quot;date&quot;:&quot;2026-10-27&quot;,&quot;label&quot;:&quot;10月26日晚／10月27日早（北京时间）· 仅展示已录入盆位的4/21株；未定位17株：958、1098、77、433、873、868、808、882、518、887、886、340、956、585、1170、616、163&quot;,&quot;tasks&quot;:[{&quot;area&quot;:&quot;第一片区&quot;,&quot;id&quot;:&quot;157&quot;,&quot;flower&quot;:&quot;7&quot;,&quot;evening&quot;:&quot;黄线；套袋；不去雄&quot;,&quot;morning&quot;:&quot;人工自交：取本花花粉授本花柱头，再套袋，黄线&quot;},{&quot;area&quot;:&quot;第一片区&quot;,&quot;id&quot;:&quot;49&quot;,&quot;flower&quot;:&quot;7&quot;,&quot;evening&quot;:&quot;绿线；套袋；不去雄&quot;,&quot;morning&quot;:&quot;自主自交：确认开放与套袋完整，保持套袋，不人工授粉&quot;},{&quot;area&quot;:&quot;第一片区&quot;,&quot;id&quot;:&quot;59&quot;,&quot;flower&quot;:&quot;5&quot;,&quot;evening&quot;:&quot;黄线；套袋；不去雄&quot;,&quot;morning&quot;:&quot;人工自交：取本花花粉授本花柱头，再套袋，黄线&quot;},{&quot;area&quot;:&quot;第一片区&quot;,&quot;id&quot;:&quot;792&quot;,&quot;flower&quot;:&quot;8&quot;,&quot;evening&quot;:&quot;已完成：红线；去雄；套袋&quot;,&quot;morning&quot;:&quot;接886花粉（父本第7朵，父本盆位未录入）；重新套袋，红线（886→792）&quot;}]};
+    const plantIdentities={&quot;2&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;36&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;46&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;47&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;49&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;54&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;56&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;59&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;79&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;81&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;82&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;85&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;143&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;144&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;156&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;157&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;159&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;163&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;207&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;208&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;210&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;215&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;218&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;220&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;224&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;227&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;287&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;291&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;295&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;298&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;317&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;320&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;330&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;402&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;416&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;483&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;515&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;542&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;585&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;646&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;648&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;692&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;694&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;713&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;782&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;792&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;794&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;795&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;821&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;826&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;834&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;886&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;890&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;907&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;922&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;928&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;929&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;940&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;1007&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;1069&quot;:{&quot;colorCode&quot;:&quot;F&quot;},&quot;1082&quot;:{&quot;colorCode&quot;:&quot;B&quot;},&quot;1093&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;1130&quot;:{&quot;colorCode&quot;:&quot;Z&quot;},&quot;1131&quot;:{&quot;colorCode&quot;:&quot;Z&quot;}};
     // Row numbers follow the user: first = south/lowest, third = north/highest.
     // IDs and row order come from the user; gaps and local offsets follow the reference photos.
     const areas=['第一片区','第二片区'],centers=[{x:0,z:0},{x:0,z:-25}],columns=12,spacing=1.62,rowSpacing=1.45,rowElevations=[0,.5,1],frameDepth=rowSpacing*1.5-.15,layout=new Map(),pots=[];
@@ -1967,7 +2007,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     }));
     const colors={wire:[.64,.83,.94,1],grid:[.25,.31,.37,.46],frame:[.47,.57,.64,.72],cross:[.95,.57,.59,1],donor:[.90,.76,.51,1],auto:[.56,.82,.65,1],open:[.85,.90,.94,1],measure:[.53,.75,.96,1],hand:[.77,.67,.92,1],other:[.45,.57,.66,1]};
     const settings={frameHeight:3.35,duration:1900,brightness:1,greenhouse:true},potScale=.86;
-    let phase='morning',queryIds=[],selected='56',activePair='',currentZone=0,pending=null,taskLabel='盆位核对 · 未载入当日任务';
+    let phase='morning',queryIds=[],selected='56',activePair='',currentZone=0,pending=null,taskLabel='盆位核对 · 未载入当日任务',labelScope='tasks',focusedSection='all',feedback={},copyRequestId=0;
     if(typeof publishedTasks!=='undefined'){tasks=publishedTasks.tasks;taskLabel=publishedTasks.label+(publishedTasks.date?' · '+publishedTasks.date:'');}
     const taskDate=typeof publishedTasks!=='undefined'?publishedTasks.date:null;
     const dateText=d=&gt;(d.getUTCMonth()+1)+'月'+d.getUTCDate()+'日';
@@ -1980,13 +2020,47 @@ html&gt;body{padding:0}&lt;/style&gt;
     let camera={cx:0,cz:0,yaw:0,pitch:.69,distance:31},flight=null,frameRequested=false,mvp=null,cssWidth=736,cssHeight=560,sceneBuffers=null,lastSavedSignature='';
     const motion=matchMedia('(prefers-reduced-motion: reduce)');
     function kind(t){const s=t.morning;if(/接\s*\d+\s*花粉/.test(s))return'cross';if(/给\s*\d+\s*供粉/.test(s))return'donor';if(s.includes('自主自交'))return'auto';if(s.includes('人工自交'))return'hand';if(s.includes('自然开放'))return'open';if(/摘取|测量|采样/.test(s))return'measure';return'other';}
-    function needsAction(t,when=phase){
-      if(!t||expired())return false;
+    function hasPlannedAction(t,when=phase){
+      if(!t)return false;
       const s=String(t[when]||'').trim();
-      if(!s||/已完成|已取消|已摘取|已丢弃/.test(s)||/^(不处理|无需操作|无操作|—)/.test(s))return false;
+      if(!s||/已取消|已丢弃/.test(s)||/^(不处理|无需操作|无操作|—)/.test(s))return false;
       const actionable=s.replace(/不(?:套袋|去雄|授粉|人工授粉|摘取|绑线)/g,'');
       return /接\s*\d+\s*花粉|给\s*\d+\s*供粉|套袋|去雄|绑|摘取|测量|采样|人工自交|自主自交|自然开放|确认|检查/.test(actionable);
     }
+    const feedbackKey=(t,when=phase)=&gt;(taskDate||'undated')+'|'+t.id+'#'+t.flower+'|'+when;
+    const rawFeedback=(t,when=phase)=&gt;feedback[feedbackKey(t,when)];
+    const currentFeedback=(t,when=phase)=&gt;{const value=rawFeedback(t,when);return value?.plan===t[when]?value:null;};
+    function needsAction(t,when=phase){return !!t&amp;&amp;!expired()&amp;&amp;hasPlannedAction(t,when)&amp;&amp;!/(已完成|已摘取)/.test(t[when])&amp;&amp;!currentFeedback(t,when)?.done;}
+    const flowerId=t=&gt;{if(!t)return'';if(new RegExp('^'+t.id+'-[BFZ]'+t.flower+'$').test(t.flowerId||''))return t.flowerId;const c=typeof plantIdentities==='undefined'?null:plantIdentities[t.id]?.colorCode;return c?t.id+'-'+c+t.flower:t.id+' · '+t.flower;};
+    const kindNames={cross:'人工异交',donor:'供粉',auto:'自主自交',hand:'人工自交',open:'自然开放',measure:'摘取测量',other:'其他'};
+    function shortAction(t,when=phase){
+      const source=t[when]||'';if(!hasPlannedAction(t,when))return'—';
+      if(when==='evening')return /去雄/.test(source.replace(/不去雄/g,''))?'去雄 · 套袋':source.includes('套袋')?'套袋':'检查';
+      const k=kind(t),m=source.match(/接\s*(\d+)\s*花粉/),flower=source.match(/父本第(\d+)朵/);
+      if(m)return'异交 ← '+flowerId({id:m[1],flower:flower?.[1]||'?',flowerId:t.donorFlowerId});
+      const recipients=[...source.matchAll(/给\s*(\d+)\s*供粉/g)].map(m=&gt;m[1]);
+      if(recipients.length)return'供粉 → '+recipients.join('、');
+      return kindNames[k]||'检查';
+    }
+    function persistFeedback(){
+      try{window.parent.postMessage({type:'plant-feedback-save',entries:feedback},'*');}catch(e){}
+      save();
+    }
+    function acceptFeedback(entries){
+      if(!entries||typeof entries!=='object'||Array.isArray(entries))return;
+      const accepted={};for(const [key,value]of Object.entries(entries).slice(-500)){
+        if(!/^(?:\d{4}-\d{2}-\d{2}|undated)\|\d+#\d+\|(morning|evening)$/.test(key)||!value||typeof value.plan!=='string')continue;
+        accepted[key]={plan:value.plan.slice(0,800),done:value.done===true,note:String(value.note||'').slice(0,240),measurements:String(value.measurements||'').slice(0,500),operatedAt:/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value.operatedAt||'')?value.operatedAt:'',actual:Object.values(kindNames).includes(value.actual)?value.actual:'',updatedAt:Number.isFinite(Date.parse(value.updatedAt))?String(value.updatedAt).slice(0,30):''};
+      }feedback=accepted;root.dataset.feedbackLoaded='true';refresh();
+    }
+    window.addEventListener('message',event=&gt;{
+      if(event.source!==window.parent)return;
+      if(event.data?.type==='plant-feedback-state')acceptFeedback(event.data.entries);
+      if(event.data?.type==='plant-feedback-saved')$('#pf-feedback-message').textContent='已保存；做完后复制反馈';
+      if(event.data?.type==='plant-feedback-save-error')$('#pf-feedback-message').textContent='本机保存失败，请保留截图';
+      if(event.data?.type==='plant-feedback-copied'&amp;&amp;event.data.requestId===copyRequestId)$('#pf-copy-status').textContent='已复制，可发给负责人';
+      if(event.data?.type==='plant-feedback-copy-error'&amp;&amp;event.data.requestId===copyRequestId)$('#pf-copy-status').textContent='请长按下方文本，手动复制';
+    });
     function pairsOf(ts){
       const pairs=new Map();
       for(const t of ts)for(const m of t.morning.matchAll(/接\s*(\d+)\s*花粉/g)){
@@ -2013,8 +2087,13 @@ html&gt;body{padding:0}&lt;/style&gt;
     const ease=t=&gt;t*t*(3-2*t),clamp=(v,a,b)=&gt;Math.max(a,Math.min(b,v));
     const distanceForWidth=(zone=currentZone)=&gt;Math.max(zone===0?33:29,(zone===0?14.6:15)/(Math.tan(38*Math.PI/360)*(cssWidth/cssHeight)));
     const defaultCamera=zone=&gt;({cx:zone===0?(leftSpan.left+baySpan.right)/2:centers[zone].x,cz:centers[zone].z,yaw:0,pitch:zone===0?.85:.69,distance:distanceForWidth(zone)});
-    function restore(s){const p=s?.privateContent??s;if(![2,3,4,5,6].includes(p?.version))return false;if(['morning','evening'].includes(p.phase))phase=p.phase;if(p.version&gt;=5&amp;&amp;Array.isArray(p.queryIds))queryIds=p.queryIds.map(String).filter(x=&gt;/^\d+$/.test(x)).slice(0,300);if(layout.has(String(p.selected)))selected=String(p.selected);if(p.version&gt;=5&amp;&amp;typeof p.activePair==='string')activePair=p.activePair;currentZone=p.version&gt;=5&amp;&amp;[0,1].includes(p.zone)?p.zone:0;camera=defaultCamera(currentZone);if(p.version&gt;=5&amp;&amp;typeof p.greenhouse==='boolean')settings.greenhouse=p.greenhouse;if(p.geometryRevision===geometryRevision&amp;&amp;p.navigation==='pan-tilt'&amp;&amp;p.camera&amp;&amp;['cx','cz','pitch','distance'].every(k=&gt;Number.isFinite(p.camera[k]))){camera={cx:clamp(p.camera.cx,-cameraLimits.pan,cameraLimits.pan),cz:centers[currentZone].z,yaw:0,pitch:clamp(p.camera.pitch,cameraLimits.minPitch,cameraLimits.maxPitch),distance:clamp(p.camera.distance,9,85)};}return true;}
-    function save(){const privateContent={version:6,geometryRevision,navigation:'pan-tilt',selected,phase,activePair,queryIds,zone:currentZone,greenhouse:settings.greenhouse,camera:{...(flight?flight.target:camera)}};lastSavedSignature=JSON.stringify(privateContent);try{window.openai?.setWidgetState?.({modelContent:{version:6,geometryRevision,selectedPlant:selected,phase,selectedPair:activePair,filterPlantIds:queryIds,zone:areas[currentZone],positions:'partial-real',section:'第一片区左架、中间区、右架',confirmedPlants:layout.size,middlePositions:pendingSecondRow?'two-identifiers-pending':'user-confirmed-order-photo-spaced',leftPositions:'user-confirmed-order-photo-spaced',measuredLengthsMeters:measuredLengths,excludedOuterUntrainedRow:true,stackedPair:['210','968'],pendingSecondRow,view:'3d-wireframe',navigation:'pan-tilt',arrangement:'zone2-north-of-zone1',firstZoneFrames:2,roofConnectingPoles:2,greenhouseNorth:settings.greenhouse,terraces:'row1-south-low-row3-north-high'},privateContent})?.catch(()=&gt;{});}catch(e){}}
+    function restore(s){const p=s?.privateContent??s;if(![2,3,4,5,6,7].includes(p?.version))return false;if(['morning','evening'].includes(p.phase))phase=p.phase;if(p.version&gt;=5&amp;&amp;Array.isArray(p.queryIds))queryIds=p.queryIds.map(String).filter(x=&gt;/^\d+$/.test(x)).slice(0,300);if(layout.has(String(p.selected)))selected=String(p.selected);if(p.version&gt;=5&amp;&amp;typeof p.activePair==='string')activePair=p.activePair;if(p.version&gt;=7&amp;&amp;['tasks','all'].includes(p.labelScope))labelScope=p.labelScope;if(p.version&gt;=7&amp;&amp;['all','left','middle','right'].includes(p.focusedSection))focusedSection=p.focusedSection;currentZone=p.version&gt;=5&amp;&amp;[0,1].includes(p.zone)?p.zone:0;camera=defaultCamera(currentZone);if(p.version&gt;=5&amp;&amp;typeof p.greenhouse==='boolean')settings.greenhouse=p.greenhouse;if(p.geometryRevision===geometryRevision&amp;&amp;p.navigation==='pan-tilt'&amp;&amp;p.camera&amp;&amp;['cx','cz','pitch','distance'].every(k=&gt;Number.isFinite(p.camera[k]))){camera={cx:clamp(p.camera.cx,-cameraLimits.pan,cameraLimits.pan),cz:centers[currentZone].z,yaw:0,pitch:clamp(p.camera.pitch,cameraLimits.minPitch,cameraLimits.maxPitch),distance:clamp(p.camera.distance,9,85)};}return true;}
+    function save(){
+      const privateContent={version:7,geometryRevision,navigation:'pan-tilt',selected,phase,activePair,queryIds,labelScope,focusedSection,zone:currentZone,greenhouse:settings.greenhouse,camera:{...(flight?flight.target:camera)}};
+      lastSavedSignature=JSON.stringify(privateContent);
+      const modelContent={version:7,geometryRevision,selectedPlant:selected,phase,selectedPair:activePair,filterPlantIds:queryIds,labelScope,focusedSection,feedbackMode:'manual-copy-no-cloud',zone:areas[currentZone],positions:'partial-real',section:'第一片区左架、中间区、右架',confirmedPlants:layout.size,middlePositions:pendingSecondRow?'two-identifiers-pending':'user-confirmed-order-photo-spaced',leftPositions:'user-confirmed-order-photo-spaced',measuredLengthsMeters:measuredLengths,excludedOuterUntrainedRow:true,stackedPair:['210','968'],pendingSecondRow,view:'3d-wireframe',navigation:'pan-tilt',arrangement:'zone2-north-of-zone1',firstZoneFrames:2,roofConnectingPoles:2,greenhouseNorth:settings.greenhouse,terraces:'row1-south-low-row3-north-high'};
+      try{window.openai?.setWidgetState?.({modelContent,privateContent})?.catch(()=&gt;{});}catch(e){}
+    }
     if(!restore(window.openai?.widgetState))camera=defaultCamera(0);
     window.addEventListener('openai:set_globals',event=&gt;{const state=event.detail?.globals?.widgetState;if(state&amp;&amp;JSON.stringify(state.privateContent??state)===lastSavedSignature)return;if(restore(state)){flight=null;$('#pf-search').value=queryIds.join(' ');refresh();requestRender();}});
 
@@ -2131,19 +2210,22 @@ html&gt;body{padding:0}&lt;/style&gt;
       // Keep dot + ID together directly above or below its pot, without leaders
       // or a third floating lane. Preserve the pot's horizontal position.
       const stageRect=stage.getBoundingClientRect();
-      for(const el of stage.querySelectorAll('.pf-annotation:not(#pf-pending-label),.pf-stagehead,.pf-north,.pf-home,.pf-camera-note')){
+      for(const el of stage.querySelectorAll('.pf-annotation:not(#pf-pending-label),.pf-stagehead,.pf-north,.pf-home,.pf-camera-note,.pf-maptools')){
         if(el.hidden||getComputedStyle(el).display==='none')continue;
         const b=el.getBoundingClientRect();occupied.push({x:b.left-stageRect.left,y:b.top-stageRect.top,w:b.width,h:b.height,annotation:el.classList.contains('pf-annotation')?el:null});
       }
-      const labels=[...$('#pf-labels').children].map(el=&gt;{const p=layout.get(el.dataset.id);return{el,p,s:project([p.x,p.y+.64*potScale,p.z]),priority:p.id===selected?10:filter.has(p.id)?8:pair&amp;&amp;(p.id===pair.donor||p.id===pair.mother)?6:needsAction(activeRecord(p.id))?4:1};}).sort((a,b)=&gt;b.priority-a.priority||a.s.depth-b.s.depth||a.p.x-b.p.x);
+      const focusNames={left:'左侧有架区',middle:'中间连接区',right:'右侧有架区'};
+      const labels=[...$('#pf-labels').children].map(el=&gt;{const p=layout.get(el.dataset.id),relevant=records(p.id).some(t=&gt;hasPlannedAction(t));return{el,p,relevant,s:project([p.x,p.y+.64*potScale,p.z]),priority:p.id===selected?10:filter.has(p.id)?8:pair&amp;&amp;(p.id===pair.donor||p.id===pair.mother)?6:relevant?4:1};}).sort((a,b)=&gt;b.priority-a.priority||a.p.row-b.p.row||a.p.x-b.p.x||a.p.col-b.p.col);
       let visibleCount=0;
-      for(const {el,p,s,priority}of labels){
+      for(const {el,p,s,priority,relevant}of labels){
         let show=false;
-        if(s.visible&amp;&amp;(p.zone===currentZone||flight?.phase==='transfer')&amp;&amp;(!flight||flight.phase==='land'||s.depth&lt;85)){
+        const eligible=labelScope==='all'||relevant||priority&gt;=6||(focusedSection!=='all'&amp;&amp;p.section===focusNames[focusedSection]);
+        el.dataset.labelSide=(p.col+p.row)%2?'below':'above';
+        if(eligible&amp;&amp;s.visible&amp;&amp;(p.zone===currentZone||flight?.phase==='transfer')&amp;&amp;(!flight||flight.phase==='land'||s.depth&lt;85)){
           el.hidden=false;const w=el.offsetWidth,h=el.offsetHeight;
           const back=project([p.x,p.y+.64*potScale,p.z-.43*potScale]),front=project([p.x,p.y+.64*potScale,p.z+.43*potScale]),base=project([p.x,p.y+.055,p.z+.275*potScale]);
           const upper={side:'above',y:Math.min(s.y,back.y,front.y)-h/2-2},lower={side:'below',y:Math.max(s.y,front.y,base.y)+h/2+2};
-          const candidates=(p.col+p.row)%2?[lower,upper]:[upper,lower];
+          const candidates=[(p.col+p.row)%2?lower:upper];
           for(const {side,y}of candidates){
             const x=s.x,box={x:x-w/2,y:y-h/2,w,h};
             if(box.x&lt;6||box.x+w&gt;cssWidth-6||box.y&lt;63||box.y+h&gt;cssHeight-45)continue;
@@ -2158,7 +2240,7 @@ html&gt;body{padding:0}&lt;/style&gt;
         }
         el.hidden=!show;
       }
-      root.dataset.visibleLabels=String(visibleCount);root.dataset.labelLayout='above-below-no-leaders';root.dataset.potScale=String(potScale);root.dataset.dimensionAnnotations='hidden';
+      root.dataset.visibleLabels=String(visibleCount);root.dataset.labelLayout='fixed-anchors-task-first';root.dataset.labelScope=labelScope;root.dataset.potScale=String(potScale);root.dataset.dimensionAnnotations='hidden';
       const pendingLabel=$('#pf-pending-label'),pendingAnchor=position(pendingLabel,[middleSpan.left+(middleSpan.right-middleSpan.left)*.80,.99,0]);pendingLabel.hidden=!pendingSecondRow||currentZone!==0||flying||cssWidth&lt;=480||pendingLabel.hidden;if(!pendingLabel.hidden){const w=pendingLabel.offsetWidth,h=pendingLabel.offsetHeight;pendingLabel.hidden=occupied.some(b=&gt;pendingAnchor.x-w/2&lt;b.x+b.w+3&amp;&amp;pendingAnchor.x+w/2&gt;b.x-3&amp;&amp;pendingAnchor.y-h/2&lt;b.y+b.h+3&amp;&amp;pendingAnchor.y+h/2&gt;b.y-3);}
       const tag=$('#pf-pairtag');if(pair&amp;&amp;!flying){const a=layout.get(pair.donor),b=layout.get(pair.mother);if(a&amp;&amp;b){tag.textContent=pair.donor+' → '+pair.mother;const anchor=position(tag,[(a.x+b.x)/2,(a.y+b.y)/2+.98+(a.zone===b.zone?2.25:5),(a.z+b.z)/2]);if(!tag.hidden){const w=tag.offsetWidth,h=tag.offsetHeight;let placed=false;for(const [dx,dy]of [[0,0],[0,-34],[0,34],[0,-64],[0,64],[50,0],[-50,0]]){const x=clamp(anchor.x+dx,w/2+8,cssWidth-w/2-8),y=anchor.y+dy,box={x:x-w/2,y:y-h/2,w,h};if(y&lt;75||y&gt;cssHeight-55)continue;if(occupied.some(b=&gt;box.x&lt;b.x+b.w+4&amp;&amp;box.x+box.w+4&gt;b.x&amp;&amp;box.y&lt;b.y+b.h+4&amp;&amp;box.y+box.h+4&gt;b.y))continue;tag.style.left=x+'px';tag.style.top=y+'px';placed=true;break;}tag.hidden=!placed;}}else tag.hidden=true;}else tag.hidden=true;
     }
@@ -2166,6 +2248,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     function cameraMix(a,b,t){const out={};for(const key of ['cx','cz','yaw','pitch','distance'])out[key]=mix(a[key],b[key],ease(t));return out;}
     function flyTo(zone,reset=false){
       if(zone===currentZone&amp;&amp;!reset&amp;&amp;!flight)return;
+      if(zone!==currentZone||reset)focusedSection='all';
       const target=defaultCamera(zone),start={...camera},fromZone=currentZone;
       if(layout.get(selected)?.zone!==zone){selected=queryIds.find(id=&gt;layout.get(id)?.zone===zone)??tasks.find(t=&gt;layout.get(t.id)?.zone===zone)?.id??'';activePair=pairsOf(tasks).find(p=&gt;p.donor===selected||p.mother===selected)?.key??'';}
       currentZone=zone;root.dataset.zone=String(zone);root.querySelectorAll('[data-zone]').forEach(b=&gt;b.setAttribute('aria-pressed',String(Number(b.dataset.zone)===zone)));
@@ -2183,29 +2266,88 @@ html&gt;body{padding:0}&lt;/style&gt;
       if(!pairsOf(tasks).some(p=&gt;p.key===activePair))activePair='';
       for(const option of $('#pf-phase').options)option.textContent=periodLabels[option.value];
       $('#pf-phase').value=phase;const activeKinds=new Set(tasks.filter(t=&gt;needsAction(t)).map(kind));root.querySelectorAll('#pf-task-legend [data-kind]').forEach(el=&gt;el.hidden=!activeKinds.has(el.dataset.kind));$('#pf-task-legend').hidden=!activeKinds.size;$('#pf-source').textContent=taskLabel+(expired()?' · 历史批次，不作为今日待办':'');$('#pf-layout-status').textContent=layout.size+'株'+(pendingSecondRow?' · 2待核':'');
-      const batchText=batchMorning?periodLabels.evening+' / '+periodLabels.morning:'暂无任务';$('#pf-batch-summary').textContent=batchText+(tasks.length?' · '+new Set(tasks.map(t=&gt;t.id)).size+'株任务':'')+(expired()?' · 历史批次':'');
+      const batchText=batchMorning?periodLabels.evening+' / '+periodLabels.morning:'暂无批次';$('#pf-batch-summary').textContent=batchText+(expired()?' · 历史':'');
+      $('#pf-label-mode').textContent=labelScope==='all'?'全部':'待办';$('#pf-label-mode').setAttribute('aria-pressed',String(labelScope==='all'));$('#pf-label-mode').setAttribute('aria-label',labelScope==='all'?'只显示任务和选中编号':'显示全部编号');root.querySelectorAll('[data-focus]').forEach(el=&gt;el.setAttribute('aria-pressed',String(el.dataset.focus===focusedSection)));
       root.querySelectorAll('[data-zone]').forEach(b=&gt;b.setAttribute('aria-pressed',String(Number(b.dataset.zone)===currentZone)));
       const group=$('#pf-labels'),pair=getPair(),filter=new Set(queryIds);group.replaceChildren();
       for(const [id,p]of layout){const t=activeRecord(id),active=needsAction(t),k=active?kind(t):'other',c=colors[k],button=document.createElement('button');button.type='button';button.className='pf-label cursor-interaction';button.dataset.id=id;button.dataset.section=p.section;button.dataset.note=p.note;button.dataset.taskActive=String(active);button.dataset.taskKind=t?kind(t):'none';button.dataset.elevation=String(p.y);button.dataset.row=String(p.row+1);button.dataset.col=String(p.col+1);button.dataset.x=String(p.x);button.dataset.z=String(p.z);const chip=document.createElement('span');chip.className='pf-label-chip';chip.textContent=id;button.append(chip);button.style.setProperty('--task-color','rgb('+c.slice(0,3).map(v=&gt;Math.round(v*255)).join(',')+')');button.setAttribute('aria-pressed',String(id===selected));button.setAttribute('aria-label',id+'号，'+p.area+p.section+'第'+(p.row+1)+'排左起第'+(p.col+1)+'株，'+['南侧低台阶','中间台阶','北侧高台阶'][p.row]+(p.note?'，'+p.note:'')+'，左右顺序已录入、间距示意，'+periodLabels[phase]+'，'+(t?'第'+t.flower+'朵，'+(active?'待办：':'本时段无需操作：')+locationAwareOperation(t):tasks.length?'本批次无任务':'未载入任务'));if(t)button.classList.add(active?'pf-task-active':'pf-task-inactive');if(pair&amp;&amp;(id===pair.donor||id===pair.mother))button.classList.add('pf-related');button.addEventListener('click',()=&gt;selectPlant(id));group.append(button);}
-      root.dataset.labelMode='compact-chip-with-touch-target';
+      root.dataset.labelMode='compact-chip-with-touch-target';root.dataset.feedbackMode='manual-copy-no-cloud';
       const results=$('#pf-results'),resultButtons=$('#pf-result-buttons');resultButtons.replaceChildren();results.hidden=!queryIds.length&amp;&amp;!$('#pf-search').value.trim();
       const known=queryIds.filter(id=&gt;layout.has(id)),missing=queryIds.filter(id=&gt;!layout.has(id));$('#pf-searchmsg').textContent=queryIds.length?'定位 '+known.length+'/'+queryIds.length+(missing.length?' · 未录入 '+missing.join('、'):''):'';
       for(const id of known){const b=document.createElement('button');b.type='button';b.className='pf-result cursor-interaction';b.textContent=id;b.setAttribute('aria-pressed',String(id===selected));b.setAttribute('aria-label','查看'+id+'号的盆位');b.addEventListener('click',()=&gt;selectPlant(id));resultButtons.append(b);}
-      renderDetail();updateHead();buildScene();requestRender();
+      renderDetail();renderTaskList();updateHead();buildScene();requestRender();
     }
     function renderDetail(){
-      const p=layout.get(selected),detail=$('#pf-detail');if(!p){detail.innerHTML='&lt;span class=&quot;pf-position&quot;&gt;'+(currentZone===1?'第二片区盆位待录入':'点选花盆核对位置')+'&lt;/span&gt;';return;}
-      const ts=records(selected),pair=getPair(),sectionText={'右侧有架区':'右架','左侧有架区':'左架','中间连接区':'中间区'}[p.section]||p.section;let action=ts.map(t=&gt;'第'+escape(t.flower)+'朵 · '+(needsAction(t)?'待办：':'无需操作：')+escape(locationAwareOperation(t))).join('&lt;br&gt;');const text='&lt;div&gt;&lt;div class=&quot;pf-detail-title&quot;&gt;&lt;span&gt;'+escape(selected)+'&lt;/span&gt;&lt;span class=&quot;pf-position&quot;&gt;'+escape(sectionText)+' · 第'+(p.row+1)+'排 · 左起第'+(p.col+1)+'株'+(p.note?' · '+escape(p.note):'')+'&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;pf-action&quot;&gt;'+(action||(tasks.length?'本批次无任务':'暂无任务'))+'&lt;/div&gt;&lt;/div&gt;';
-      detail.innerHTML=text;if(pair&amp;&amp;(selected===pair.donor||selected===pair.mother)){const partner=selected===pair.donor?pair.mother:pair.donor;if(layout.has(partner)){const b=document.createElement('button');b.type='button';b.className='pf-partner cursor-interaction';b.dataset.partner=partner;b.textContent=pair.donor+' → '+pair.mother+' · '+(selected===pair.donor?'看母本':'看父本');b.addEventListener('click',()=&gt;selectPlant(partner));detail.append(b);}}
-      if(pair&amp;&amp;(!layout.has(pair.donor)||!layout.has(pair.mother))&amp;&amp;!ts.some(t=&gt;/[父母]本盆位未录入/.test(t[phase]))){const hint=document.createElement('span');hint.className='pf-position';hint.dataset.partnerUnmapped='true';hint.textContent=pair.donor+' → '+pair.mother+' · '+(!layout.has(pair.donor)?'父本':'母本')+'未定位';detail.append(hint);}
-      if(pair&amp;&amp;layout.has(pair.donor)&amp;&amp;!records(pair.donor).length){const hint=document.createElement('span');hint.className='pf-position';hint.textContent='父本'+pair.donor+'已定位，供粉条目待同步';detail.append(hint);}
+      const p=layout.get(selected),detail=$('#pf-detail');detail.replaceChildren();detail.hidden=!p;if(!p)return;
+      const code=document.createElement('span');code.className='pf-detail-title';code.textContent=selected;detail.append(code);
+      for(const t of records(selected)){const flower=document.createElement('span');flower.className='pf-flower-ref';flower.textContent=flowerId(t);detail.append(flower);}
+      const pair=getPair();if(pair&amp;&amp;(selected===pair.donor||selected===pair.mother)){const partner=selected===pair.donor?pair.mother:pair.donor;if(layout.has(partner)){const b=document.createElement('button');b.type='button';b.className='pf-partner cursor-interaction';b.dataset.partner=partner;b.textContent=flowerId({id:pair.donor,flower:pair.donorFlower})+' → '+flowerId({id:pair.mother,flower:pair.motherFlower});b.addEventListener('click',()=&gt;selectPlant(partner));detail.append(b);}}
     }
+    function renderTaskList(){
+      const list=$('#pf-task-list'),rows=tasks.filter(t=&gt;hasPlannedAction(t)),blocked=expired();list.replaceChildren();
+      $('#pf-task-title').textContent=(periodLabels[phase]||'任务')+' · '+rows.length;
+      $('#pf-feedback-mode').textContent=blocked?'历史 · 只读':'勾选后复制反馈';$('#pf-task-section').hidden=!rows.length;
+      for(const t of rows){
+        const stored=currentFeedback(t),old=rawFeedback(t),conflict=!!old&amp;&amp;!stored,sourceDone=/已完成|已摘取/.test(t[phase]),done=sourceDone||stored?.done===true;
+        const row=document.createElement('div');row.className='pf-task-row';row.dataset.taskKey=feedbackKey(t);row.dataset.flowerId=flowerId(t);row.dataset.done=String(done);
+        const main=document.createElement('button');main.type='button';main.className='pf-task-main cursor-interaction';main.setAttribute('aria-label',flowerId(t)+'，'+shortAction(t));main.innerHTML='&lt;span class=&quot;pf-task-code&quot;&gt;'+escape(flowerId(t))+'&lt;/span&gt;&lt;span class=&quot;pf-task-short&quot;&gt;'+escape(shortAction(t))+'&lt;/span&gt;';main.addEventListener('click',()=&gt;selectPlant(t.id));row.append(main);
+        const complete=document.createElement('button');complete.type='button';complete.className='pf-task-done cursor-interaction';complete.textContent=done?'已完成':'完成';complete.setAttribute('aria-pressed',String(done));complete.disabled=blocked||sourceDone||conflict;
+        row.append(complete);
+        const more=document.createElement('details');more.className='pf-task-more';const summary=document.createElement('summary');summary.className='cursor-interaction';summary.setAttribute('aria-label',flowerId(t)+'备注及实际处理');summary.textContent=conflict?'计划有更新，需核对':stored?.actual?'实际：'+stored.actual:stored?.note?'有备注':'';more.append(summary);
+        const editor=document.createElement('div');editor.className='pf-task-editor';const note=document.createElement('textarea');note.maxLength=240;note.placeholder='特殊情况 / 改处理原因';note.setAttribute('aria-label',flowerId(t)+'特殊情况');note.value=(stored||old)?.note||'';note.disabled=blocked;editor.append(note);
+        const measurements=document.createElement('textarea');measurements.maxLength=500;measurements.placeholder='实测数据（请写单位；没有可留空）';measurements.setAttribute('aria-label',flowerId(t)+'实测数据');measurements.value=(stored||old)?.measurements||'';measurements.disabled=blocked;editor.append(measurements);
+        const operationLabel=document.createElement('label');operationLabel.textContent='实际操作时间（北京时间，选填）';const operatedAt=document.createElement('input');operatedAt.type='datetime-local';operatedAt.value=(stored||old)?.operatedAt||'';operatedAt.setAttribute('aria-label',flowerId(t)+'实际操作时间（北京时间）');operatedAt.disabled=blocked;operationLabel.append(operatedAt);editor.append(operationLabel);
+        const actual=document.createElement('select');actual.setAttribute('aria-label',flowerId(t)+'实际处理');actual.disabled=blocked;
+        for(const name of ['',...Object.values(kindNames)]){const option=document.createElement('option');option.value=name;option.textContent=name||'按原计划';actual.append(option);}actual.value=(stored||old)?.actual||'';editor.append(actual);
+        function store(doneState){
+          if(actual.value&amp;&amp;!note.value.trim()){$('#pf-feedback-message').textContent='改处理请写明原因';note.focus();return;}
+          feedback[feedbackKey(t)]={plan:t[phase],note:note.value.trim().slice(0,240),measurements:measurements.value.trim().slice(0,500),operatedAt:operatedAt.value,actual:actual.value,done:doneState,updatedAt:new Date().toISOString()};refresh();persistFeedback();
+        }
+        row.collectDraft=()=&gt;{
+          if(row.dataset.dirty!=='true')return true;
+          if(actual.value&amp;&amp;!note.value.trim()){$('#pf-feedback-message').textContent='改处理请写明原因';note.focus();return false;}
+          feedback[feedbackKey(t)]={plan:t[phase],note:note.value.trim().slice(0,240),measurements:measurements.value.trim().slice(0,500),operatedAt:operatedAt.value,actual:actual.value,done:stored?.done===true,updatedAt:new Date().toISOString()};return true;
+        };
+        for(const field of [note,measurements,actual,operatedAt])field.addEventListener('input',()=&gt;row.dataset.dirty='true');
+        complete.addEventListener('click',()=&gt;store(!done));
+        const apply=document.createElement('button');apply.type='button';apply.textContent='保存';apply.className='cursor-interaction';apply.disabled=blocked;apply.addEventListener('click',()=&gt;store(stored?.done===true));editor.append(apply);
+        const original=document.createElement('div');original.className='pf-task-original';original.textContent=locationAwareOperation(t);editor.append(original);
+        const parent=t.morning.match(/接\s*(\d+)\s*花粉/);if(parent&amp;&amp;layout.has(parent[1])&amp;&amp;!records(parent[1]).length){const missing=document.createElement('div');missing.className='pf-task-original';missing.textContent='父本'+parent[1]+'供粉条目待同步';editor.append(missing);}
+        if(conflict){const previous=document.createElement('div');previous.className='pf-task-original';previous.textContent='原备注对应旧计划：'+old.plan;editor.append(previous);}
+        more.append(editor);row.append(more);if(stored?.note){const line=document.createElement('div');line.className='pf-task-note';line.textContent=stored.note;row.append(line);}list.append(row);
+      }
+    }
+    function feedbackText(){
+      const entries=Object.entries(feedback).filter(([key])=&gt;key.startsWith((taskDate||'undated')+'|')).sort((a,b)=&gt;{const am=a[0].match(/\|(\d+)#(\d+)\|(.*)$/),bm=b[0].match(/\|(\d+)#(\d+)\|(.*)$/);return (am[3]==='evening'?0:1)-(bm[3]==='evening'?0:1)||Number(am[1])-Number(bm[1])||Number(am[2])-Number(bm[2]);});
+      if(!entries.length)return'';
+      const formatTime=value=&gt;new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(value));
+      const lines=['【同质园执行反馈 v1】','批次开放日：'+(taskDate||'未提供'),'执行人：'+($('#pf-operator').value.trim()||'未填写'),'设备生成时间（北京时间）：'+formatTime(new Date()),'仅反馈以下 '+entries.length+' 条；未列出不表示完成。',''];
+      entries.forEach(([key,value],index)=&gt;{
+        const match=key.match(/\|(\d+)#(\d+)\|(morning|evening)$/),id=match[1],flower=match[2],when=match[3],task=tasks.find(t=&gt;t.id===id&amp;&amp;String(t.flower)===flower),conflict=!task||task[when]!==value.plan;
+        lines.push((index+1)+'. 花号：'+flowerId(task||{id,flower}),'植株序号：'+id,'计划时段：'+periodLabels[when],'原计划：'+value.plan,'网页勾选：'+(value.done?'已完成':'未确认完成'),'实际处理：'+(value.actual||'按原计划（未另选）'),'实际操作时间（北京时间）：'+(value.operatedAt?value.operatedAt.replace('T',' '):'未填写'),'备注：'+(value.note||'无'),'实测数据原文：'+(value.measurements||'未填写'));
+        if(conflict)lines.push('核对提示：当前计划已改变或条目已移除，请勿直接覆盖总表。','当前计划：'+(task?.[when]||'当前批次已移除'));
+        lines.push('网页登记时间（设备时间，北京时间）：'+(value.updatedAt?formatTime(value.updatedAt):'未提供'),'');
+      });
+      lines.push('请核对后入表；勾选完成不代表授粉成功或已经坐果。');return lines.join('\n');
+    }
+    function copyFeedbackText(){const text=$('#pf-feedback-text').value;$('#pf-feedback-text').focus();$('#pf-feedback-text').select();$('#pf-copy-status').textContent='可长按下方文本复制';const requestId=++copyRequestId;try{window.parent.postMessage({type:'plant-feedback-copy',text,requestId},'*');}catch(e){}}
+    $('#pf-copy-feedback').addEventListener('click',()=&gt;{const dirty=[...$('#pf-task-list').children].filter(row=&gt;row.dataset.dirty==='true');for(const row of dirty)if(!row.collectDraft())return;if(dirty.length){persistFeedback();refresh();}const text=feedbackText();if(!text){$('#pf-feedback-message').textContent='尚无勾选或登记内容';return;}$('#pf-feedback-text').value=text;$('#pf-feedback-dialog').showModal();copyFeedbackText();});
+    $('#pf-feedback-recopy').addEventListener('click',copyFeedbackText);$('#pf-feedback-close').addEventListener('click',()=&gt;$('#pf-feedback-dialog').close());
     function keepPlantVisible(id){const p=layout.get(id);if(!p||p.zone!==currentZone||flight)return;const s=project([p.x,p.y+.97,p.z]);if(!s.visible||s.x&lt;54||s.x&gt;cssWidth-54){camera.cx=clamp(p.x,-cameraLimits.pan,cameraLimits.pan);requestRender();}}
     function selectPlant(id){if(!layout.has(id))return;selected=id;activePair=pairsOf(tasks).find(p=&gt;p.donor===id||p.mother===id)?.key??'';const zone=layout.get(id).zone;refresh();if(zone!==currentZone)flyTo(zone);else keepPlantVisible(id);save();}
-    function findPlants(){const input=$('#pf-search').value.normalize('NFKC').trim();if(input&amp;&amp;!/^[\d\s,，、;；]+$/.test(input)){$('#pf-results').hidden=false;$('#pf-searchmsg').textContent='仅输入编号，以空格或逗号分隔';return;}queryIds=[...new Set(input.match(/\d+/g)??[])].slice(0,300);const first=queryIds.find(id=&gt;layout.has(id));if(first){selected=first;activePair=pairsOf(tasks).find(p=&gt;p.donor===first||p.mother===first)?.key??'';}else if(!queryIds.length){activePair='';}refresh();if(first&amp;&amp;layout.get(first).zone!==currentZone)flyTo(layout.get(first).zone);else if(first)keepPlantVisible(first);save();}
+    function findPlants(){const input=$('#pf-search').value.normalize('NFKC').trim(),tokens=input?input.split(/[\s,，、;；]+/).filter(Boolean):[],matches=tokens.map(token=&gt;token.match(/^(\d+)(?:-[BFZ]\d+)?$/i));if(matches.some(m=&gt;!m)){$('#pf-results').hidden=false;$('#pf-searchmsg').textContent='输入株号或短花号，以空格分隔';return;}queryIds=[...new Set(matches.map(m=&gt;m[1]))].slice(0,300);const first=queryIds.find(id=&gt;layout.has(id));if(first){selected=first;activePair=pairsOf(tasks).find(p=&gt;p.donor===first||p.mother===first)?.key??'';}else if(!queryIds.length){activePair='';}refresh();if(first&amp;&amp;layout.get(first).zone!==currentZone)flyTo(layout.get(first).zone);else if(first)keepPlantVisible(first);save();}
     let searchTimer=0;$('#pf-search').addEventListener('input',()=&gt;{clearTimeout(searchTimer);searchTimer=setTimeout(findPlants,280);});$('#pf-search').addEventListener('keydown',e=&gt;{if(e.key==='Enter'){clearTimeout(searchTimer);findPlants();}if(e.key==='Escape'){$('#pf-search').value='';findPlants();}});
     $('#pf-search').addEventListener('paste',event=&gt;{const text=event.clipboardData?.getData('text/plain');if(text&amp;&amp;/[\r\n\t]/.test(text)){event.preventDefault();const input=event.currentTarget;input.setRangeText(text.replace(/[\r\n\t]+/g,' '),input.selectionStart??input.value.length,input.selectionEnd??input.value.length,'end');clearTimeout(searchTimer);searchTimer=setTimeout(findPlants,100);}});
     $('#pf-phase').addEventListener('change',()=&gt;{phase=$('#pf-phase').value;refresh();save();});root.querySelectorAll('[data-zone]').forEach(b=&gt;b.addEventListener('click',()=&gt;flyTo(Number(b.dataset.zone))));$('#pf-home').addEventListener('click',()=&gt;flyTo(currentZone,true));
+    $('#pf-label-mode').addEventListener('click',()=&gt;{labelScope=labelScope==='all'?'tasks':'all';refresh();save();});
+    function focusSection(key){
+      focusedSection=key;if(key==='all'){flyTo(currentZone,true);return;}
+      const span={left:leftSpan,middle:middleSpan,right:baySpan}[key];if(!span)return;
+      currentZone=0;const target={cx:(span.left+span.right)/2,cz:centers[0].z,yaw:0,pitch:.85,distance:Math.max(12,((span.right-span.left)/2+.95)/(Math.tan(38*Math.PI/360)*(cssWidth/cssHeight)))};
+      if(motion.matches){camera=target;flight=null;root.dataset.flight='idle';}else flight={start:{...camera},target,t0:performance.now(),duration:500,transfer:false,phase:'land'};
+      refresh();save();
+    }
+    root.querySelectorAll('[data-focus]').forEach(b=&gt;b.addEventListener('click',()=&gt;focusSection(b.dataset.focus)));
     $('#pf-import-toggle').addEventListener('click',()=&gt;{const panel=$('#pf-import');panel.hidden=!panel.hidden;$('#pf-import-toggle').setAttribute('aria-expanded',String(!panel.hidden));});
 
     // A gesture locks to horizontal pan or vertical pitch after a small dead zone.
@@ -2217,7 +2359,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     canvas.addEventListener('pointermove',e=&gt;{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===2&amp;&amp;pinch){const a=[...pointers.values()],span=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);camera.distance=clamp(pinch.distance*pinch.span/Math.max(span,15),9,70);}else if(pointers.size===1&amp;&amp;drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(!drag.axis&amp;&amp;Math.hypot(dx,dy)&gt;6){drag.axis=Math.abs(dx)&gt;=Math.abs(dy)?'pan':'pitch';drag.moved=true;}if(drag.axis==='pan')camera.cx=clamp(drag.cx-dx*drag.panScale,-cameraLimits.pan,cameraLimits.pan);else if(drag.axis==='pitch')camera.pitch=clamp(drag.pitch+dy*.005,cameraLimits.minPitch,cameraLimits.maxPitch);}requestRender();});
     function endPointer(e){const wasDrag=drag?.moved;pointers.delete(e.pointerId);if(!wasDrag&amp;&amp;drag){const rect=canvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;let best=null,bestD=32;for(const p of pots){if(!p.id)continue;const s=project([p.x,p.y+.4,p.z]),d=Math.hypot(s.x-x,s.y-y);if(s.visible&amp;&amp;d&lt;bestD){bestD=d;best=p;}}if(best)selectPlant(best.id);}if(!pointers.size){drag=null;pinch=null;save();}else if(pointers.size===1){const [x,y]=[...pointers.values()][0];drag=startDrag(x,y,true);pinch=null;}}
     canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointercancel',()=&gt;{pointers.clear();drag=null;pinch=null;save();});canvas.addEventListener('wheel',e=&gt;{e.preventDefault();finishFlight();if(Math.abs(e.deltaX)&gt;Math.abs(e.deltaY)&amp;&amp;!e.ctrlKey)camera.cx=clamp(camera.cx+e.deltaX*panScale(),-cameraLimits.pan,cameraLimits.pan);else camera.distance=clamp(camera.distance*Math.exp(e.deltaY*.0011),9,70);requestRender();save();},{passive:false});
-    function resize(){const r=stage.getBoundingClientRect();if(!r.width||!r.height)return;const oldDefault=distanceForWidth();cssWidth=r.width;cssHeight=r.height;const ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(cssWidth*ratio);canvas.height=Math.round(cssHeight*ratio);if(!flight)camera.distance=clamp(camera.distance*distanceForWidth()/oldDefault,9,70);$('#pf-camera-note').textContent=matchMedia('(pointer:coarse)').matches?'横移 · 俯仰 · 双指缩放':'横移 · 俯仰 · 滚轮缩放';requestRender();}
+    function resize(){const r=stage.getBoundingClientRect();if(r.width&lt;80||r.height&lt;80)return;const oldDefault=distanceForWidth();cssWidth=r.width;cssHeight=r.height;const ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(cssWidth*ratio);canvas.height=Math.round(cssHeight*ratio);if(!flight)camera.distance=clamp(camera.distance*distanceForWidth()/oldDefault,9,70);$('#pf-camera-note').textContent=matchMedia('(pointer:coarse)').matches?'横移 · 俯仰 · 双指缩放':'横移 · 俯仰 · 滚轮缩放';requestRender();}
     new ResizeObserver(resize).observe(stage);
     canvas.addEventListener('webglcontextlost',e=&gt;{e.preventDefault();$('#pf-zoneinfo').textContent='画面暂停，刷新可恢复';});
 
@@ -2259,7 +2401,8 @@ html&gt;body{padding:0}&lt;/style&gt;
       const bytes=Uint8Array.from(atob(png.split(',')[1]),c=&gt;c.charCodeAt(0));const blob=URL.createObjectURL(new Blob([bytes],{type:'image/png'}));
       download.href=blob;download.dataset.blob=blob;download.download='同质园_'+areas[currentZone]+'.png';$('#pf-export-dialog').showModal();
     });
-    $('#pf-search').value=queryIds.join(' ');root.dataset.flight='idle';resize();refresh();
+    function requestSavedFeedback(){try{window.parent.postMessage({type:'plant-feedback-load'},'*');}catch(e){}}
+    $('#pf-search').value=queryIds.join(' ');root.dataset.flight='idle';resize();refresh();requestSavedFeedback();window.addEventListener('load',requestSavedFeedback,{once:true});
     if(globalThis.Tweak){const tweak=new Tweak({container:root,onChange:()=&gt;{buildScene();requestRender();save();}});tweak.addToggle(settings,'greenhouse',{label:'显示玻璃大棚'});tweak.addSlider(settings,'frameHeight',{label:'架子高度（示意）',min:2,max:4.4,step:.1});tweak.addSlider(settings,'duration',{label:'切区镜头时长',min:900,max:3000,step:100,unit:'ms'});tweak.addSlider(settings,'brightness',{label:'线框亮度',min:.7,max:1.3,step:.1});}
   })();
   &lt;/script&gt;
@@ -3133,8 +3276,23 @@ html&gt;body{padding:0}&lt;/style&gt;
 })();
 </script>
 <script>
+const feedbackFrame=document.getElementById('codex-visualization');
+feedbackFrame.addEventListener('load',()=>{try{feedbackFrame.contentWindow.postMessage({type:'plant-feedback-state',entries:JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}')},'*');}catch(e){}});
 window.addEventListener('message', event => {
   const frame=document.getElementById('codex-visualization'),data=event.data;
+  if(event.source===frame.contentWindow&&data?.type==='plant-feedback-copy'&&typeof data.text==='string'&&data.text.length<=250000&&Number.isSafeInteger(data.requestId)){
+    Promise.resolve().then(()=>navigator.clipboard.writeText(data.text)).then(()=>frame.contentWindow.postMessage({type:'plant-feedback-copied',requestId:data.requestId},'*')).catch(()=>frame.contentWindow.postMessage({type:'plant-feedback-copy-error',requestId:data.requestId},'*'));
+    return;
+  }
+  if(event.source===frame.contentWindow&&data?.type==='plant-feedback-load'){
+    try{frame.contentWindow.postMessage({type:'plant-feedback-state',entries:JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}')},'*');}catch(e){}
+    return;
+  }
+  if(event.source===frame.contentWindow&&data?.type==='plant-feedback-save'){
+    const entries=data.entries;if(!entries||typeof entries!=='object'||Array.isArray(entries)||JSON.stringify(entries).length>250000)return;
+    try{localStorage.setItem('plant-field-feedback-v1',JSON.stringify(entries));frame.contentWindow.postMessage({type:'plant-feedback-saved'},'*');}catch(e){frame.contentWindow.postMessage({type:'plant-feedback-save-error'},'*');}
+    return;
+  }
   if(event.source!==frame.contentWindow||data?.type!=='plant-png-download'||typeof data.png!=='string'||!data.png.startsWith('data:image/png;base64,')||data.png.length>40000000)return;
   const bytes=Uint8Array.from(atob(data.png.split(',')[1]),c=>c.charCodeAt(0));
   const url=URL.createObjectURL(new Blob([bytes],{type:'image/png'})),a=document.createElement('a');
