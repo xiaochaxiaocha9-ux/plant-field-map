@@ -27,10 +27,11 @@ function validateConfig(config, layout) {
   const keys = new Set(), pairs = new Set(), donors = new Map(), locatedPartnersMissingTasks=new Set();
   for (const t of config.tasks) {
     if (typeof t.id !== 'string' || !layout.has(t.id)) throw Error('任务植株尚未录入盆位：' + t.id);
-    if (!/^\d+$/.test(String(t.flower)) || t.area !== layout.get(t.id) || !t.evening || !t.morning) throw Error('花号、片区或时段字段不完整：' + t.id);
-    if(t.flowerId!==undefined&&!new RegExp('^'+t.id+'-[BFZ]'+t.flower+'$').test(t.flowerId))throw Error('短花号与植株/花序不一致：'+t.id);
+    const plantOnly=t.recordType==='plant';
+    if ((!plantOnly&&!/^\d+$/.test(String(t.flower))) || (plantOnly&&(t.flower!==''||t.flowerId!==undefined||!/测量|采样/.test(t.morning)||/接\s*\d+\s*花粉|给\s*\d+\s*供粉|自交|自然开放/.test(t.morning))) || t.area !== layout.get(t.id) || !t.evening || !t.morning) throw Error('花号、植株测量、片区或时段字段不完整：' + t.id);
+    if(!plantOnly&&t.flowerId!==undefined&&!new RegExp('^'+t.id+'-[BFZ]'+t.flower+'$').test(t.flowerId))throw Error('短花号与植株/花序不一致：'+t.id);
     if (/已取消/.test(t.evening + t.morning)) throw Error('明确取消的任务应移除：' + t.id);
-    const key = t.id + '#' + t.flower;
+    const key = t.id + '#' + (plantOnly?'plant':t.flower);
     if (keys.has(key)) throw Error('任务重复：' + key);
     keys.add(key);
   }

@@ -35,7 +35,7 @@ document = document.replace('height:calc(100vh - 2rem)', 'height:100vh');
 document = document.replace('</head>', '<meta name="description" content="同质园盆位定位、每日处理与异交配对查看器。"><meta name="theme-color" content="#101318"></head>');
 document = document.replace('</body>', `<script>
 const feedbackFrame=document.getElementById('codex-visualization');
-feedbackFrame.addEventListener('load',()=>{try{feedbackFrame.contentWindow.postMessage({type:'plant-feedback-state',entries:JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}')},'*');}catch(e){}});
+feedbackFrame.addEventListener('load',()=>{try{feedbackFrame.contentWindow.postMessage({type:'plant-feedback-state',entries:JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}')},'*');feedbackFrame.contentWindow.postMessage({type:'plant-operator-state',value:localStorage.getItem('plant-field-operator-v1')||''},'*');}catch(e){feedbackFrame.contentWindow.postMessage({type:'plant-feedback-state',entries:{}},'*');feedbackFrame.contentWindow.postMessage({type:'plant-feedback-save-error'},'*');}});
 window.addEventListener('message', event => {
   const frame=document.getElementById('codex-visualization'),data=event.data;
   if(event.source===frame.contentWindow&&data?.type==='plant-feedback-copy'&&typeof data.text==='string'&&data.text.length<=250000&&Number.isSafeInteger(data.requestId)){
@@ -43,9 +43,10 @@ window.addEventListener('message', event => {
     return;
   }
   if(event.source===frame.contentWindow&&data?.type==='plant-feedback-load'){
-    try{frame.contentWindow.postMessage({type:'plant-feedback-state',entries:JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}')},'*');}catch(e){}
+    try{frame.contentWindow.postMessage({type:'plant-feedback-state',entries:JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}')},'*');frame.contentWindow.postMessage({type:'plant-operator-state',value:localStorage.getItem('plant-field-operator-v1')||''},'*');}catch(e){frame.contentWindow.postMessage({type:'plant-feedback-state',entries:{}},'*');frame.contentWindow.postMessage({type:'plant-feedback-save-error'},'*');}
     return;
   }
+  if(event.source===frame.contentWindow&&data?.type==='plant-operator-save'&&typeof data.value==='string'&&data.value.length<=20){try{localStorage.setItem('plant-field-operator-v1',data.value);}catch(e){frame.contentWindow.postMessage({type:'plant-feedback-save-error'},'*');}return;}
   if(event.source===frame.contentWindow&&data?.type==='plant-feedback-save'){
     const entries=data.entries;if(!entries||typeof entries!=='object'||Array.isArray(entries)||JSON.stringify(entries).length>250000)return;
     try{localStorage.setItem('plant-field-feedback-v1',JSON.stringify(entries));frame.contentWindow.postMessage({type:'plant-feedback-saved'},'*');}catch(e){frame.contentWindow.postMessage({type:'plant-feedback-save-error'},'*');}
