@@ -156,6 +156,16 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
       }
       tests.push('real embedded batch; explicit Beijing dates; phase-specific pending actions; completed preparation inactive; unlocated partner disclosed');
     }
+    if(currentTasks.date&&currentTasks.tasks.length&&taskSummary.active.evening===0){
+      const pre = await browser.newPage({viewport:{width:390,height:900}});
+      await pre.clock.install({time:new Date(+new Date(currentTasks.date+'T00:00:00+08:00')-3600000)});
+      await pre.goto(url);
+      const pf=pre.frameLocator('iframe');
+      await pf.locator('#plant-field-3d').waitFor();
+      assert.equal(await pf.locator('#pf-phase').inputValue(),'morning','晚间任务全部完成时应提前展示次日早晨待办');
+      assert.equal(await pf.locator('#plant-field-3d').getAttribute('data-active-tasks'),String(taskSummary.active.morning));
+      await pre.close();tests.push('evening-complete batch defaults to upcoming morning');
+    }
     const cameraState = () => app.evaluate(el => ({ x: Number(el.dataset.cameraX), z: Number(el.dataset.cameraZ), pitch: Number(el.dataset.cameraPitch), yaw: Number(el.dataset.cameraYaw), distance: Number(el.dataset.cameraDistance), eye: el.dataset.cameraEye.split(',').map(Number), target: el.dataset.cameraTarget.split(',').map(Number) }));
     const near = (a, b, message) => assert(Math.abs(a - b) < .0001, message || `${a} != ${b}`);
     const vector = s => s.eye.map((n, i) => n - s.target[i]);
@@ -266,6 +276,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await mf.locator('#pf-batch-summary').click();assert.equal(await mf.locator('#pf-source').isVisible(),false);
     // Keep the gesture fixture above the newly staggered labels so a label tap
     // is not mistaken for a canvas pinch.
+    await mf.locator('#pf-canvas').scrollIntoViewIfNeeded();
     const mb = await mf.locator('#pf-canvas').boundingBox(), tx = mb.x + mb.width * .5, ty = mb.y + mb.height * .15;
     const touchStart = await touchCamera();
     await touchSession.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: tx, y: ty, id: 0 }] });

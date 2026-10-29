@@ -245,7 +245,7 @@
     const periodLabels={morning:batchMorning?dateText(batchMorning)+'早':'早晨（无批次）',evening:batchEvening?dateText(batchEvening)+'晚':'晚间（无批次）'};
     const beijingDate=()=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const get=k=>parts.find(x=>x.type===k).value;return get('year')+'-'+get('month')+'-'+get('day');};
     const expired=()=>!!taskDate&&beijingDate()>taskDate;
-    if(taskDate)phase=beijingDate()===taskDate?'morning':'evening';
+    if(taskDate){phase=beijingDate()===taskDate?'morning':'evening';if(phase==='evening'&&tasks.length&&tasks.every(t=>!hasPlannedAction(t,'evening')||/已完成|已摘取/.test(t.evening)))phase='morning';}
     const cameraLimits={pan:Math.abs(gap3Span.left)+3,minPitch:.32,maxPitch:1.25},axisHeight=1.2,axisOffset=-1.2;
     let camera={cx:0,cz:0,yaw:0,pitch:.69,distance:31},flight=null,frameRequested=false,mvp=null,cssWidth=736,cssHeight=560,sceneBuffers=null,lastSavedSignature='';
     const motion=matchMedia('(prefers-reduced-motion: reduce)');
@@ -267,9 +267,9 @@
       const source=t[when]||'';if(!hasPlannedAction(t,when))return'—';
       if(when==='evening')return /去雄/.test(source.replace(/不去雄/g,''))?'去雄 · 套袋':source.includes('套袋')?'套袋':'检查';
       const k=kind(t),m=source.match(/接\s*(\d+)\s*花粉/),flower=source.match(/父本第(\d+)朵/);
-      if(m)return'异交 ← '+flowerId({id:m[1],flower:flower?.[1]||'?',flowerId:t.donorFlowerId});
+      if(m)return'异交 ← '+flowerId({id:m[1],flower:flower?.[1]||'?',flowerId:t.donorFlowerId})+(source.includes('★')?' ★':'');
       const recipients=[...source.matchAll(/给\s*(\d+)\s*供粉/g)].map(m=>m[1]);
-      if(recipients.length)return'供粉 → '+recipients.join('、');
+      if(recipients.length)return'供粉 → '+recipients.join('、')+(source.includes('★')?' ★':'');
       return kindNames[k]||'检查';
     }
     function persistFeedback(){
