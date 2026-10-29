@@ -1948,6 +1948,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     &lt;div class=&quot;pf-stagehead&quot;&gt;&lt;span id=&quot;pf-zonetitle&quot; class=&quot;pf-zonetitle&quot;&gt;第一片区 · 三排&lt;/span&gt;&lt;span id=&quot;pf-zoneinfo&quot; class=&quot;pf-zoneinfo&quot;&gt;有架 / 无架&lt;/span&gt;&lt;/div&gt;
     &lt;span class=&quot;pf-annotation pf-frame-label&quot; id=&quot;pf-frame-label&quot;&gt;有架&lt;/span&gt;
     &lt;span class=&quot;pf-annotation pf-frame-label&quot; id=&quot;pf-frame-label-2&quot; hidden&gt;有架&lt;/span&gt;
+    &lt;span class=&quot;pf-annotation pf-frame-label&quot; id=&quot;pf-frame-label-3&quot; hidden&gt;有架&lt;/span&gt;
     &lt;span class=&quot;pf-annotation pf-pole-label&quot; id=&quot;pf-pole-label&quot; hidden&gt;连接杆&lt;/span&gt;
     &lt;span class=&quot;pf-annotation pf-pole-label&quot; id=&quot;pf-middle-label&quot; hidden&gt;中间区&lt;/span&gt;
     &lt;span class=&quot;pf-annotation pf-greenhouse-label&quot; id=&quot;pf-greenhouse-label&quot;&gt;玻璃大棚&lt;/span&gt;
@@ -1979,30 +1980,47 @@ html&gt;body{padding:0}&lt;/style&gt;
     // Row numbers follow the user: first = south/lowest, third = north/highest.
     // IDs and row order come from the user; gaps and local offsets follow the reference photos.
     const areas=['第一片区','第二片区'],centers=[{x:0,z:0},{x:0,z:-25}],columns=12,spacing=1.62,rowSpacing=1.45,rowElevations=[0,.5,1],frameDepth=rowSpacing*1.5-.15,layout=new Map(),pots=[];
-    const geometryRevision='measured-three-sections-20261027',measuredLengths={bay:1.66,middle:2.17,left:1.60};
+    const geometryRevision='measured-six-sections-20261029',measuredLengths={bay:1.66,middle:2.17,left:1.60,gap2:2.71,bay3:1.47,gap3:3.15};
     // Keep the entered right-bay coordinates stable. One common scale governs both measured spans.
     const baySpan={left:2,right:10},unitsPerMeter=(baySpan.right-baySpan.left)/measuredLengths.bay;
     const middleSpan={left:baySpan.left-measuredLengths.middle*unitsPerMeter,right:baySpan.left};
     const leftSpan={left:middleSpan.left-measuredLengths.left*unitsPerMeter,right:middleSpan.left};
-    const frameRegions=[[leftSpan,baySpan],[{left:-2,right:10}]];
-    const stripBounds=zone=&gt;zone===0?{left:frameRegions[0][0].left-.7,right:baySpan.right+.7}:{left:-10.7,right:10.7};
+    const gap2Span={left:leftSpan.left-measuredLengths.gap2*unitsPerMeter,right:leftSpan.left};
+    const bay3Span={left:gap2Span.left-measuredLengths.bay3*unitsPerMeter,right:gap2Span.left};
+    const gap3Span={left:bay3Span.left-measuredLengths.gap3*unitsPerMeter,right:bay3Span.left};
+    const frameRegions=[[bay3Span,leftSpan,baySpan],[]];
+    const stripBounds=()=&gt;({left:gap3Span.left-.7,right:baySpan.right+.7});
     const isFramed=p=&gt;frameRegions[p.zone].some(f=&gt;p.x-centers[p.zone].x&gt;=f.left&amp;&amp;p.x-centers[p.zone].x&lt;=f.right);
     const actualRows=[
       {ids:['59','56','49','224','36','1166','1131'],xs:[2.55,3.45,4.35,5.25,7.2,8.35,9.5],groups:[0,0,0,0,1,1,1]},
       {ids:['157','542','792','46','298','227','922','78'],xs:[2.55,3.45,4.35,5.25,6.8,7.7,8.6,9.5],groups:[0,0,0,0,1,1,1,1]},
       {ids:['515','694','82','47','320','287','207','79'],xs:[2.55,3.55,4.55,5.55,6.55,7.55,8.55,9.55],groups:[0,0,0,0,0,0,0,0]},
       {section:'中间连接区',row:0,ids:['163','646','330','159','550','208','416','794'],fractions:[.12,.23,.34,.59,.69,.79,.89,.99],groups:[0,0,0,1,1,1,1,1]},
-      {section:'中间连接区',row:1,ids:['81','648','782','1082','890','716','130','584','1093','218'],fractions:[.08,.18,.28,.38,.48,.66,.76,.83,.92,.99],groups:[0,0,0,0,0,1,1,1,1,1]},
+      {section:'中间连接区',row:1,ids:['81','648','782','1082','890','716','130','584','1093','218'],fractions:[.08,.18,.28,.38,.48,.66,.76,.83,.87,.90],groups:[0,0,0,0,0,1,1,1,1,1]},
       {section:'中间连接区',row:2,ids:['54','907','143','48','928','692','1069','940','1170','834'],fractions:[.12,.21,.30,.38,.47,.56,.64,.73,.81,.90],groups:[0,0,0,0,0,0,0,0,0,0]},
-      {section:'左侧有架区',row:0,ids:['483','295','220','317','210','968','149','821'],fractions:[.02,.16,.28,.40,.79,.79,.90,1],zOffsets:[0,-.08,.08,-.08,-.50,.50,0,0],groups:[0,0,0,0,1,1,1,1],notes:['','','','','与968前后错列，靠内','与210前后错列，靠外','','']},
+      {section:'左侧有架区',row:0,ids:['483','295','220','317','1167','210','968','149','821'],fractions:[.02,.16,.28,.40,.46,.79,.79,.90,1],zOffsets:[0,-.08,.08,-.08,.48,-.50,.50,0,0],groups:[0,0,0,0,0,1,1,1,1],notes:['','','','','317右侧靠外','与968前后错列，靠内','与210前后错列，靠外','','']},
       {section:'左侧有架区',row:1,ids:['1130','826','1007','886','291','215','402','397','713'],fractions:[.01,.12,.23,.32,.43,.56,.77,.88,.99],groups:[0,0,0,0,0,0,1,1,1]},
-      {section:'左侧有架区',row:2,ids:['1020','144','795','585','156','2','85','929'],fractions:[.07,.20,.33,.46,.59,.72,.85,.98],groups:[0,0,0,0,0,0,0,0]}
+      {section:'左侧有架区',row:2,ids:['1020','144','795','585','156','2','85','929'],fractions:[.07,.20,.33,.46,.59,.72,.85,.98],groups:[0,0,0,0,0,0,0,0]},
+      {area:'第一片区',section:'一无架区二',row:2,ids:['346','482','281','1118','1202','1299','1367','213','293','898','50','543'],positions:[.03,.11,.19,.24,.29,.34,.42,.52,.62,.72,.82,.92],offsets:[0,0,0,0,0,0,0,0,0,0,0,0]},
+      {area:'第一片区',section:'一无架区二',row:1,ids:['103','228','348','401','205','206','754','209','676','1339','1044','162','1138','626'],positions:[.02,.09,.16,.23,.30,.37,.44,.51,.58,.65,.72,.79,.835,.88],offsets:[0,0,0,0,0,0,0,0,0,0,0,0,.48,0]},
+      {area:'第一片区',section:'一无架区二',row:0,ids:['1168','1145','1295','76','616','1252','547','1322','1358','340','551','611','802','1137','1155','738','644','884','1250','598','661'],positions:[.02,.075,.11,.145,.18,.215,.27,.325,.395,.45,.505,.56,.595,.63,.665,.70,.735,.77,.825,.88,.935],offsets:[0,0,.55,0,.55,0,0,0,0,0,0,0,.55,0,.55,0,.55,0,0,0,0]},
+      {area:'第一片区',section:'一有架区三',row:2,ids:['419','917','9','919','956','857','866','282'],positions:[.04,.16,.28,.40,.52,.64,.76,.88],offsets:[0,0,0,0,0,0,0,0]},
+      {area:'第一片区',section:'一有架区三',row:1,ids:['923','225','1097','1100','1120','1015','186','173'],positions:[.04,.16,.23,.28,.58,.70,.82,.94],offsets:[0,.40,-.30,.40,0,0,0,0]},
+      {area:'第一片区',section:'一有架区三',row:0,ids:['44','711','592','1144','969','86','595','1122'],positions:[.04,.16,.28,.40,.60,.72,.84,.96],offsets:[0,0,0,0,0,0,0,0]},
+      {area:'第一片区',section:'一无架区三',row:2,ids:['867','1087','288','1297','53','942','179','966'],positions:[.03,.09,.15,.60,.66,.72,.78,.84],offsets:[0,0,0,0,0,0,0,0]},
+      {area:'第一片区',section:'一无架区三',row:1,ids:['1365','911','1066','889','286','887','289','5','200','201','811','12','725','1368'],positions:[.09,.19,.25,.31,.37,.43,.49,.55,.61,.67,.73,.79,.85,.91],offsets:[0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+      {area:'第一片区',section:'一无架区三',row:0,ids:['1376','1387','1298','587','921','441','413','1089','1257','1369','1253','1304','342'],positions:[.37,.42,.47,.52,.57,.62,.67,.72,.77,.82,.87,.82,.90],offsets:[0,0,0,0,0,0,0,0,0,0,0,.52,.52]},
+      {area:'第二片区',section:'二区全段',row:2,ids:['1068','914','1116','404','707','912','882','544','52','868','808','546','183','1188','434','296','77','459','304','1162'],positions:[.03,.10,.15,.35,.375,.40,.425,.45,.47,.49,.51,.57,.61,.70,.73,.87,.91,.91,.95,.98],offsets:[0,0,0,0,0,0,0,0,0,0,0,0,0,.35,0,0,.35,-.35,.35,0]},
+      {area:'第二片区',section:'二区全段',row:1,ids:['331','916','915','518','913','733','896','410','749','787','910','780','758','684','1119','873','1088','1169','647','960','433','333','276','1010','549','19','961','958','1098','724'],positions:[.03,.045,.06,.075,.09,.16,.18,.20,.22,.25,.27,.30,.32,.35,.49,.59,.61,.76,.79,.84,.86,.88,.90,.92,.94,.96,.98,.98,.98,1],offsets:[0,-.28,.28,-.28,.28,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,.38,-.38,.68,0]}
     ];
     const pendingSecondRow=actualRows.some(data=&gt;data.ids.some(id=&gt;!id));
     const middleRows=actualRows.filter(data=&gt;data.section==='中间连接区');
     actualRows.forEach((data,index)=&gt;data.ids.forEach((id,col)=&gt;{
-      const row=data.row??index,section=data.section??'右侧有架区',span=section==='中间连接区'?middleSpan:leftSpan;
-      const p={id,zone:0,area:areas[0],section,slot:section+':'+row+':'+col,row,col,group:data.groups[col],note:data.notes?.[col]??'',x:data.xs?.[col]??(span.left+.42+data.fractions[col]*(span.right-span.left-.84)),y:rowElevations[row],z:(1-row)*rowSpacing+(data.zOffsets?.[col]??0),confirmed:!!id,positionStatus:id?'user-confirmed-order-photo-spaced':'pending-identifier'};
+      const row=data.row??index,section=data.section??'右侧有架区',zone=data.area==='第二片区'?1:0;
+      const span=({'中间连接区':middleSpan,'左侧有架区':leftSpan,'一无架区二':gap2Span,'一有架区三':bay3Span,'一无架区三':gap3Span,'二区全段':stripBounds(1)})[section]??baySpan;
+      const fraction=data.fractions?.[col]??data.positions?.[col]??0;
+      const uncertain=['868','77','459','304','1162','961','958','1098','724'].includes(id);
+      const p={id,zone,area:areas[zone],section,slot:section+':'+row+':'+col,row,col,group:data.groups?.[col]??0,note:data.notes?.[col]??(uncertain?'相对位置待核对':''),x:data.xs?.[col]??(span.left+.42+fraction*(span.right-span.left-.84)),y:rowElevations[row]-(zone===1?.5:0),z:centers[zone].z+(1-row)*rowSpacing+(data.zOffsets?.[col]??data.offsets?.[col]??0),confirmed:!!id,positionStatus:uncertain?'provisional':'user-confirmed-order-photo-spaced'};
       pots.push(p);if(id){if(layout.has(id))throw Error('重复盆位编号：'+id);layout.set(id,p);}
     }));
     const colors={wire:[.64,.83,.94,1],grid:[.25,.31,.37,.46],frame:[.47,.57,.64,.72],cross:[.95,.57,.59,1],donor:[.90,.76,.51,1],auto:[.56,.82,.65,1],open:[.85,.90,.94,1],measure:[.53,.75,.96,1],hand:[.77,.67,.92,1],other:[.45,.57,.66,1]};
@@ -2016,7 +2034,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     const beijingDate=()=&gt;{const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const get=k=&gt;parts.find(x=&gt;x.type===k).value;return get('year')+'-'+get('month')+'-'+get('day');};
     const expired=()=&gt;!!taskDate&amp;&amp;beijingDate()&gt;taskDate;
     if(taskDate)phase=beijingDate()===taskDate?'morning':'evening';
-    const cameraLimits={pan:23,minPitch:.32,maxPitch:1.25},axisHeight=1.2,axisOffset=-1.2;
+    const cameraLimits={pan:Math.abs(gap3Span.left)+3,minPitch:.32,maxPitch:1.25},axisHeight=1.2,axisOffset=-1.2;
     let camera={cx:0,cz:0,yaw:0,pitch:.69,distance:31},flight=null,frameRequested=false,mvp=null,cssWidth=736,cssHeight=560,sceneBuffers=null,lastSavedSignature='';
     const motion=matchMedia('(prefers-reduced-motion: reduce)');
     function kind(t){const s=t.morning;if(/接\s*\d+\s*花粉/.test(s))return'cross';if(/给\s*\d+\s*供粉/.test(s))return'donor';if(s.includes('自主自交'))return'auto';if(s.includes('人工自交'))return'hand';if(s.includes('自然开放'))return'open';if(/摘取|测量|采样/.test(s))return'measure';return'other';}
@@ -2085,13 +2103,13 @@ html&gt;body{padding:0}&lt;/style&gt;
     const getPair=()=&gt;pairsOf(tasks).find(p=&gt;p.key===activePair&amp;&amp;pairIsActive(p));
     const rgba=(c,a)=&gt;[c[0],c[1],c[2],a],mix=(a,b,t)=&gt;a+(b-a)*t;
     const ease=t=&gt;t*t*(3-2*t),clamp=(v,a,b)=&gt;Math.max(a,Math.min(b,v));
-    const distanceForWidth=(zone=currentZone)=&gt;Math.max(zone===0?33:29,(zone===0?14.6:15)/(Math.tan(38*Math.PI/360)*(cssWidth/cssHeight)));
-    const defaultCamera=zone=&gt;({cx:zone===0?(leftSpan.left+baySpan.right)/2:centers[zone].x,cz:centers[zone].z,yaw:0,pitch:zone===0?.85:.69,distance:distanceForWidth(zone)});
+    const distanceForWidth=(zone=currentZone)=&gt;Math.min(85,Math.max(33,((baySpan.right-gap3Span.left)/2+2)/(Math.tan(38*Math.PI/360)*(cssWidth/cssHeight))));
+    const defaultCamera=zone=&gt;({cx:(gap3Span.left+baySpan.right)/2,cz:centers[zone].z,yaw:0,pitch:.85,distance:distanceForWidth(zone)});
     function restore(s){const p=s?.privateContent??s;if(![2,3,4,5,6,7].includes(p?.version))return false;if(['morning','evening'].includes(p.phase))phase=p.phase;if(p.version&gt;=5&amp;&amp;Array.isArray(p.queryIds))queryIds=p.queryIds.map(String).filter(x=&gt;/^\d+$/.test(x)).slice(0,300);if(layout.has(String(p.selected)))selected=String(p.selected);if(p.version&gt;=5&amp;&amp;typeof p.activePair==='string')activePair=p.activePair;if(p.version&gt;=7&amp;&amp;['tasks','all'].includes(p.labelScope))labelScope=p.labelScope;if(p.version&gt;=7&amp;&amp;['all','left','middle','right'].includes(p.focusedSection))focusedSection=p.focusedSection;currentZone=p.version&gt;=5&amp;&amp;[0,1].includes(p.zone)?p.zone:0;camera=defaultCamera(currentZone);if(p.version&gt;=5&amp;&amp;typeof p.greenhouse==='boolean')settings.greenhouse=p.greenhouse;if(p.geometryRevision===geometryRevision&amp;&amp;p.navigation==='pan-tilt'&amp;&amp;p.camera&amp;&amp;['cx','cz','pitch','distance'].every(k=&gt;Number.isFinite(p.camera[k]))){camera={cx:clamp(p.camera.cx,-cameraLimits.pan,cameraLimits.pan),cz:centers[currentZone].z,yaw:0,pitch:clamp(p.camera.pitch,cameraLimits.minPitch,cameraLimits.maxPitch),distance:clamp(p.camera.distance,9,85)};}return true;}
     function save(){
       const privateContent={version:7,geometryRevision,navigation:'pan-tilt',selected,phase,activePair,queryIds,labelScope,focusedSection,zone:currentZone,greenhouse:settings.greenhouse,camera:{...(flight?flight.target:camera)}};
       lastSavedSignature=JSON.stringify(privateContent);
-      const modelContent={version:7,geometryRevision,selectedPlant:selected,phase,selectedPair:activePair,filterPlantIds:queryIds,labelScope,focusedSection,feedbackMode:'manual-copy-no-cloud',zone:areas[currentZone],positions:'partial-real',section:'第一片区左架、中间区、右架',confirmedPlants:layout.size,middlePositions:pendingSecondRow?'two-identifiers-pending':'user-confirmed-order-photo-spaced',leftPositions:'user-confirmed-order-photo-spaced',measuredLengthsMeters:measuredLengths,excludedOuterUntrainedRow:true,stackedPair:['210','968'],pendingSecondRow,view:'3d-wireframe',navigation:'pan-tilt',arrangement:'zone2-north-of-zone1',firstZoneFrames:2,roofConnectingPoles:2,greenhouseNorth:settings.greenhouse,terraces:'row1-south-low-row3-north-high'};
+      const modelContent={version:7,geometryRevision,selectedPlant:selected,phase,selectedPair:activePair,filterPlantIds:queryIds,labelScope,focusedSection,feedbackMode:'manual-copy-no-cloud',zone:areas[currentZone],positions:'photo-and-oral-approximate',confirmedPlants:layout.size,measuredLengthsMeters:measuredLengths,excludedOuterUntrainedRow:true,pendingSecondRow,view:'3d-wireframe',navigation:'pan-tilt',arrangement:'zone2-north-of-zone1',firstZoneFrames:3,secondZoneFrames:0,greenhouseNorth:settings.greenhouse,terraces:'zone1-three-levels-zone2-two-levels'};
       try{window.openai?.setWidgetState?.({modelContent,privateContent})?.catch(()=&gt;{});}catch(e){}
     }
     if(!restore(window.openai?.widgetState))camera=defaultCamera(0);
@@ -2129,9 +2147,9 @@ html&gt;body{padding:0}&lt;/style&gt;
         if(zone!==currentZone&amp;&amp;!flight?.transfer)continue;
         const {x:cx,z:cz}=centers[zone],bounds=stripBounds(zone),stepLeft=cx+bounds.left,stepRight=cx+bounds.right;
         // Three broad landings. The pots sit on their own level, not on a flat overlay.
-        rect(stepLeft-.15,cz-rowSpacing*1.5-.2,stepRight+.15,cz+rowSpacing*1.5+.2,-.06,[.06,.077,.095,1]);
-        for(let band=0;band&lt;3;band++){
-          const row=2-band,z=cz+(1-row)*rowSpacing,y=rowElevations[row],back=z-rowSpacing/2,front=z+rowSpacing/2,next=rowElevations[row-1]??-.055;
+        rect(stepLeft-.15,cz-rowSpacing*1.5-.2,stepRight+.15,cz+rowSpacing*(zone===1?.5:1.5)+.2,-.06,[.06,.077,.095,1]);
+        for(let band=0;band&lt;(zone===1?2:3);band++){
+          const row=2-band,z=cz+(1-row)*rowSpacing,y=rowElevations[row]-(zone===1?.5:0),back=z-rowSpacing/2,front=z+rowSpacing/2,next=band===(zone===1?1:2)?-.055:y-.5;
           rect(stepLeft,back,stepRight,front,y,[.087+row*.003,.11+row*.003,.135+row*.003,1]);
           quad([stepLeft,y,front],[stepRight,y,front],[stepRight,next,front],[stepLeft,next,front],[.057,.075,.095,1]);
           for(const x of [stepLeft,stepRight])quad([x,-.055,back],[x,y,back],[x,y,front],[x,-.055,front],[.065,.085,.106,1]);
@@ -2150,8 +2168,8 @@ html&gt;body{padding:0}&lt;/style&gt;
         if(zone===0){
           // Exactly two overhead connecting poles. The gap has no frame volume,
           // ground shading, extra legs, or intermediate transverse beams.
-          const from=cx+frameRegions[0][0].right,to=cx+frameRegions[0][1].left;
-          for(const z of [back,front])dashed([from,h,z],[to,h,z],[.57,.67,.74,.82],.38);
+          for(let i=0;i&lt;frameRegions[0].length-1;i++){const from=cx+frameRegions[0][i].right,to=cx+frameRegions[0][i+1].left;
+          for(const z of [back,front])dashed([from,h,z],[to,h,z],[.57,.67,.74,.82],.38);}
           // Hanging lines are not a third frame: there are no extra legs or shaded bay here.
           for(const p of pots.filter(p=&gt;p.section==='中间连接区'))dashed([p.x,p.y+.64*potScale+.05,p.z],[p.x,h,p.z],[.39,.48,.55,.20],.16);
         }
@@ -2189,7 +2207,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       }
       if(pair){const a=layout.get(pair.donor),b=layout.get(pair.mother);if(a&amp;&amp;b){let previous=null;const same=a.zone===b.zone,raise=same?2.25:5;const points=[];for(let i=0;i&lt;=60;i++){const t=i/60,p=[mix(a.x,b.x,t),mix(a.y,b.y,t)+.82+Math.sin(Math.PI*t)*raise,mix(a.z,b.z,t)];if(previous)line(previous,p,[.91,.78,.55,.88]);previous=p;points.push(p);}const end=points[60],dir=normal(sub(end,points[56])),side=normal(cross(dir,[0,1,0]));for(const sign of [-1,1])line(end,end.map((v,k)=&gt;v-dir[k]*.36+side[k]*.17*sign),[1,.86,.62,1]);}}
       if(gl){if(sceneBuffers){for(const key of ['line','triangle','glass'])gl.deleteBuffer(sceneBuffers[key]);}const make=data=&gt;{const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);return b;};sceneBuffers={line:make(lines),triangle:make(triangles),glass:make(glass),lineCount:lines.length/7,triangleCount:triangles.length/7,glassCount:glass.length/7};}
-      root.dataset.pots=String(pots.length);root.dataset.confirmedPlants=String(layout.size);root.dataset.middleSlots=String(middleRows.reduce((n,r)=&gt;n+r.ids.length,0));root.dataset.pendingIdentifiers=String(pots.filter(p=&gt;!p.confirmed).length);root.dataset.middleRows=middleRows.map(r=&gt;r.ids.length).join(',');root.dataset.leftRows=actualRows.filter(r=&gt;r.section==='左侧有架区').map(r=&gt;r.ids.length).join(',');root.dataset.middlePositions=pendingSecondRow?'two-identifiers-pending':'user-confirmed-order-photo-spaced';root.dataset.outerUntrainedRow='excluded';root.dataset.bayLengthMeters=String(measuredLengths.bay);root.dataset.middleLengthMeters=String(measuredLengths.middle);root.dataset.leftLengthMeters=String(measuredLengths.left);root.dataset.lengthRatio=String((middleSpan.right-middleSpan.left)/(baySpan.right-baySpan.left));root.dataset.geometryRevision=geometryRevision;root.dataset.taskPlants=String(new Set(tasks.map(t=&gt;t.id)).size);root.dataset.activeTasks=String(tasks.filter(t=&gt;needsAction(t)).length);root.dataset.pairs=String(pairsOf(tasks).length);root.dataset.activePairs=String(pairsOf(tasks).filter(pairIsActive).length);root.dataset.batchDate=taskDate||'';root.dataset.batchExpired=String(expired());root.dataset.columns=String(columns);root.dataset.frames='2,1';root.dataset.roofPoles='2';root.dataset.arrangement='zone2-north-of-zone1';root.dataset.terraces='row1-south-low-row3-north-high';root.dataset.rowElevations=rowElevations.join(',');root.dataset.greenhouses=settings.greenhouse?'2':'0';root.dataset.pendingSecondRow=String(pendingSecondRow);root.dataset.positions='partial-real';
+      root.dataset.pots=String(pots.length);root.dataset.confirmedPlants=String(layout.size);root.dataset.middleSlots=String(middleRows.reduce((n,r)=&gt;n+r.ids.length,0));root.dataset.pendingIdentifiers=String(pots.filter(p=&gt;!p.confirmed).length);root.dataset.middleRows=middleRows.map(r=&gt;r.ids.length).join(',');root.dataset.leftRows=actualRows.filter(r=&gt;r.section==='左侧有架区').map(r=&gt;r.ids.length).join(',');root.dataset.middlePositions='user-confirmed-order-photo-spaced';root.dataset.outerUntrainedRow='excluded';root.dataset.bayLengthMeters=String(measuredLengths.bay);root.dataset.middleLengthMeters=String(measuredLengths.middle);root.dataset.leftLengthMeters=String(measuredLengths.left);root.dataset.lengthRatio=String((middleSpan.right-middleSpan.left)/(baySpan.right-baySpan.left));root.dataset.geometryRevision=geometryRevision;root.dataset.taskPlants=String(new Set(tasks.map(t=&gt;t.id)).size);root.dataset.activeTasks=String(tasks.filter(t=&gt;needsAction(t)).length);root.dataset.pairs=String(pairsOf(tasks).length);root.dataset.activePairs=String(pairsOf(tasks).filter(pairIsActive).length);root.dataset.batchDate=taskDate||'';root.dataset.batchExpired=String(expired());root.dataset.columns=String(columns);root.dataset.frames='3,0';root.dataset.roofPoles='4';root.dataset.arrangement='zone2-north-of-zone1';root.dataset.terraces='zone1-three-zone2-two';root.dataset.rowElevations=rowElevations.join(',');root.dataset.greenhouses=settings.greenhouse?'2':'0';root.dataset.pendingSecondRow=String(pendingSecondRow);root.dataset.positions='photo-and-oral-approximate';
     }
     function drawScene(){
       updateCamera();
@@ -2202,11 +2220,11 @@ html&gt;body{padding:0}&lt;/style&gt;
       const filter=new Set(queryIds),pair=getPair(),occupied=[];
       const overlaps=(a,b,gap=2)=&gt;a.x&lt;b.x+b.w+gap&amp;&amp;a.x+a.w+gap&gt;b.x&amp;&amp;a.y&lt;b.y+b.h+gap&amp;&amp;a.y+a.h+gap&gt;b.y;
       const center=centers[currentZone],flying=!!flight&amp;&amp;flight.phase!=='land',regions=frameRegions[currentZone];
-      for(let i=0;i&lt;2;i++){const el=$(i?'#pf-frame-label-2':'#pf-frame-label'),region=regions[i];if(!region){el.hidden=true;continue;}el.textContent=currentZone===0?(i===1?'右侧有架':'左侧有架'):'待录入';position(el,[center.x+(region.left+region.right)/2,settings.frameHeight+.38,center.z-frameDepth]);el.hidden=flying||el.hidden;}
+      for(let i=0;i&lt;3;i++){const el=$(['#pf-frame-label','#pf-frame-label-2','#pf-frame-label-3'][i]),region=regions[i];if(!region){el.hidden=true;continue;}el.textContent=['有架区三','有架区二','有架区一'][i];position(el,[center.x+(region.left+region.right)/2,settings.frameHeight+.38,center.z-frameDepth]);el.hidden=flying||el.hidden;}
       const pole=$('#pf-pole-label'),middleLabel=$('#pf-middle-label');if(currentZone===0){const mid=(middleSpan.left+middleSpan.right)/2;position(pole,[mid,settings.frameHeight+.38,center.z-frameDepth]);pole.hidden=flying||pole.hidden;position(middleLabel,[mid,.12,center.z+frameDepth+.23]);middleLabel.hidden=flying||middleLabel.hidden;}else{pole.hidden=true;middleLabel.hidden=true;}
       const greenhouseLabel=$('#pf-greenhouse-label');position(greenhouseLabel,[center.x+(currentZone===0?6:0),5.35,center.z-rowSpacing*1.5-.25]);greenhouseLabel.hidden=!settings.greenhouse||flying||greenhouseLabel.hidden;
       const northFrom=project([camera.cx,0,camera.cz]),northTo=project([camera.cx,0,camera.cz-1]);$('#pf-north-arrow').style.transform='rotate('+(Math.atan2(northTo.y-northFrom.y,northTo.x-northFrom.x)*180/Math.PI+90)+'deg)';
-      for(let r=0;r&lt;3;r++){const el=$('#pf-row-'+r);el.textContent=['第一排 · 低','第二排','第三排 · 高'][r];position(el,[center.x+(currentZone===0?leftSpan.left-.7:-10.5),rowElevations[r]+.18,center.z+(1-r)*rowSpacing]);el.hidden=flying||el.hidden;}
+      for(let r=0;r&lt;3;r++){const el=$('#pf-row-'+r);el.textContent=currentZone===1?['','第二排 · 低','第一排 · 高'][r]:['第一排 · 低','第二排','第三排 · 高'][r];position(el,[center.x+gap3Span.left-.7,rowElevations[r]+.18-(currentZone===1?.5:0),center.z+(1-r)*rowSpacing]);el.hidden=flying||el.hidden||(currentZone===1&amp;&amp;r===0);}
       // Keep dot + ID together directly above or below its pot, without leaders
       // or a third floating lane. Preserve the pot's horizontal position.
       const stageRect=stage.getBoundingClientRect();
@@ -2214,12 +2232,14 @@ html&gt;body{padding:0}&lt;/style&gt;
         if(el.hidden||getComputedStyle(el).display==='none')continue;
         const b=el.getBoundingClientRect();occupied.push({x:b.left-stageRect.left,y:b.top-stageRect.top,w:b.width,h:b.height,annotation:el.classList.contains('pf-annotation')?el:null});
       }
-      const focusNames={left:'左侧有架区',middle:'中间连接区',right:'右侧有架区'};
+      const focusBounds=stripBounds(currentZone),focusThird=(focusBounds.right-focusBounds.left)/3;
+      const focusRanges={left:[focusBounds.left,focusBounds.left+focusThird],middle:[focusBounds.left+focusThird,focusBounds.left+2*focusThird],right:[focusBounds.left+2*focusThird,focusBounds.right]};
       const labels=[...$('#pf-labels').children].map(el=&gt;{const p=layout.get(el.dataset.id),relevant=records(p.id).some(t=&gt;hasPlannedAction(t));return{el,p,relevant,s:project([p.x,p.y+.64*potScale,p.z]),priority:p.id===selected?10:filter.has(p.id)?8:pair&amp;&amp;(p.id===pair.donor||p.id===pair.mother)?6:relevant?4:1};}).sort((a,b)=&gt;b.priority-a.priority||a.p.row-b.p.row||a.p.x-b.p.x||a.p.col-b.p.col);
       let visibleCount=0;
       for(const {el,p,s,priority,relevant}of labels){
         let show=false;
-        const eligible=labelScope==='all'||relevant||priority&gt;=6||(focusedSection!=='all'&amp;&amp;p.section===focusNames[focusedSection]);
+        const focused=focusRanges[focusedSection];
+        const eligible=labelScope==='all'||relevant||priority&gt;=6||(focused&amp;&amp;p.x&gt;=focused[0]&amp;&amp;p.x&lt;=focused[1]);
         el.dataset.labelSide=(p.col+p.row)%2?'below':'above';
         if(eligible&amp;&amp;s.visible&amp;&amp;(p.zone===currentZone||flight?.phase==='transfer')&amp;&amp;(!flight||flight.phase==='land'||s.depth&lt;85)){
           el.hidden=false;const w=el.offsetWidth,h=el.offsetHeight;
@@ -2261,7 +2281,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       else {const highA={...f.start,pitch:1.28,distance:Math.max(35,f.target.distance+10)},highB={...f.target,pitch:1.28,distance:Math.max(35,f.target.distance+10)};if(t&lt;.30){f.phase='rise';camera=cameraMix(f.start,highA,t/.30);}else if(t&lt;.70){f.phase='transfer';camera=cameraMix(highA,highB,(t-.30)/.40);}else {f.phase='land';camera=cameraMix(highB,f.target,(t-.70)/.30);}}
       root.dataset.flight=f.phase;if(t&gt;=1){camera=f.target;flight=null;buildScene();root.dataset.flight='idle';updateHead();save();}
     }
-    function updateHead(){$('#pf-zonetitle').textContent=flight?.transfer?areas[flight.fromZone]+' → '+areas[currentZone]:currentZone===0?'第一片区':'第二片区';$('#pf-zoneinfo').textContent=flight?'转场中':currentZone===0?(pendingSecondRow?'两株编号待确认':'左架 / 中间 / 右架'):'盆位待录入';root.dataset.zone=String(currentZone);}
+    function updateHead(){$('#pf-zonetitle').textContent=flight?.transfer?areas[flight.fromZone]+' → '+areas[currentZone]:areas[currentZone];$('#pf-zoneinfo').textContent=flight?'转场中':'盆位按照片及口述近似';root.dataset.zone=String(currentZone);}
     function refresh(){
       if(!pairsOf(tasks).some(p=&gt;p.key===activePair))activePair='';
       for(const option of $('#pf-phase').options)option.textContent=periodLabels[option.value];
@@ -2270,7 +2290,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       $('#pf-label-mode').textContent=labelScope==='all'?'全部':'待办';$('#pf-label-mode').setAttribute('aria-pressed',String(labelScope==='all'));$('#pf-label-mode').setAttribute('aria-label',labelScope==='all'?'只显示任务和选中编号':'显示全部编号');root.querySelectorAll('[data-focus]').forEach(el=&gt;el.setAttribute('aria-pressed',String(el.dataset.focus===focusedSection)));
       root.querySelectorAll('[data-zone]').forEach(b=&gt;b.setAttribute('aria-pressed',String(Number(b.dataset.zone)===currentZone)));
       const group=$('#pf-labels'),pair=getPair(),filter=new Set(queryIds);group.replaceChildren();
-      for(const [id,p]of layout){const t=activeRecord(id),active=needsAction(t),k=active?kind(t):'other',c=colors[k],button=document.createElement('button');button.type='button';button.className='pf-label cursor-interaction';button.dataset.id=id;button.dataset.section=p.section;button.dataset.note=p.note;button.dataset.taskActive=String(active);button.dataset.taskKind=t?kind(t):'none';button.dataset.elevation=String(p.y);button.dataset.row=String(p.row+1);button.dataset.col=String(p.col+1);button.dataset.x=String(p.x);button.dataset.z=String(p.z);const chip=document.createElement('span');chip.className='pf-label-chip';chip.textContent=id;button.append(chip);button.style.setProperty('--task-color','rgb('+c.slice(0,3).map(v=&gt;Math.round(v*255)).join(',')+')');button.setAttribute('aria-pressed',String(id===selected));button.setAttribute('aria-label',id+'号，'+p.area+p.section+'第'+(p.row+1)+'排左起第'+(p.col+1)+'株，'+['南侧低台阶','中间台阶','北侧高台阶'][p.row]+(p.note?'，'+p.note:'')+'，左右顺序已录入、间距示意，'+periodLabels[phase]+'，'+(t?'第'+t.flower+'朵，'+(active?'待办：':'本时段无需操作：')+locationAwareOperation(t):tasks.length?'本批次无任务':'未载入任务'));if(t)button.classList.add(active?'pf-task-active':'pf-task-inactive');if(pair&amp;&amp;(id===pair.donor||id===pair.mother))button.classList.add('pf-related');button.addEventListener('click',()=&gt;selectPlant(id));group.append(button);}
+      for(const [id,p]of layout){const t=activeRecord(id),active=needsAction(t),k=active?kind(t):'other',c=colors[k],button=document.createElement('button');button.type='button';button.className='pf-label cursor-interaction';button.dataset.id=id;button.dataset.section=p.section;button.dataset.note=p.note;button.dataset.taskActive=String(active);button.dataset.taskKind=t?kind(t):'none';button.dataset.elevation=String(p.y);button.dataset.row=String(p.row+1);button.dataset.col=String(p.col+1);button.dataset.x=String(p.x);button.dataset.z=String(p.z);const chip=document.createElement('span');chip.className='pf-label-chip';chip.textContent=id;button.append(chip);button.style.setProperty('--task-color','rgb('+c.slice(0,3).map(v=&gt;Math.round(v*255)).join(',')+')');button.setAttribute('aria-pressed',String(id===selected));const displayRow=p.zone===1?(p.row===2?1:2):p.row+1,level=p.zone===1?(p.row===2?'高台阶':'低台阶'):['南侧低台阶','中间台阶','北侧高台阶'][p.row];button.setAttribute('aria-label',id+'号，'+p.area+p.section+'第'+displayRow+'排左起第'+(p.col+1)+'株，'+level+(p.note?'，'+p.note:'')+'，左右顺序已录入、间距示意，'+periodLabels[phase]+'，'+(t?'第'+t.flower+'朵，'+(active?'待办：':'本时段无需操作：')+locationAwareOperation(t):tasks.length?'本批次无任务':'未载入任务'));if(t)button.classList.add(active?'pf-task-active':'pf-task-inactive');if(pair&amp;&amp;(id===pair.donor||id===pair.mother))button.classList.add('pf-related');button.addEventListener('click',()=&gt;selectPlant(id));group.append(button);}
       root.dataset.labelMode='compact-chip-with-touch-target';root.dataset.feedbackMode='manual-copy-no-cloud';
       const results=$('#pf-results'),resultButtons=$('#pf-result-buttons');resultButtons.replaceChildren();results.hidden=!queryIds.length&amp;&amp;!$('#pf-search').value.trim();
       const known=queryIds.filter(id=&gt;layout.has(id)),missing=queryIds.filter(id=&gt;!layout.has(id));$('#pf-searchmsg').textContent=queryIds.length?'定位 '+known.length+'/'+queryIds.length+(missing.length?' · 未录入 '+missing.join('、'):''):'';
@@ -2334,16 +2354,17 @@ html&gt;body{padding:0}&lt;/style&gt;
     $('#pf-copy-feedback').addEventListener('click',()=&gt;{const dirty=[...$('#pf-task-list').children].filter(row=&gt;row.dataset.dirty==='true');for(const row of dirty)if(!row.collectDraft())return;if(dirty.length){persistFeedback();refresh();}const text=feedbackText();if(!text){$('#pf-feedback-message').textContent='尚无勾选或登记内容';return;}$('#pf-feedback-text').value=text;$('#pf-feedback-dialog').showModal();copyFeedbackText();});
     $('#pf-feedback-recopy').addEventListener('click',copyFeedbackText);$('#pf-feedback-close').addEventListener('click',()=&gt;$('#pf-feedback-dialog').close());
     function keepPlantVisible(id){const p=layout.get(id);if(!p||p.zone!==currentZone||flight)return;const s=project([p.x,p.y+.97,p.z]);if(!s.visible||s.x&lt;54||s.x&gt;cssWidth-54){camera.cx=clamp(p.x,-cameraLimits.pan,cameraLimits.pan);requestRender();}}
-    function selectPlant(id){if(!layout.has(id))return;selected=id;activePair=pairsOf(tasks).find(p=&gt;p.donor===id||p.mother===id)?.key??'';const zone=layout.get(id).zone;refresh();if(zone!==currentZone)flyTo(zone);else keepPlantVisible(id);save();}
-    function findPlants(){const input=$('#pf-search').value.normalize('NFKC').trim(),tokens=input?input.split(/[\s,，、;；]+/).filter(Boolean):[],matches=tokens.map(token=&gt;token.match(/^(\d+)(?:-[BFZ]\d+)?$/i));if(matches.some(m=&gt;!m)){$('#pf-results').hidden=false;$('#pf-searchmsg').textContent='输入株号或短花号，以空格分隔';return;}queryIds=[...new Set(matches.map(m=&gt;m[1]))].slice(0,300);const first=queryIds.find(id=&gt;layout.has(id));if(first){selected=first;activePair=pairsOf(tasks).find(p=&gt;p.donor===first||p.mother===first)?.key??'';}else if(!queryIds.length){activePair='';}refresh();if(first&amp;&amp;layout.get(first).zone!==currentZone)flyTo(layout.get(first).zone);else if(first)keepPlantVisible(first);save();}
+    function selectPlant(id){if(!layout.has(id))return;selected=id;activePair=pairsOf(tasks).find(p=&gt;p.donor===id||p.mother===id)?.key??'';const zone=layout.get(id).zone;refresh();if(zone!==currentZone){flyTo(zone);if(flight){flight.target.cx=layout.get(id).x;flight.target.distance=Math.min(flight.target.distance,30);}else{camera.cx=layout.get(id).x;camera.distance=Math.min(camera.distance,30);requestRender();}}else keepPlantVisible(id);save();}
+    function findPlants(){const input=$('#pf-search').value.normalize('NFKC').trim(),tokens=input?input.split(/[\s,，、;；]+/).filter(Boolean):[],matches=tokens.map(token=&gt;token.match(/^(\d+)(?:-[BFZ]\d+)?$/i));if(matches.some(m=&gt;!m)){$('#pf-results').hidden=false;$('#pf-searchmsg').textContent='输入株号或短花号，以空格分隔';return;}queryIds=[...new Set(matches.map(m=&gt;m[1]))].slice(0,300);const first=queryIds.find(id=&gt;layout.has(id));if(first){selected=first;activePair=pairsOf(tasks).find(p=&gt;p.donor===first||p.mother===first)?.key??'';}else if(!queryIds.length){activePair='';}refresh();if(first&amp;&amp;layout.get(first).zone!==currentZone){flyTo(layout.get(first).zone);if(flight){flight.target.cx=layout.get(first).x;flight.target.distance=Math.min(flight.target.distance,30);}else{camera.cx=layout.get(first).x;camera.distance=Math.min(camera.distance,30);requestRender();}}else if(first)keepPlantVisible(first);save();}
     let searchTimer=0;$('#pf-search').addEventListener('input',()=&gt;{clearTimeout(searchTimer);searchTimer=setTimeout(findPlants,280);});$('#pf-search').addEventListener('keydown',e=&gt;{if(e.key==='Enter'){clearTimeout(searchTimer);findPlants();}if(e.key==='Escape'){$('#pf-search').value='';findPlants();}});
     $('#pf-search').addEventListener('paste',event=&gt;{const text=event.clipboardData?.getData('text/plain');if(text&amp;&amp;/[\r\n\t]/.test(text)){event.preventDefault();const input=event.currentTarget;input.setRangeText(text.replace(/[\r\n\t]+/g,' '),input.selectionStart??input.value.length,input.selectionEnd??input.value.length,'end');clearTimeout(searchTimer);searchTimer=setTimeout(findPlants,100);}});
     $('#pf-phase').addEventListener('change',()=&gt;{phase=$('#pf-phase').value;refresh();save();});root.querySelectorAll('[data-zone]').forEach(b=&gt;b.addEventListener('click',()=&gt;flyTo(Number(b.dataset.zone))));$('#pf-home').addEventListener('click',()=&gt;flyTo(currentZone,true));
     $('#pf-label-mode').addEventListener('click',()=&gt;{labelScope=labelScope==='all'?'tasks':'all';refresh();save();});
     function focusSection(key){
       focusedSection=key;if(key==='all'){flyTo(currentZone,true);return;}
-      const span={left:leftSpan,middle:middleSpan,right:baySpan}[key];if(!span)return;
-      currentZone=0;const target={cx:(span.left+span.right)/2,cz:centers[0].z,yaw:0,pitch:.85,distance:Math.max(12,((span.right-span.left)/2+.95)/(Math.tan(38*Math.PI/360)*(cssWidth/cssHeight)))};
+      const bounds=stripBounds(currentZone),third=(bounds.right-bounds.left)/3;
+      const span={left:{left:bounds.left,right:bounds.left+third},middle:{left:bounds.left+third,right:bounds.left+2*third},right:{left:bounds.left+2*third,right:bounds.right}}[key];if(!span)return;
+      const target={cx:(span.left+span.right)/2,cz:centers[currentZone].z,yaw:0,pitch:.85,distance:Math.min(70,Math.max(12,((span.right-span.left)/2+.95)/(Math.tan(38*Math.PI/360)*(cssWidth/cssHeight))))};
       if(motion.matches){camera=target;flight=null;root.dataset.flight='idle';}else flight={start:{...camera},target,t0:performance.now(),duration:500,transfer:false,phase:'land'};
       refresh();save();
     }
@@ -2357,7 +2378,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     function finishFlight(){if(flight){camera={...flight.target};flight=null;buildScene();requestRender();}root.dataset.flight='idle';updateHead();}
     canvas.addEventListener('pointerdown',e=&gt;{canvas.setPointerCapture(e.pointerId);finishFlight();pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===1)drag=startDrag(e.clientX,e.clientY);if(pointers.size===2){const a=[...pointers.values()];pinch={span:Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]),distance:camera.distance};if(drag)drag.moved=true;}});
     canvas.addEventListener('pointermove',e=&gt;{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===2&amp;&amp;pinch){const a=[...pointers.values()],span=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);camera.distance=clamp(pinch.distance*pinch.span/Math.max(span,15),9,70);}else if(pointers.size===1&amp;&amp;drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(!drag.axis&amp;&amp;Math.hypot(dx,dy)&gt;6){drag.axis=Math.abs(dx)&gt;=Math.abs(dy)?'pan':'pitch';drag.moved=true;}if(drag.axis==='pan')camera.cx=clamp(drag.cx-dx*drag.panScale,-cameraLimits.pan,cameraLimits.pan);else if(drag.axis==='pitch')camera.pitch=clamp(drag.pitch+dy*.005,cameraLimits.minPitch,cameraLimits.maxPitch);}requestRender();});
-    function endPointer(e){const wasDrag=drag?.moved;pointers.delete(e.pointerId);if(!wasDrag&amp;&amp;drag){const rect=canvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;let best=null,bestD=32;for(const p of pots){if(!p.id)continue;const s=project([p.x,p.y+.4,p.z]),d=Math.hypot(s.x-x,s.y-y);if(s.visible&amp;&amp;d&lt;bestD){bestD=d;best=p;}}if(best)selectPlant(best.id);}if(!pointers.size){drag=null;pinch=null;save();}else if(pointers.size===1){const [x,y]=[...pointers.values()][0];drag=startDrag(x,y,true);pinch=null;}}
+    function endPointer(e){const wasDrag=drag?.moved;pointers.delete(e.pointerId);if(!wasDrag&amp;&amp;drag&amp;&amp;!flight){const rect=canvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;let best=null,bestD=32;for(const p of pots){if(!p.id||p.zone!==currentZone)continue;const s=project([p.x,p.y+.4,p.z]),d=Math.hypot(s.x-x,s.y-y);if(s.visible&amp;&amp;d&lt;bestD){bestD=d;best=p;}}if(best)selectPlant(best.id);}if(!pointers.size){drag=null;pinch=null;save();}else if(pointers.size===1){const [x,y]=[...pointers.values()][0];drag=startDrag(x,y,true);pinch=null;}}
     canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointercancel',()=&gt;{pointers.clear();drag=null;pinch=null;save();});canvas.addEventListener('wheel',e=&gt;{e.preventDefault();finishFlight();if(Math.abs(e.deltaX)&gt;Math.abs(e.deltaY)&amp;&amp;!e.ctrlKey)camera.cx=clamp(camera.cx+e.deltaX*panScale(),-cameraLimits.pan,cameraLimits.pan);else camera.distance=clamp(camera.distance*Math.exp(e.deltaY*.0011),9,70);requestRender();save();},{passive:false});
     function resize(){const r=stage.getBoundingClientRect();if(r.width&lt;80||r.height&lt;80)return;const oldDefault=distanceForWidth();cssWidth=r.width;cssHeight=r.height;const ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(cssWidth*ratio);canvas.height=Math.round(cssHeight*ratio);if(!flight)camera.distance=clamp(camera.distance*distanceForWidth()/oldDefault,9,70);$('#pf-camera-note').textContent=matchMedia('(pointer:coarse)').matches?'横移 · 俯仰 · 双指缩放':'横移 · 俯仰 · 滚轮缩放';requestRender();}
     new ResizeObserver(resize).observe(stage);
