@@ -17,7 +17,7 @@ function periodLabels(date) {
 function needsAction(text) {
   const s = normId(text).trim();
   if (!s || /已完成|已取消|已摘取|已丢弃/.test(s) || /^(不处理|无需操作|无操作|—)/.test(s)) return false;
-  return /接\s*\d+(?:\(\d+\))?\s*花粉|给\s*\d+(?:\(\d+\))?\s*供粉|套袋|去雄|绑|摘取|测量|采样|人工自交|自主自交|自然开放|确认|检查/.test(s.replace(/不(?:套袋|去雄|授粉|人工授粉|摘取|绑线)/g, ''));
+  return /接\s*\d+(?:\(\d+\))?\s*花粉|给\s*\d+(?:\(\d+\))?\s*供粉|套袋|去雄|绑|摘取|测量|采样|人工自交|自主自交|自然开放|确认|检查|(?:深绿|深紫|红|黄|绿|白|蓝)(?:色)?线/.test(s.replace(/不(?:套袋|去雄|授粉|人工授粉|摘取|绑线)/g, ''));
 }
 function validateConfig(config, layout) {
   if (!Array.isArray(config.tasks) || config.tasks.length > 1000 || typeof config.label !== 'string') throw Error('任务格式错误');

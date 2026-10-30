@@ -150,7 +150,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
       assert.equal(await app.getAttribute('data-pairs'), String(taskSummary.crosses));
       for (const phase of ['evening', 'morning']) {
         await frame.locator('#pf-phase').selectOption(phase);
-        assert.equal(await frame.locator('#pf-phase option:checked').innerText(), labels[phase]);
+        assert.equal(await frame.locator('#pf-phase option:checked').innerText(), phase==='evening'?'授粉前处理':'授粉处理');
         assert.equal(await app.getAttribute('data-active-tasks'), String(taskSummary.active[phase]));
         for (const id of new Set(currentTasks.tasks.map(t => t.id))) {
           const active = currentTasks.tasks.some(t => t.id === id && needsAction(t[phase]));
@@ -323,6 +323,11 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     assert.equal(await fa.getAttribute('data-pairs'), '2');
     for (const phase of ['evening', 'morning']) {
       await ff.locator('#pf-phase').selectOption(phase);
+      assert.equal(await ff.locator('#pf-add-flower').innerText(),phase==='evening'?'＋ 添加新花苞':'＋ 添加新花朵');
+      if(phase==='evening'){
+        for(const id of ['157-B99','36-Z99']){const row=ff.locator('.pf-task-row[data-flower-id="'+id+'"]');assert.match(await row.locator('.pf-task-short').innerText(),/本阶段不处理（不绑线、不去雄、不套袋）/);assert.equal(await row.locator('.pf-task-done').isDisabled(),true);}
+        for(const [id,color]of [['49-F99','红线'],['59-F99','绿线'],['46-F99','黄线'],['56-Z99','白线']])assert((await ff.locator('.pf-task-row[data-flower-id="'+id+'"]').locator('.pf-task-short').innerText()).includes(color),'前处理列表明确显示线色');
+      }
       assert.equal(await fa.getAttribute('data-active-tasks'), String(fixtureSummary.active[phase]));
       assert.equal(await fa.getAttribute('data-active-pairs'), phase === 'morning' ? '2' : '0');
       assert.equal(await ff.locator('.pf-label[data-id="792"]').getAttribute('data-task-active'), String(phase === 'morning'));
@@ -348,6 +353,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     assert.equal(await ff.locator('#pf-result-buttons button').count(),1,'短花号不能把花序当作另一个植株');
     assert.equal(await ff.locator('#pf-result-buttons button').innerText(),'49');
     const taskRow=id=>ff.locator('.pf-task-row[data-flower-id="'+id+'"]');
+    const donorPanel=taskRow('157-B99').locator('.pf-recipient-list');assert.equal(await donorPanel.getAttribute('data-recipient-count'),'2');assert.match(await donorPanel.innerText(),/49第99朵/);assert.match(await donorPanel.innerText(),/792第99朵/);assert.equal(await taskRow('157-B99').locator('.pf-task-done').innerText(),'2朵均完成');
     assert.equal(await ff.locator('#pf-label-mode').count(),0,'不显示全部/待办切换');
     const initialRows=await ff.locator('.pf-task-row').evaluateAll(rows=>rows.filter(r=>r.dataset.done!=='true').map(r=>r.dataset.taskKey));
     const coordOf=async key=>{const id=key.match(/\|(\d+)#/)[1];return ff.locator(`.pf-label[data-id="${id}"]`).evaluate(el=>({x:+el.dataset.x,section:el.dataset.section}));};
@@ -356,8 +362,8 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await taskRow('59-F99').locator('.pf-task-done').click();
     assert.equal(await taskRow('59-F99').getAttribute('data-done'),'true');
     assert.equal((await ff.locator('.pf-task-row').last().getAttribute('data-flower-id')),'59-F99','完成后移动到列表底部');
-    await ff.locator('#pf-phase').selectOption('evening');assert.equal(await taskRow('59-F99').getAttribute('data-done'),'false','晚间和早晨完成状态独立');await taskRow('59-F99').locator('.pf-task-done').click();
-    await ff.locator('#pf-phase').selectOption('morning');assert.equal(await taskRow('59-F99').getAttribute('data-done'),'true');
+    await ff.locator('#pf-phase').selectOption('evening');assert.equal(await taskRow('59-F99').getAttribute('data-done'),'false','晚间和早晨完成状态独立');await ff.locator('#pf-general-note').fill('前处理总备注测试');await ff.locator('#pf-add-flower').click();await ff.locator('[aria-label="新花苞植株编号"]').fill('59');await ff.locator('[aria-label="新花苞花号（可暂空）"]').fill('59-F101');await ff.locator('[aria-label="新花苞实际处理"]').selectOption('不去雄、套袋、绿线');await taskRow('59-F99').locator('.pf-task-done').click();
+    await ff.locator('#pf-phase').selectOption('morning');assert.equal(await taskRow('59-F99').getAttribute('data-done'),'true');assert.equal(await ff.locator('#pf-general-note').inputValue(),'');assert.equal(await ff.locator('[aria-label="新花苞植株编号"]').count(),0);await ff.locator('#pf-general-note').fill('授粉处理总备注测试');
     await taskRow('49-F99').locator('summary').click();
     await taskRow('49-F99').locator('select').selectOption('其他');
     await taskRow('49-F99').locator('textarea').fill('父本花药未裂，改为观察；尚未确认受精');
@@ -368,6 +374,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     assert.equal(await taskRow('49-F99').locator('.pf-task-editor button').count(),0,'输入自动保存，无保存按钮');
     assert.match(await taskRow('49-F99').locator('.pf-task-original').first().textContent(),/接157花粉/,'原计划保持不变');
     await fixturePage.setViewportSize({width:360,height:1000});
+    await taskRow('157-B99').screenshot({path:path.join(out,'two-recipient-mobile.png')});assert(await taskRow('157-B99').evaluate(el=>el.scrollWidth<=el.clientWidth+1),'双母花提示不应导致手机横向溢出');
     await taskRow('49-F99').locator('.pf-task-editor').screenshot({path:path.join(out,'task-editor-mobile.png')});
     await taskRow('36-Z99').locator('summary').click();
     await taskRow('36-Z99').locator('input[aria-label="36-Z99花冠横径（mm）"]').fill('48');
@@ -382,7 +389,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await fixturePage.context().grantPermissions(['clipboard-read','clipboard-write'],{origin:url});
     await ff.locator('#pf-copy-feedback').click();
     const feedbackOutput=await ff.locator('#pf-feedback-text').inputValue();
-    assert.match(feedbackOutput,/59-F99/);assert.match(feedbackOutput,/其他/);assert.match(feedbackOutput,/花冠 50.2×51.1 mm/);assert.match(feedbackOutput,/2026-10-26 晚/);assert.match(feedbackOutput,/2026-10-27 早/);assert.match(feedbackOutput,/56 · 植株/);assert.match(feedbackOutput,/茎长 321 mm/);assert.match(feedbackOutput,/真叶 0/);assert.match(feedbackOutput,/868（2）-Z8：花药未开裂；位置：侧枝；暂未授粉/);assert.doesNotMatch(feedbackOutput,/执行人|处理人|网页勾选|设备生成时间|原计划|未填写/);
+    assert.match(feedbackOutput,/59-F99/);assert.match(feedbackOutput,/其他/);assert.match(feedbackOutput,/花冠 50.2×51.1 mm/);assert.match(feedbackOutput,/2026-10-26 授粉前处理/);assert.match(feedbackOutput,/2026-10-27 授粉处理/);assert.match(feedbackOutput,/59-F101：不去雄、套袋、绿线/);assert.match(feedbackOutput,/总备注：前处理总备注测试/);assert.match(feedbackOutput,/总备注：授粉处理总备注测试/);assert.match(feedbackOutput,/56 · 植株/);assert.match(feedbackOutput,/茎长 321 mm/);assert.match(feedbackOutput,/真叶 0/);assert.match(feedbackOutput,/868（2）-Z8：花药未开裂；位置：侧枝；暂未授粉/);assert.doesNotMatch(feedbackOutput,/执行人|处理人|网页勾选|设备生成时间|原计划|未填写/);
     await fixturePage.waitForTimeout(120);
     assert.equal((await fixturePage.evaluate(()=>navigator.clipboard.readText())).replace(/\r\n/g,'\n'),feedbackOutput,'复制输出与显示文本一致（忽略系统换行符）');
     assert.match(feedbackOutput,/36-Z99/);assert.match(feedbackOutput,/花冠横径 48 mm/,'无需保存按钮即可复制');
@@ -395,6 +402,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await ff.locator('#pf-feedback-close').click();
     await fixturePage.reload();await ff.locator('#pf-task-list').waitFor();await fixturePage.waitForTimeout(100);
     assert.equal(await ff.locator('#pf-operator').count(),0,'不显示执行人');assert.equal(await ff.locator('[aria-label="新花朵花号（可暂空）"]').inputValue(),'868（2）-Z8','新花记录刷新保留');
+    assert.equal(await ff.locator('#pf-general-note').inputValue(),'授粉处理总备注测试');await ff.locator('#pf-phase').selectOption('evening');assert.equal(await ff.locator('#pf-general-note').inputValue(),'前处理总备注测试');assert.equal(await ff.locator('[aria-label="新花苞花号（可暂空）"]').inputValue(),'59-F101');await ff.locator('#pf-phase').selectOption('morning');
     assert.equal(await taskRow('59-F99').getAttribute('data-done'),'true','当前浏览器刷新保留勾选');
     assert.match(await taskRow('49-F99').locator('summary').innerText(),/实际：其他/);
     await taskRow('49-F99').locator('summary').click();assert.equal(await taskRow('49-F99').locator('input[aria-label="49-F99花冠横径（mm）"]').inputValue(),'50.2','数值自动保存且刷新后恢复');
@@ -418,6 +426,8 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     const legacyRow=lf.locator('.pf-task-row[data-flower-id="49-F99"]');await legacyRow.locator('summary').click();await legacyRow.locator('input[aria-label="49-F99花冠纵径（mm）"]').fill('52');
     await lf.locator('#pf-copy-feedback').click();const legacyOutput=await lf.locator('#pf-feedback-text').inputValue();assert.match(legacyOutput,/旧记录：横径49 mm/);assert.match(legacyOutput,/2026-10-27 07:45/);assert.match(legacyOutput,/花冠纵径 52 mm/);await legacyContext.close();
     tests.push('legacy free-text measurements and precise time survive new field edits and copying');
+    const generalContext=await browser.newContext({viewport:{width:360,height:900}}),generalPage=await generalContext.newPage();await generalPage.clock.install({time:new Date('2026-10-27T08:00:00+08:00')});await generalPage.goto(url+'fixture');const gf=generalPage.frameLocator('iframe');await gf.locator('#plant-field-3d[data-feedback-loaded="true"]').waitFor();await gf.locator('#pf-phase').selectOption('evening');await gf.locator('#pf-general-note').fill('仅总备注，不代表任何花已处理');await generalPage.waitForFunction(()=>JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}')['2026-10-27|general|evening']?.note==='仅总备注，不代表任何花已处理');await generalPage.reload();await gf.locator('#plant-field-3d[data-feedback-loaded="true"]').waitFor();await gf.locator('#pf-phase').selectOption('evening');assert.equal(await gf.locator('#pf-general-note').inputValue(),'仅总备注，不代表任何花已处理');await gf.locator('#pf-copy-feedback').click();const generalOutput=await gf.locator('#pf-feedback-text').inputValue();assert.match(generalOutput,/2026-10-26 授粉前处理\n总备注：仅总备注，不代表任何花已处理/);assert.doesNotMatch(generalOutput,/已完成|49-F99/);await generalContext.close();
+    tests.push('preparation colors and explicit no-op donor/measurement entries; two-target donor warning; phase-specific new buds/flowers and general notes; notes-only feedback does not invent completed tasks');
     const suffixContext=await browser.newContext({viewport:{width:360,height:1000}}),suffixPage=await suffixContext.newPage();
     await suffixPage.clock.install({time:new Date('2026-10-27T08:00:00+08:00')});await suffixPage.goto(url+'suffix');const sf=suffixPage.frameLocator('iframe'),sa=sf.locator('#plant-field-3d');await sf.locator('#plant-field-3d[data-feedback-loaded="true"]').waitFor();await sf.locator('#pf-phase').selectOption('morning');assert.equal(await sa.getAttribute('data-pairs'),'2');
     for(const spelling of ['868','868（2）','868(2)']){await sf.locator('#pf-search').fill(spelling);await sf.locator('#pf-search').press('Enter');assert((await sf.locator('#pf-detail').innerText()).includes(spelling==='868'?'868':'868（2）'));assert.equal(await sf.locator(`.pf-label[data-id="${spelling.normalize('NFKC')}"]`).getAttribute('aria-pressed'),'true');}
