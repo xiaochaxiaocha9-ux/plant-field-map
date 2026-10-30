@@ -22,7 +22,7 @@
     #plant-field-3d .pf-iconbutton{display:flex;align-items:center;justify-content:center;gap:6px;min-width:42px;min-height:42px;background:var(--pf-panel);border:1px solid var(--pf-border);border-radius:9px;padding:8px 11px}
     #plant-field-3d .pf-iconbutton svg{width:17px;height:17px}
     #plant-field-3d .pf-iconbutton:hover{background:var(--pf-panel2)}
-    #plant-field-3d .pf-phase{border:1px solid var(--pf-border);border-radius:9px;min-height:42px;padding:8px;background:var(--pf-panel);width:132px;flex-shrink:0}
+    #plant-field-3d .pf-phase{border:1px solid var(--pf-border);border-radius:9px;min-height:42px;padding:8px;background:var(--pf-panel);width:192px;flex-shrink:0}
     #plant-field-3d .pf-results{padding:0 20px 12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px}
     #plant-field-3d .pf-result{border:1px solid var(--pf-border);border-radius:6px;background:var(--pf-panel);padding:5px 10px;min-height:34px;font-variant-numeric:tabular-nums}
     #plant-field-3d .pf-result[aria-pressed="true"]{background:#344654;border-color:#9ecce7}
@@ -127,7 +127,7 @@
       #plant-field-3d .pf-export{min-height:44px;padding:6px 10px}
       #plant-field-3d .pf-toolbar{padding-bottom:8px}
       #plant-field-3d .pf-searchbox{height:44px}
-      #plant-field-3d .pf-phase{width:108px;padding:7px 5px;font-size:12px}
+      #plant-field-3d .pf-phase{width:168px;padding:7px 5px;font-size:12px}
       #plant-field-3d .pf-label{min-width:44px;min-height:44px;font-size:12px}
       #plant-field-3d .pf-label-chip{min-width:25px;min-height:20px;padding:2px 3px;gap:3px;border-radius:4px;box-shadow:0 1px 3px #0005}
       #plant-field-3d .pf-label-chip::before{width:3px;height:3px}
@@ -282,6 +282,7 @@
     const actualOptions=[...Object.values(kindNames),'花药未开裂'];
     const phaseActualOptions=()=>phase==='evening'?['去雄、套袋、红线','不去雄、套袋、黄线','不去雄、套袋、绿线','不去雄、不套袋、白线','不处理','其他']:actualOptions;
     const recipientsOf=t=>pairsOf(tasks).filter(p=>p.donor===t.id&&String(p.donorFlower)===String(t.flower));
+    const pairForTask=t=>pairsOf(tasks).find(p=>kind(t)==='donor'?p.donor===t.id&&String(p.donorFlower)===String(t.flower):p.mother===t.id&&String(p.motherFlower)===String(t.flower));
     function exactFlowerRef(id,number){const t=tasks.find(t=>t.id===id&&String(t.flower)===String(number));return t?.flowerId?displayId(normId(t.flowerId)):displayId(id)+(number?'第'+number+'朵':'（花号待核）');}
     const completionText=(t,done)=>done?'已完成':phase==='morning'&&recipientsOf(t).length>1?recipientsOf(t).length+'朵均完成':'完成';
     function shortAction(t,when=phase){
@@ -336,6 +337,7 @@
     const activeRecord=id=>records(id).find(t=>needsAction(t))||records(id)[0];
     const pairIsActive=p=>phase==='morning'&&(tasks.some(t=>t.id===p.mother&&String(t.flower)===String(p.motherFlower)&&needsAction(t))||tasks.some(t=>t.id===p.donor&&String(t.flower)===String(p.donorFlower)&&needsAction(t)));
     const getPair=()=>pairsOf(tasks).find(p=>p.key===activePair&&pairIsActive(p));
+    function displayedPairs(){const focus=getPair();return focus?pairsOf(tasks).filter(p=>p.donor===focus.donor&&String(p.donorFlower)===String(focus.donorFlower)&&pairIsActive(p)):[];}
     const rgba=(c,a)=>[c[0],c[1],c[2],a],mix=(a,b,t)=>a+(b-a)*t;
     const ease=t=>t*t*(3-2*t),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
     const distanceForWidth=(zone=currentZone)=>Math.min(85,Math.max(33,((baySpan.right-gap3Span.left)/2+2)/(Math.tan(38*Math.PI/360)*(cssWidth/cssHeight))));
@@ -428,10 +430,10 @@
           for(const col of [3,8]){const x0=mix(left,right,col/12),x1=mix(left,right,(col+1)/12),y0=2.45,y1=3.9,z=south+.52;for(const x of [x0,x1]){line([x,y1,south],[x,y0,z],outline);}line([x0,y0,z],[x1,y0,z],outline);line([x0,y1,south],[x1,y1,south],outline);}
         }
       }
-      const pair=getPair(),filter=new Set(queryIds);
+      const shownPairs=displayedPairs(),filter=new Set(queryIds);
       for(const p of pots){
         if(p.zone!==currentZone&&!flight?.transfer)continue;
-        const task=activeRecord(p.id),active=needsAction(task),category=active?kind(task):'other',related=pair&&(p.id===pair.donor||p.id===pair.mother),matched=filter.size===0||filter.has(p.id),dim=false;
+        const task=activeRecord(p.id),active=needsAction(task),category=active?kind(task):'other',related=shownPairs.some(pair=>p.id===pair.donor||p.id===pair.mother),matched=filter.size===0||filter.has(p.id),dim=false;
         const a=p.id?(dim?.16:.88):.52,wire=rgba(colors.wire,a),taskColor=rgba(colors[category],dim?.12:1),x=p.x,z=p.z;
         const rt=.43*potScale,rb=.275*potScale,top=p.y+.64*potScale,bottom=p.y+.055;
         if(p.id){for(let i=0;i<16;i++){const t=i/16*2*Math.PI,t2=(i+1)/16*2*Math.PI,s=.86+.14*Math.cos(t-.5),c=[.093*s,.134*s,.167*s,1];const at=[x+rt*Math.cos(t),top,z+rt*Math.sin(t)],bt=[x+rb*Math.cos(t),bottom,z+rb*Math.sin(t)],at2=[x+rt*Math.cos(t2),top,z+rt*Math.sin(t2)],bt2=[x+rb*Math.cos(t2),bottom,z+rb*Math.sin(t2)];triangle(at,bt,bt2,c);triangle(at,bt2,at2,c);}}
@@ -440,7 +442,7 @@
         if(active){const categories=[...new Set(records(p.id).filter(t=>needsAction(t)).map(kind).map(k=>k==='donor'?'cross':k))];if(records(p.id).some(measurePending)&&!categories.includes('measure'))categories.push('measure');categories.forEach((k,i)=>ring(x,z,top+.014+i*.045,rt+.012+i*.055,rgba(colors[k],.95)));line([x-.11,p.y+.07,z+.56*potScale],[x+.11,p.y+.07,z+.56*potScale],taskColor);}
         if(p.id&&(p.id===selected||related||filter.has(p.id))){const located=p.id===selected||filter.has(p.id);ring(x,z,p.y+.025,.59*potScale,located?[.87,.94,1,.95]:[.85,.72,.5,.75]);ring(x,z,p.y+.03,.66*potScale,located?[.68,.84,.96,.23]:[.8,.7,.5,.17]);}
       }
-      if(pair){const a=layout.get(pair.donor),b=layout.get(pair.mother);if(a&&b){let previous=null;const same=a.zone===b.zone,raise=same?2.25:5;const points=[];for(let i=0;i<=60;i++){const t=i/60,p=[mix(a.x,b.x,t),mix(a.y,b.y,t)+.82+Math.sin(Math.PI*t)*raise,mix(a.z,b.z,t)];if(previous)line(previous,p,[.91,.78,.55,.88]);previous=p;points.push(p);}const end=points[60],dir=normal(sub(end,points[56])),side=normal(cross(dir,[0,1,0]));for(const sign of [-1,1])line(end,end.map((v,k)=>v-dir[k]*.36+side[k]*.17*sign),[1,.86,.62,1]);}}
+      const renderedPairs=[];shownPairs.forEach((pair,index)=>{const a=layout.get(pair.donor),b=layout.get(pair.mother);if(!a||!b)return;let previous=null;const same=a.zone===b.zone,raise=(same?2.25:5)+index*.65,lane=(index-(shownPairs.length-1)/2)*.32,points=[];for(let i=0;i<=60;i++){const t=i/60,p=[mix(a.x,b.x+lane,t)+Math.sin(Math.PI*t)*lane,mix(a.y,b.y,t)+.82+Math.sin(Math.PI*t)*raise,mix(a.z,b.z,t)];if(previous)line(previous,p,[.91,.78,.55,.88]);previous=p;points.push(p);}const end=points[60],dir=normal(sub(end,points[56])),side=normal(cross(dir,[0,1,0]));for(const sign of [-1,1])line(end,end.map((v,k)=>v-dir[k]*.36+side[k]*.17*sign),[1,.86,.62,1]);renderedPairs.push({donor:pair.donor,mother:pair.mother,donorFlower:pair.donorFlower,motherFlower:pair.motherFlower,start:points[0],end});});root.dataset.renderedPairCount=String(renderedPairs.length);root.dataset.renderedPairArrows=JSON.stringify(renderedPairs);
       if(gl){if(sceneBuffers){for(const key of ['line','triangle','glass'])gl.deleteBuffer(sceneBuffers[key]);}const make=data=>{const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);return b;};sceneBuffers={line:make(lines),triangle:make(triangles),glass:make(glass),lineCount:lines.length/7,triangleCount:triangles.length/7,glassCount:glass.length/7};}
       root.dataset.pots=String(pots.length);root.dataset.confirmedPlants=String(layout.size);root.dataset.middleSlots=String(middleRows.reduce((n,r)=>n+r.ids.length,0));root.dataset.pendingIdentifiers=String(pots.filter(p=>!p.confirmed).length);root.dataset.middleRows=middleRows.map(r=>r.ids.length).join(',');root.dataset.leftRows=actualRows.filter(r=>r.section==='左侧有架区').map(r=>r.ids.length).join(',');root.dataset.middlePositions='user-confirmed-order-photo-spaced';root.dataset.outerUntrainedRow='excluded';root.dataset.bayLengthMeters=String(measuredLengths.bay);root.dataset.middleLengthMeters=String(measuredLengths.middle);root.dataset.leftLengthMeters=String(measuredLengths.left);root.dataset.lengthRatio=String((middleSpan.right-middleSpan.left)/(baySpan.right-baySpan.left));root.dataset.geometryRevision=geometryRevision;root.dataset.taskPlants=String(new Set(tasks.map(t=>t.id)).size);root.dataset.activeTasks=String(tasks.filter(t=>needsAction(t)).length);root.dataset.pairs=String(pairsOf(tasks).length);root.dataset.activePairs=String(pairsOf(tasks).filter(pairIsActive).length);root.dataset.batchDate=taskDate||'';root.dataset.batchExpired=String(expired());root.dataset.columns=String(columns);root.dataset.frames='3,0';root.dataset.roofPoles='4';root.dataset.arrangement='zone2-north-of-zone1';root.dataset.terraces='zone1-three-zone2-two';root.dataset.rowElevations=rowElevations.join(',');root.dataset.greenhouses=settings.greenhouse?'2':'0';root.dataset.pendingSecondRow=String(pendingSecondRow);root.dataset.positions='photo-and-oral-approximate';
     }
@@ -452,7 +454,7 @@
     }
     function position(el,p){const s=project(p);el.hidden=!s.visible;if(s.visible){el.style.left=s.x+'px';el.style.top=s.y+'px';}return s;}
     function placeLabels(){
-      const filter=new Set(queryIds),pair=getPair(),occupied=[];
+      const filter=new Set(queryIds),pair=getPair(),shownPairs=displayedPairs(),occupied=[];
       const overlaps=(a,b,gap=2)=>a.x<b.x+b.w+gap&&a.x+a.w+gap>b.x&&a.y<b.y+b.h+gap&&a.y+a.h+gap>b.y;
       const center=centers[currentZone],flying=!!flight&&flight.phase!=='land',regions=frameRegions[currentZone];
       for(let i=0;i<3;i++){const el=$(['#pf-frame-label','#pf-frame-label-2','#pf-frame-label-3'][i]),region=regions[i];if(!region){el.hidden=true;continue;}el.textContent=['有架区三','有架区二','有架区一'][i];position(el,[center.x+(region.left+region.right)/2,settings.frameHeight+.38,center.z-frameDepth]);el.hidden=flying||el.hidden;}
@@ -469,7 +471,7 @@
       }
       const focusBounds=stripBounds(currentZone),focusThird=(focusBounds.right-focusBounds.left)/3;
       const focusRanges={left:[focusBounds.left,focusBounds.left+focusThird],middle:[focusBounds.left+focusThird,focusBounds.left+2*focusThird],right:[focusBounds.left+2*focusThird,focusBounds.right]};
-      const labels=[...$('#pf-labels').children].map(el=>{const p=layout.get(el.dataset.id),relevant=records(p.id).some(t=>needsAction(t)||prepNoOp(t));return{el,p,relevant,s:project([p.x,p.y+.64*potScale,p.z]),priority:p.id===selected?10:filter.has(p.id)?8:pair&&(p.id===pair.donor||p.id===pair.mother)?6:relevant?4:1};}).sort((a,b)=>b.priority-a.priority||a.p.row-b.p.row||a.p.x-b.p.x||a.p.col-b.p.col);
+      const labels=[...$('#pf-labels').children].map(el=>{const p=layout.get(el.dataset.id),relevant=records(p.id).some(t=>needsAction(t)||prepNoOp(t));return{el,p,relevant,s:project([p.x,p.y+.64*potScale,p.z]),priority:p.id===selected?10:filter.has(p.id)?8:shownPairs.some(pair=>p.id===pair.donor||p.id===pair.mother)?6:relevant?4:1};}).sort((a,b)=>b.priority-a.priority||a.p.row-b.p.row||a.p.x-b.p.x||a.p.col-b.p.col);
       let visibleCount=0;
       for(const {el,p,s,priority,relevant}of labels){
         let show=false;
@@ -497,7 +499,7 @@
       }
       root.dataset.visibleLabels=String(visibleCount);root.dataset.labelLayout='fixed-anchors-task-first';root.dataset.labelScope=labelScope;root.dataset.potScale=String(potScale);root.dataset.dimensionAnnotations='hidden';
       const pendingLabel=$('#pf-pending-label'),pendingAnchor=position(pendingLabel,[middleSpan.left+(middleSpan.right-middleSpan.left)*.80,.99,0]);pendingLabel.hidden=!pendingSecondRow||currentZone!==0||flying||cssWidth<=480||pendingLabel.hidden;if(!pendingLabel.hidden){const w=pendingLabel.offsetWidth,h=pendingLabel.offsetHeight;pendingLabel.hidden=occupied.some(b=>pendingAnchor.x-w/2<b.x+b.w+3&&pendingAnchor.x+w/2>b.x-3&&pendingAnchor.y-h/2<b.y+b.h+3&&pendingAnchor.y+h/2>b.y-3);}
-      const tag=$('#pf-pairtag');if(pair&&!flying){const a=layout.get(pair.donor),b=layout.get(pair.mother);if(a&&b){tag.textContent=pair.donor+' → '+pair.mother;const anchor=position(tag,[(a.x+b.x)/2,(a.y+b.y)/2+.98+(a.zone===b.zone?2.25:5),(a.z+b.z)/2]);if(!tag.hidden){const w=tag.offsetWidth,h=tag.offsetHeight;let placed=false;for(const [dx,dy]of [[0,0],[0,-34],[0,34],[0,-64],[0,64],[50,0],[-50,0]]){const x=clamp(anchor.x+dx,w/2+8,cssWidth-w/2-8),y=anchor.y+dy,box={x:x-w/2,y:y-h/2,w,h};if(y<75||y>cssHeight-55)continue;if(occupied.some(b=>box.x<b.x+b.w+4&&box.x+box.w+4>b.x&&box.y<b.y+b.h+4&&box.y+box.h+4>b.y))continue;tag.style.left=x+'px';tag.style.top=y+'px';placed=true;break;}tag.hidden=!placed;}}else tag.hidden=true;}else tag.hidden=true;
+      const tag=$('#pf-pairtag');if(pair&&!flying){const a=layout.get(pair.donor),b=layout.get(pair.mother);if(a&&b){tag.textContent=displayId(pair.donor)+' → '+shownPairs.map(p=>displayId(p.mother)+(shownPairs.filter(x=>x.mother===p.mother).length>1?'第'+p.motherFlower+'朵':'')).join('、');const anchor=position(tag,[(a.x+b.x)/2,(a.y+b.y)/2+.98+(a.zone===b.zone?2.25:5),(a.z+b.z)/2]);if(!tag.hidden){const w=tag.offsetWidth,h=tag.offsetHeight;let placed=false;for(const [dx,dy]of [[0,0],[0,-34],[0,34],[0,-64],[0,64],[50,0],[-50,0]]){const x=clamp(anchor.x+dx,w/2+8,cssWidth-w/2-8),y=anchor.y+dy,box={x:x-w/2,y:y-h/2,w,h};if(y<75||y>cssHeight-55)continue;if(occupied.some(b=>box.x<b.x+b.w+4&&box.x+box.w+4>b.x&&box.y<b.y+b.h+4&&box.y+box.h+4>b.y))continue;tag.style.left=x+'px';tag.style.top=y+'px';placed=true;break;}tag.hidden=!placed;}}else tag.hidden=true;}else tag.hidden=true;
     }
     function requestRender(){if(frameRequested)return;frameRequested=true;requestAnimationFrame(t=>{frameRequested=false;if(flight)advanceFlight(t);drawScene();if(flight)requestRender();});}
     function cameraMix(a,b,t){const out={};for(const key of ['cx','cz','yaw','pitch','distance'])out[key]=mix(a[key],b[key],ease(t));return out;}
@@ -519,13 +521,14 @@
     function updateHead(){$('#pf-zonetitle').textContent=flight?.transfer?areas[flight.fromZone]+' → '+areas[currentZone]:areas[currentZone];$('#pf-zoneinfo').textContent=flight?'转场中':'盆位按照片及口述近似';root.dataset.zone=String(currentZone);}
     function refresh(){
       if(!pairsOf(tasks).some(p=>p.key===activePair))activePair='';
-      for(const option of $('#pf-phase').options)option.textContent=phaseNames[option.value];
+      for(const option of $('#pf-phase').options)option.textContent=periodLabels[option.value];
       $('#pf-phase').value=phase;const activeKinds=new Set(tasks.filter(t=>needsAction(t)).map(kind));if(tasks.some(measurePending))activeKinds.add('measure');root.querySelectorAll('#pf-task-legend [data-kind]').forEach(el=>el.hidden=!activeKinds.has(el.dataset.kind));$('#pf-task-legend').hidden=!activeKinds.size;$('#pf-source').textContent=taskLabel+(expired()?' · 历史批次，不作为今日待办':'');$('#pf-layout-status').textContent=layout.size+'株'+(pendingSecondRow?' · 2待核':'');
       const batchText=batchMorning?periodLabels.evening+' / '+periodLabels.morning:'暂无批次';$('#pf-batch-summary').textContent=batchText+(expired()?' · 历史':'');
       root.querySelectorAll('[data-focus]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.focus===focusedSection)));
       root.querySelectorAll('[data-zone]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.zone)===currentZone)));
-      const group=$('#pf-labels'),pair=getPair(),filter=new Set(queryIds);group.replaceChildren();
+      const group=$('#pf-labels'),pair=getPair(),shownPairs=displayedPairs(),filter=new Set(queryIds);group.replaceChildren();
       for(const [id,p]of layout){const t=activeRecord(id),active=needsAction(t),k=active?kind(t):'other',c=colors[k],button=document.createElement('button');button.type='button';button.className='pf-label cursor-interaction';button.dataset.id=id;button.dataset.section=p.section;button.dataset.note=p.note;button.dataset.taskActive=String(active);button.dataset.taskKind=t?kind(t):'none';button.dataset.elevation=String(p.y);button.dataset.row=String(p.row+1);button.dataset.col=String(p.col+1);button.dataset.x=String(p.x);button.dataset.z=String(p.z);const chip=document.createElement('span');chip.className='pf-label-chip';chip.textContent=displayId(id);button.append(chip);button.style.setProperty('--task-color','rgb('+c.slice(0,3).map(v=>Math.round(v*255)).join(',')+')');button.setAttribute('aria-pressed',String(id===selected));const displayRow=p.zone===1?(p.row===2?1:2):p.row+1,level=p.zone===1?(p.row===2?'高台阶':'低台阶'):['南侧低台阶','中间台阶','北侧高台阶'][p.row];button.setAttribute('aria-label',displayId(id)+'号，'+p.area+p.section+'第'+displayRow+'排左起第'+(p.col+1)+'株，'+level+(p.note?'，'+p.note:'')+'，左右顺序已录入、间距示意，'+periodLabels[phase]+'，'+(t?'第'+t.flower+'朵，'+(active?'待办：':'本时段无需操作：')+locationAwareOperation(t):tasks.length?'本批次无任务':'未载入任务'));if(t)button.classList.add(active?'pf-task-active':'pf-task-inactive');if(pair&&(id===pair.donor||id===pair.mother))button.classList.add('pf-related');button.addEventListener('click',()=>selectPlant(id));group.append(button);}
+      for(const button of group.children)button.classList.toggle('pf-related',shownPairs.some(p=>p.donor===button.dataset.id||p.mother===button.dataset.id));
       root.dataset.labelMode='compact-chip-with-touch-target';root.dataset.feedbackMode='manual-copy-no-cloud';
       const results=$('#pf-results'),resultButtons=$('#pf-result-buttons');resultButtons.replaceChildren();results.hidden=!queryIds.length&&!$('#pf-search').value.trim();
       const known=queryIds.filter(id=>layout.has(id)),missing=queryIds.filter(id=>!layout.has(id));$('#pf-searchmsg').textContent=queryIds.length?'定位 '+known.length+'/'+queryIds.length+(missing.length?' · 未录入 '+missing.join('、'):''):'';
@@ -536,7 +539,7 @@
       const p=layout.get(selected),detail=$('#pf-detail');detail.replaceChildren();detail.hidden=!p;if(!p)return;
       const code=document.createElement('span');code.className='pf-detail-title';code.textContent=displayId(selected);detail.append(code);
       for(const t of records(selected)){if(!visibleInList(t))continue;const button=document.createElement('button'),value=currentFeedback(t),conflict=!!rawFeedback(t)&&!value,sourceDone=/已完成|已摘取/.test(t[phase]),done=sourceDone||value?.done===true;button.type='button';button.className='pf-task-done cursor-interaction';button.dataset.detailTask=feedbackKey(t);button.textContent=flowerId(t)+' '+(prepNoOp(t)?'本阶段不处理':completionText(t,done));button.setAttribute('aria-pressed',String(done));button.disabled=expired()||sourceDone||conflict||prepNoOp(t);button.addEventListener('click',()=>toggleTask(t));detail.append(button);}
-      const pair=getPair();if(pair&&(selected===pair.donor||selected===pair.mother)){const partner=selected===pair.donor?pair.mother:pair.donor;if(layout.has(partner)){const b=document.createElement('button');b.type='button';b.className='pf-partner cursor-interaction';b.dataset.partner=partner;b.textContent=flowerId({id:pair.donor,flower:pair.donorFlower})+' → '+flowerId({id:pair.mother,flower:pair.motherFlower});b.addEventListener('click',()=>selectPlant(partner));detail.append(b);}}
+      for(const pair of displayedPairs()){const partner=selected===pair.donor?pair.mother:pair.donor;if(layout.has(partner)){const b=document.createElement('button');b.type='button';b.className='pf-partner cursor-interaction';b.dataset.partner=partner;b.textContent=exactFlowerRef(pair.donor,pair.donorFlower)+' → '+exactFlowerRef(pair.mother,pair.motherFlower);b.addEventListener('click',()=>selectPlant(partner,pair.key));detail.append(b);}}
     }
     function toggleTask(t){
       const value=currentFeedback(t),old=rawFeedback(t);if(expired()||prepNoOp(t)||/已完成|已摘取/.test(t[phase])||(old&&!value))return;
@@ -552,7 +555,7 @@
       for(const t of rows){
         const stored=currentFeedback(t),old=rawFeedback(t),conflict=!!old&&!stored,sourceDone=/已完成|已摘取/.test(t[phase]),done=sourceDone||stored?.done===true;
         const row=document.createElement('div');row.className='pf-task-row';row.dataset.taskKey=feedbackKey(t);row.dataset.flowerId=flowerId(t);row.dataset.done=String(done);row.dataset.prepNoop=String(prepNoOp(t));
-        const main=document.createElement('button');main.type='button';main.className='pf-task-main cursor-interaction';main.setAttribute('aria-label',flowerId(t)+'，'+shortAction(t));main.innerHTML='<span class="pf-task-code">'+escape(flowerId(t))+'</span><span class="pf-task-short">'+escape(shortAction(t))+'</span>';main.addEventListener('click',()=>selectPlant(t.id));row.append(main);
+        const main=document.createElement('button');main.type='button';main.className='pf-task-main cursor-interaction';main.setAttribute('aria-label',flowerId(t)+'，'+shortAction(t));main.innerHTML='<span class="pf-task-code">'+escape(flowerId(t))+'</span><span class="pf-task-short">'+escape(shortAction(t))+'</span>';main.addEventListener('click',()=>selectPlant(t.id,pairForTask(t)?.key||''));row.append(main);
         const complete=document.createElement('button');complete.type='button';complete.className='pf-task-done cursor-interaction';complete.textContent=prepNoOp(t)?'无需操作':completionText(t,done);complete.setAttribute('aria-pressed',String(done));complete.disabled=blocked||sourceDone||conflict||prepNoOp(t);
         row.append(complete);
         const more=document.createElement('details');more.className='pf-task-more';const summary=document.createElement('summary');summary.className='cursor-interaction';summary.setAttribute('aria-label',flowerId(t)+'备注及实际处理');summary.textContent=conflict?'计划有更新，需核对':stored?.actual?'实际：'+stored.actual:stored?.note?'有备注':'';more.append(summary);
@@ -592,7 +595,7 @@
     $('#pf-copy-feedback').addEventListener('click',()=>{const dirty=[...$('#pf-task-list').children].filter(row=>row.dataset.dirty==='true');for(const row of dirty)if(!row.collectDraft())return;if(dirty.length){persistFeedback();refresh();}const text=feedbackText();if(!text){$('#pf-feedback-message').textContent='尚无勾选或登记内容';return;}$('#pf-feedback-text').value=text;$('#pf-feedback-dialog').showModal();copyFeedbackText();});
     $('#pf-feedback-recopy').addEventListener('click',copyFeedbackText);$('#pf-feedback-close').addEventListener('click',()=>$('#pf-feedback-dialog').close());
     function keepPlantVisible(id){const p=layout.get(id);if(!p||p.zone!==currentZone||flight)return;const s=project([p.x,p.y+.97,p.z]);if(!s.visible||s.x<54||s.x>cssWidth-54){camera.cx=clamp(p.x,-cameraLimits.pan,cameraLimits.pan);requestRender();}}
-    function selectPlant(id){if(!layout.has(id))return;selected=id;activePair=pairsOf(tasks).find(p=>p.donor===id||p.mother===id)?.key??'';const zone=layout.get(id).zone;refresh();if(zone!==currentZone){flyTo(zone);if(flight){flight.target.cx=layout.get(id).x;flight.target.distance=Math.min(flight.target.distance,30);}else{camera.cx=layout.get(id).x;camera.distance=Math.min(camera.distance,30);requestRender();}}else keepPlantVisible(id);save();}
+    function selectPlant(id,preferredPair){if(!layout.has(id))return;selected=id;activePair=preferredPair===undefined?(pairsOf(tasks).find(p=>p.donor===id||p.mother===id)?.key??''):preferredPair;const zone=layout.get(id).zone;refresh();if(zone!==currentZone){flyTo(zone);if(flight){flight.target.cx=layout.get(id).x;flight.target.distance=Math.min(flight.target.distance,30);}else{camera.cx=layout.get(id).x;camera.distance=Math.min(camera.distance,30);requestRender();}}else keepPlantVisible(id);save();}
     function findPlants(){const input=$('#pf-search').value.normalize('NFKC').trim(),tokens=input?input.split(/[\s,，、;；]+/).filter(Boolean):[],matches=tokens.map(token=>token.match(/^(\d+(?:\(\d+\))?)(?:-[BFZ]\d+)?$/i));if(matches.some(m=>!m)){$('#pf-results').hidden=false;$('#pf-searchmsg').textContent='输入株号或短花号，以空格分隔';return;}queryIds=[...new Set(matches.map(m=>m[1]))].slice(0,300);const first=queryIds.find(id=>layout.has(id));if(first){selected=first;activePair=pairsOf(tasks).find(p=>p.donor===first||p.mother===first)?.key??'';}else if(!queryIds.length){activePair='';}refresh();if(first&&layout.get(first).zone!==currentZone){flyTo(layout.get(first).zone);if(flight){flight.target.cx=layout.get(first).x;flight.target.distance=Math.min(flight.target.distance,30);}else{camera.cx=layout.get(first).x;camera.distance=Math.min(camera.distance,30);requestRender();}}else if(first)keepPlantVisible(first);save();}
     let searchTimer=0;$('#pf-search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(findPlants,280);});$('#pf-search').addEventListener('keydown',e=>{if(e.key==='Enter'){clearTimeout(searchTimer);findPlants();}if(e.key==='Escape'){$('#pf-search').value='';findPlants();}});
     $('#pf-search').addEventListener('paste',event=>{const text=event.clipboardData?.getData('text/plain');if(text&&/[\r\n\t]/.test(text)){event.preventDefault();const input=event.currentTarget;input.setRangeText(text.replace(/[\r\n\t]+/g,' '),input.selectionStart??input.value.length,input.selectionEnd??input.value.length,'end');clearTimeout(searchTimer);searchTimer=setTimeout(findPlants,100);}});
