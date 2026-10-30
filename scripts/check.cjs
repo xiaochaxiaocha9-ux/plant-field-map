@@ -356,7 +356,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await taskRow('59-F99').locator('.pf-task-done').click();
     assert.equal(await taskRow('59-F99').getAttribute('data-done'),'true');
     assert.equal((await ff.locator('.pf-task-row').last().getAttribute('data-flower-id')),'59-F99','完成后移动到列表底部');
-    await ff.locator('#pf-phase').selectOption('evening');assert.equal(await taskRow('59-F99').getAttribute('data-done'),'false','晚间和早晨完成状态独立');
+    await ff.locator('#pf-phase').selectOption('evening');assert.equal(await taskRow('59-F99').getAttribute('data-done'),'false','晚间和早晨完成状态独立');await taskRow('59-F99').locator('.pf-task-done').click();
     await ff.locator('#pf-phase').selectOption('morning');assert.equal(await taskRow('59-F99').getAttribute('data-done'),'true');
     await taskRow('49-F99').locator('summary').click();
     await taskRow('49-F99').locator('select').selectOption('其他');
@@ -382,7 +382,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await fixturePage.context().grantPermissions(['clipboard-read','clipboard-write'],{origin:url});
     await ff.locator('#pf-copy-feedback').click();
     const feedbackOutput=await ff.locator('#pf-feedback-text').inputValue();
-    assert.match(feedbackOutput,/59-F99/);assert.match(feedbackOutput,/其他/);assert.match(feedbackOutput,/花冠 50.2×51.1 mm/);assert.match(feedbackOutput,/2026-10-27/);assert.match(feedbackOutput,/56 · 植株/);assert.match(feedbackOutput,/茎长 321 mm/);assert.match(feedbackOutput,/真叶 0/);assert.match(feedbackOutput,/868（2）-Z8：花药未开裂；位置：侧枝；暂未授粉/);assert.doesNotMatch(feedbackOutput,/执行人|处理人|网页勾选|设备生成时间|原计划|未填写/);
+    assert.match(feedbackOutput,/59-F99/);assert.match(feedbackOutput,/其他/);assert.match(feedbackOutput,/花冠 50.2×51.1 mm/);assert.match(feedbackOutput,/2026-10-26 晚/);assert.match(feedbackOutput,/2026-10-27 早/);assert.match(feedbackOutput,/56 · 植株/);assert.match(feedbackOutput,/茎长 321 mm/);assert.match(feedbackOutput,/真叶 0/);assert.match(feedbackOutput,/868（2）-Z8：花药未开裂；位置：侧枝；暂未授粉/);assert.doesNotMatch(feedbackOutput,/执行人|处理人|网页勾选|设备生成时间|原计划|未填写/);
     await fixturePage.waitForTimeout(120);
     assert.equal((await fixturePage.evaluate(()=>navigator.clipboard.readText())).replace(/\r\n/g,'\n'),feedbackOutput,'复制输出与显示文本一致（忽略系统换行符）');
     assert.match(feedbackOutput,/36-Z99/);assert.match(feedbackOutput,/花冠横径 48 mm/,'无需保存按钮即可复制');
