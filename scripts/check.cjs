@@ -26,9 +26,9 @@ assert(Math.abs((geometry.gap3Span.right-geometry.gap3Span.left)/(geometry.baySp
 assert.equal(geometry.frameRegions[0].length,3,'一区应有三个有架区');
 assert.equal(geometry.frameRegions[1].length,0,'二区没有架子');
 assert.deepEqual(Array.from(middleRows,row=>row.row),[0,1,2]);
-assert.equal(layout.size,233-placeholderCount,'所有已录入编号必须唯一；不得自动增加待核对的重复编号');
+assert.equal(layout.size,238,'所有已录入编号必须唯一；不得自动增加待核对的重复编号');
 assert.equal([...layout.values()].filter(x=>x==='第一片区').length,183);
-assert.equal([...layout.values()].filter(x=>x==='第二片区').length,50);
+assert.equal([...layout.values()].filter(x=>x==='第二片区').length,55);
 assert(middleRows.every(row=>row.fractions.every((x,i,a)=>x>=0&&x<=1&&(i===0||x>a[i-1]))));
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===0).ids),['483','295','220','317','1167','210','968','149','821']);
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===1).ids),['1130','826','1007','886','291','215','402','397','713']);
@@ -36,8 +36,8 @@ assert.deepEqual(Array.from(leftRows.find(r=>r.row===2).ids),['1020','144','795'
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===0).ids),['163','646','330','159','550','208','416','794']);
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===1).ids),['81','648','782','1082','890','716','130','584','1093','218']);
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===2).ids),['54','907','143','48','928','692','1069','940','1170','834']);
-for (const [id,area] of [['1118','第一片区'],['1202','第一片区'],['1138','第一片区'],['1097','第一片区'],['1304','第一片区'],['342','第一片区'],['1068','第二片区'],['434','第二片区'],['868','第二片区'],['724','第二片区'],['331','第二片区']]) assert.equal(layout.get(id),area,`${id} 必须在用户指定片区`);
-for (const id of ['897','1104','959','1016','229','297']) assert(!layout.has(id),`${id} 位置待用户确认，不应映射`);
+for (const [id,area] of [['1118','第一片区'],['1202','第一片区'],['1138','第一片区'],['1097','第一片区'],['1304','第一片区'],['342','第一片区'],['1068','第二片区'],['434','第二片区'],['868','第二片区'],['868(2)','第二片区'],['229','第二片区'],['959','第二片区'],['297','第二片区'],['1016','第二片区'],['724','第二片区'],['331','第二片区']]) assert.equal(layout.get(id),area,`${id} 必须在用户指定片区`);
+for (const id of ['897','1104']) assert(!layout.has(id),`${id} 位置待用户确认，不应映射`);
 const rowIds=(section,row)=>Array.from(allRows.find(r=>r.section===section&&r.row===row).ids);
 assert.deepEqual(rowIds('一无架区二',2),['346','482','281','1118','1202','1299','616','213','293','898','50','543']);
 assert.deepEqual(rowIds('一无架区二',0).slice(0,6),['1168','1145','1295','76','1367','1252']);
@@ -45,8 +45,8 @@ assert.deepEqual(rowIds('一有架区三',2),['419','917','9','919','956','857',
 assert.deepEqual(rowIds('一有架区三',0),['44','711','592','1144','969','86','595','1122']);
 assert.deepEqual(rowIds('一无架区三',2),['867','1087','288','1297','53','942','179','966']);
 assert.deepEqual(rowIds('一无架区三',1),['1365','911','1066','889','286','887','289','5','200','201','811','12','725','1368']);
-assert.deepEqual(rowIds('二区全段',2),['1068','914','1116','404','707','912','882','544','52','868','808','546','183','1188','434','296','77','459','304','1162']);
-assert.deepEqual(rowIds('二区全段',1),['331','916','915','518','913','733','896','410','749','787','910','780','758','684','1119','873','1088','1169','647','960','433','333','276','1010','549','19','961','958','1098','724']);
+assert.deepEqual(rowIds('二区全段',2),['1068','914','1116','404','707','912','882','544','52','868','808','546','183','229','959','297','1188','434','296','77','459','304','1162']);
+assert.deepEqual(rowIds('二区全段',1),['331','916','915','518','913','733','896','410','749','787','910','780','758','684','1119','873','1088','1016','1169','868(2)','647','960','433','333','276','1010','549','19','961','958','1098','724']);
 const taskSummary = validateConfig(currentTasks, layout);
 const encode = s => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const embedded = c => encode('const publishedTasks=' + JSON.stringify(c).replace(/</g, '\\u003c') + ';');
@@ -73,13 +73,22 @@ const expiredFixture = { ...fixture, date: '2000-10-27', label: '10月26日晚�
 const expiredDocument = document.replace(embedded(currentTasks), embedded(expiredFixture));
 const revisedFixture={...fixture,tasks:fixture.tasks.map(t=>t.id==='59'?{...t,morning:t.morning+'；增加套袋检查'}:t)};
 const revisedDocument=document.replace(embedded(currentTasks),embedded(revisedFixture));
+const suffixFixture={date:'2026-10-27',label:'10月26日晚／10月27日早 · 仅展示已录入盆位的3/3株',tasks:[
+  {area:'第二片区',id:'868（2）',flower:'1',flowerId:'868（2）-B1',evening:'红线；去雄；套袋',morning:'接868花粉（父本第1朵）；套袋'},
+  {area:'第二片区',id:'868',flower:'1',flowerId:'868-Z1',evening:'不处理',morning:'给868（2）供粉（母本第1朵）'},
+  {area:'第一片区',id:'56',flower:'99',flowerId:'56-Z99',evening:'红线；去雄；套袋',morning:'接868（2）花粉（父本第2朵）；套袋'},
+  {area:'第二片区',id:'868(2)',flower:'2',flowerId:'868(2)-B2',evening:'不处理',morning:'给56供粉（母本第99朵）'}
+]};
+assert.equal(validateConfig(suffixFixture,layout).crosses,2,'括号编号作父本和母本时必须完整配对，不能匹配成868');
+assert.throws(()=>validateConfig({...suffixFixture,tasks:[...suffixFixture.tasks,{...suffixFixture.tasks[0],id:'868(2)'}]},layout),/任务重复/,'同一括号编号的全角半角不可重复');
+const suffixDocument=document.replace(embedded(currentTasks),embedded(suffixFixture));
 assert.notEqual(fixtureDocument, document);
 assert.equal(fixtureSummary.crosses, 2, '一父两母的两个关系必须分别保留');
 assert.equal(needsAction('不处理（不套袋，不去雄）'), false);
 assert.equal(needsAction('已完成：接157花粉；重新套袋'), false);
 assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t => t.id !== '157') }, layout), /双方|一致/);
 (async () => {
-  const server = http.createServer((req, res) => { res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(req.url.startsWith('/revised') ? revisedDocument : req.url.startsWith('/expired') ? expiredDocument : req.url.startsWith('/fixture') ? fixtureDocument : document); });
+  const server = http.createServer((req, res) => { res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.end(req.url.startsWith('/suffix') ? suffixDocument : req.url.startsWith('/revised') ? revisedDocument : req.url.startsWith('/expired') ? expiredDocument : req.url.startsWith('/fixture') ? fixtureDocument : document); });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   let browser, fallback;
   const errors = [], tests = [];
@@ -106,7 +115,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     assert(Math.abs(Number(await app.getAttribute('data-length-ratio'))-2.17/1.66)<1e-12);
     assert.equal(await frame.locator('.pf-label').count(),layout.size,'待确认项不产生虚构编号');
     await frame.locator('#pf-phase').selectOption('morning');
-    const realOrder=await frame.locator('.pf-task-row').evaluateAll(rows=>rows.filter(r=>r.dataset.done!=='true').map(r=>r.dataset.taskKey.match(/\|(\d+)#/)[1]));
+    const realOrder=await frame.locator('.pf-task-row').evaluateAll(rows=>rows.filter(r=>r.dataset.done!=='true').map(r=>r.dataset.taskKey.match(/\|(\d+(?:\(\d+\))?)#/)[1]));
     const realCoords=await Promise.all(realOrder.map(id=>frame.locator(`.pf-label[data-id="${id}"]`).evaluate(el=>({x:+el.dataset.x,z:+el.dataset.z}))));
     for(let i=1;i<realCoords.length;i++){const prev=realCoords[i-1],next=realCoords[i],prevZone=prev.z< -10?1:0,nextZone=next.z< -10?1:0;assert(prevZone<=nextZone,'二区任务应在一区之后');if(prevZone===nextZone)assert(prevZone===0?prev.x>=next.x:prev.x<=next.x,'一区从右到左、二区从左到右');}
     assert.equal(await frame.locator('#pf-left-length,#pf-middle-length,#pf-bay-length').count(),0,'比例保留在几何中，不画尺寸文字或尺寸线');
@@ -121,6 +130,9 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     const aligned218=await coord('218'),aligned834=await coord('834');assert(Math.abs(aligned218.x-aligned834.x)<.03,'218 与 834 应沿垂直走廊方向对齐');
     const offset317=await coord('317'),offset1167=await coord('1167');assert(offset1167.x>offset317.x&&offset1167.z>offset317.z,'1167 位于 317 右前方而非平排');
     const four=await Promise.all(['281','1118','1202','1299'].map(coord));assert(four.every((p,i)=>i===0||p.x>four[i-1].x),'281、1118、1202、1299 的顺序');
+    const rightSequence=await Promise.all(['546','183','229','959','297','1188','434'].map(coord));assert(rightSequence.every((p,i)=>i===0||p.x>rightSequence[i-1].x),'二区上排左右顺序');assert(rightSequence[2].z<rightSequence[3].z&&rightSequence[4].z<rightSequence[3].z&&rightSequence[5].z>rightSequence[4].z,'229/959/297/1188前后错位');
+    assert(Math.abs((await coord('1016')).x-(await coord('434')).x)<.01,'1016与434上下对齐');
+    const left1169=await coord('1169'),suffix868=await coord('868(2)'),right647=await coord('647');assert(left1169.x<suffix868.x&&suffix868.x<right647.x,'868（2）在1169右侧、647左侧');assert(suffix868.x-left1169.x>right647.x-suffix868.x,'868（2）和1169之间保留空位');
     const middleLow=await Promise.all(['163','646','330','159','550','208','416','794'].map(coord));
     assert(middleLow[3].x-middleLow[2].x>(middleLow[1].x-middleLow[0].x)*1.8,'330与159间须保留空档');
     assert(middleLow.every(p=>p.z===middleLow[0].z),'中间区最低排仅一行');
@@ -351,8 +363,8 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await taskRow('49-F99').locator('textarea').fill('父本花药未裂，改为观察；尚未确认受精');
     await taskRow('49-F99').locator('input[aria-label="49-F99花冠横径（mm）"]').fill('50.2');
     await taskRow('49-F99').locator('input[aria-label="49-F99花冠纵径（mm）"]').fill('51.1');
-    await taskRow('49-F99').locator('input[type="date"]').fill('2026-10-27');
-    await taskRow('49-F99').locator('input[aria-label="49-F99处理人"]').fill('队员甲');
+    assert.equal(await taskRow('49-F99').locator('input[type="date"]').count(),0);
+    assert.equal(await taskRow('49-F99').locator('input[aria-label="49-F99处理人"]').count(),0);
     assert.equal(await taskRow('49-F99').locator('.pf-task-editor button').count(),0,'输入自动保存，无保存按钮');
     assert.match(await taskRow('49-F99').locator('.pf-task-original').first().textContent(),/接157花粉/,'原计划保持不变');
     await fixturePage.setViewportSize({width:360,height:1000});
@@ -366,14 +378,14 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await ff.locator('[data-detail-task="2026-10-27|49#99|morning"]').click();
     assert.equal(await taskRow('49-F99').getAttribute('data-done'),'true','盆栽详情可直接完成对应花朵');
     assert.equal((await ff.locator('.pf-task-row').last().getAttribute('data-flower-id')),'49-F99','最新完成条目应移动到最后');
-    await ff.locator('#pf-operator').fill('测试队员');
+    await ff.locator('#pf-add-flower').click();const newFlower=ff.locator('#pf-new-flowers details').last();await newFlower.locator('[aria-label="新花朵植株编号"]').fill('868（2）');await newFlower.locator('[aria-label="新花朵花号（可暂空）"]').fill('868（2）-Z8');await newFlower.locator('[aria-label="新花朵实际处理"]').selectOption('花药未开裂');await newFlower.locator('[aria-label="新花朵植株上的位置（选填）"]').fill('侧枝');await newFlower.locator('[aria-label="新花朵备注"]').fill('暂未授粉');
     await fixturePage.context().grantPermissions(['clipboard-read','clipboard-write'],{origin:url});
     await ff.locator('#pf-copy-feedback').click();
     const feedbackOutput=await ff.locator('#pf-feedback-text').inputValue();
-    assert.match(feedbackOutput,/同质园执行反馈 v1/);assert.match(feedbackOutput,/执行人：测试队员/);assert.match(feedbackOutput,/59-F99/);assert.match(feedbackOutput,/网页勾选：已完成/);assert.match(feedbackOutput,/实际处理：其他/);assert.match(feedbackOutput,/花冠横径（mm）：50.2/);assert.match(feedbackOutput,/实际操作时间（北京时间）：2026-10-27/);assert.match(feedbackOutput,/处理人：队员甲/);assert.match(feedbackOutput,/植株测量：56/);assert.match(feedbackOutput,/茎长（mm）：321/);assert.match(feedbackOutput,/现存真叶数：0/);assert.match(feedbackOutput,/未列出不表示完成/);
+    assert.match(feedbackOutput,/59-F99/);assert.match(feedbackOutput,/其他/);assert.match(feedbackOutput,/花冠 50.2×51.1 mm/);assert.match(feedbackOutput,/2026-10-27/);assert.match(feedbackOutput,/56 · 植株/);assert.match(feedbackOutput,/茎长 321 mm/);assert.match(feedbackOutput,/真叶 0/);assert.match(feedbackOutput,/868（2）-Z8：花药未开裂；位置：侧枝；暂未授粉/);assert.doesNotMatch(feedbackOutput,/执行人|处理人|网页勾选|设备生成时间|原计划|未填写/);
     await fixturePage.waitForTimeout(120);
     assert.equal((await fixturePage.evaluate(()=>navigator.clipboard.readText())).replace(/\r\n/g,'\n'),feedbackOutput,'复制输出与显示文本一致（忽略系统换行符）');
-    assert.match(feedbackOutput,/36-Z99/);assert.match(feedbackOutput,/花冠横径（mm）：48/,'无需保存按钮即可复制');
+    assert.match(feedbackOutput,/36-Z99/);assert.match(feedbackOutput,/花冠横径 48 mm/,'无需保存按钮即可复制');
     fs.writeFileSync(path.join(out,'feedback-example.txt'),feedbackOutput);
     await ff.locator('#pf-feedback-dialog').screenshot({path:path.join(out,'feedback-copy-dialog.png')});
     await fixturePage.screenshot({path:path.join(out,'feedback-copy.png'),fullPage:false});
@@ -382,10 +394,10 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await ff.locator('#pf-copy-status').filter({hasText:'手动复制'}).waitFor({timeout:3000});assert.equal(await ff.locator('#pf-feedback-text').inputValue(),feedbackOutput,'剪贴板不可用时保留人工复制路径');
     await ff.locator('#pf-feedback-close').click();
     await fixturePage.reload();await ff.locator('#pf-task-list').waitFor();await fixturePage.waitForTimeout(100);
-    assert.equal(await ff.locator('#pf-operator').inputValue(),'测试队员','统一执行人刷新后保留');
+    assert.equal(await ff.locator('#pf-operator').count(),0,'不显示执行人');assert.equal(await ff.locator('[aria-label="新花朵花号（可暂空）"]').inputValue(),'868（2）-Z8','新花记录刷新保留');
     assert.equal(await taskRow('59-F99').getAttribute('data-done'),'true','当前浏览器刷新保留勾选');
     assert.match(await taskRow('49-F99').locator('summary').innerText(),/实际：其他/);
-    await taskRow('49-F99').locator('summary').click();assert.equal(await taskRow('49-F99').locator('input[aria-label="49-F99花冠横径（mm）"]').inputValue(),'50.2','数值自动保存且刷新后恢复');assert.equal(await taskRow('49-F99').locator('input[aria-label="49-F99处理人"]').inputValue(),'队员甲');
+    await taskRow('49-F99').locator('summary').click();assert.equal(await taskRow('49-F99').locator('input[aria-label="49-F99花冠横径（mm）"]').inputValue(),'50.2','数值自动保存且刷新后恢复');
     await fixturePage.goto(url+'revised');await ff.locator('#plant-field-3d[data-feedback-loaded="true"]').waitFor({timeout:3000});await ff.locator('#pf-phase').selectOption('morning');
     if(!(await taskRow('59-F99').locator('summary').innerText()).includes('计划有更新'))console.log(JSON.stringify({phase:await ff.locator('#pf-phase').inputValue(),loaded:await fa.getAttribute('data-feedback-loaded'),plan:await taskRow('59-F99').locator('.pf-task-original').first().textContent(),saved:await fixturePage.evaluate(()=>{const entries=JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}');return Object.fromEntries(Object.entries(entries).filter(([key])=>key.includes('|59#99|')));})}));
     assert.match(await taskRow('59-F99').locator('summary').innerText(),/计划有更新/);assert.equal(await taskRow('59-F99').locator('.pf-task-done').isDisabled(),true,'计划变化须核对旧勾选');
@@ -404,8 +416,13 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await legacyPage.evaluate(plan=>localStorage.setItem('plant-field-feedback-v1',JSON.stringify({'2026-10-27|49#99|morning':{plan,done:false,note:'旧备注',measurements:'旧记录：横径49 mm',operatedAt:'2026-10-27T07:45',actual:'其他',updatedAt:'2026-10-27T00:01:00.000Z'}})),fixture.tasks.find(t=>t.id==='49'&&t.flower==='99').morning);
     await legacyPage.reload();const lf=legacyPage.frameLocator('iframe');await lf.locator('#plant-field-3d[data-feedback-loaded="true"]').waitFor();await lf.locator('#pf-phase').selectOption('morning');
     const legacyRow=lf.locator('.pf-task-row[data-flower-id="49-F99"]');await legacyRow.locator('summary').click();await legacyRow.locator('input[aria-label="49-F99花冠纵径（mm）"]').fill('52');
-    await lf.locator('#pf-copy-feedback').click();const legacyOutput=await lf.locator('#pf-feedback-text').inputValue();assert.match(legacyOutput,/历史实测数据原文：旧记录：横径49 mm/);assert.match(legacyOutput,/实际操作时间（北京时间）：2026-10-27 07:45/);assert.match(legacyOutput,/花冠纵径（mm）：52/);await legacyContext.close();
+    await lf.locator('#pf-copy-feedback').click();const legacyOutput=await lf.locator('#pf-feedback-text').inputValue();assert.match(legacyOutput,/旧记录：横径49 mm/);assert.match(legacyOutput,/2026-10-27 07:45/);assert.match(legacyOutput,/花冠纵径 52 mm/);await legacyContext.close();
     tests.push('legacy free-text measurements and precise time survive new field edits and copying');
+    const suffixContext=await browser.newContext({viewport:{width:360,height:1000}}),suffixPage=await suffixContext.newPage();
+    await suffixPage.clock.install({time:new Date('2026-10-27T08:00:00+08:00')});await suffixPage.goto(url+'suffix');const sf=suffixPage.frameLocator('iframe'),sa=sf.locator('#plant-field-3d');await sf.locator('#plant-field-3d[data-feedback-loaded="true"]').waitFor();await sf.locator('#pf-phase').selectOption('morning');assert.equal(await sa.getAttribute('data-pairs'),'2');
+    for(const spelling of ['868','868（2）','868(2)']){await sf.locator('#pf-search').fill(spelling);await sf.locator('#pf-search').press('Enter');assert((await sf.locator('#pf-detail').innerText()).includes(spelling==='868'?'868':'868（2）'));assert.equal(await sf.locator(`.pf-label[data-id="${spelling.normalize('NFKC')}"]`).getAttribute('aria-pressed'),'true');}
+    const suffixRow=sf.locator('.pf-task-row[data-flower-id="868（2）-B1"]');await suffixRow.locator('summary').click();await suffixRow.locator('textarea').fill('测试独立编号');await suffixRow.locator('.pf-task-done').click();await suffixPage.waitForFunction(()=>JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}')['2026-10-27|868(2)#1|morning']?.done===true);await suffixPage.reload();await sf.locator('#plant-field-3d[data-feedback-loaded="true"]').waitFor();await sf.locator('#pf-phase').selectOption('morning');assert.equal(await suffixRow.getAttribute('data-done'),'true');await sf.locator('#pf-copy-feedback').click();const suffixOutput=await sf.locator('#pf-feedback-text').inputValue();assert.match(suffixOutput,/868（2）-B1/);assert.match(suffixOutput,/测试独立编号/);await suffixContext.close();
+    tests.push('868 and 868（2） are distinct: both parentheses styles search, cross pairing, completion and copied feedback persist');
     assert.deepEqual(errors, []);
     fs.writeFileSync(path.join(out, 'checks.json'), JSON.stringify({ passed: true, tests, errors }, null, 2));
     console.log(JSON.stringify({ passed: true, tests, errors }));
