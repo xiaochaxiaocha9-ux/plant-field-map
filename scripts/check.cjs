@@ -26,11 +26,11 @@ assert(Math.abs((geometry.gap3Span.right-geometry.gap3Span.left)/(geometry.baySp
 assert.equal(geometry.frameRegions[0].length,3,'一区应有三个有架区');
 assert.equal(geometry.frameRegions[1].length,0,'二区没有架子');
 assert.deepEqual(Array.from(middleRows,row=>row.row),[0,1,2]);
-assert.equal(layout.size,238,'所有已录入编号必须唯一；不得自动增加待核对的重复编号');
-assert.equal([...layout.values()].filter(x=>x==='第一片区').length,183);
+assert.equal(layout.size,239,'所有已录入编号必须唯一；不得自动增加待核对的重复编号');
+assert.equal([...layout.values()].filter(x=>x==='第一片区').length,184);
 assert.equal([...layout.values()].filter(x=>x==='第二片区').length,55);
 assert(middleRows.every(row=>row.fractions.every((x,i,a)=>x>=0&&x<=1&&(i===0||x>a[i-1]))));
-assert.deepEqual(Array.from(leftRows.find(r=>r.row===0).ids),['483','295','220','317','1167','210','968','149','821']);
+assert.deepEqual(Array.from(leftRows.find(r=>r.row===0).ids),['483','295','220','317','1167','294','210','968','149','821']);
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===1).ids),['1130','826','1007','886','291','215','402','397','713']);
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===2).ids),['1020','144','795','585','156','2','85','929']);
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===0).ids),['163','646','330','159','550','208','416','794']);
@@ -107,7 +107,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     assert.equal(await app.getAttribute('data-middle-slots'),'28');
     assert.equal(await app.getAttribute('data-pending-identifiers'),String(placeholderCount));
     assert.equal(await app.getAttribute('data-middle-rows'),'8,10,10');
-    assert.equal(await app.getAttribute('data-left-rows'),'9,9,8');
+    assert.equal(await app.getAttribute('data-left-rows'),'10,9,8');
     assert.equal(await app.getAttribute('data-outer-untrained-row'),'excluded');
     assert.equal(await app.getAttribute('data-bay-length-meters'),'1.66');
     assert.equal(await app.getAttribute('data-middle-length-meters'),'2.17');
@@ -127,6 +127,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     assert(!source.includes('dimensionZ'),'不再画尺寸线');
     const coord=async id=>frame.locator(`.pf-label[data-id="${id}"]`).evaluate(el=>({x:+el.dataset.x,z:+el.dataset.z,row:+el.dataset.row,section:el.dataset.section,note:el.dataset.note}));
     const inner=await coord('210'),outer=await coord('968');assert.equal(inner.row,1);assert.equal(outer.row,1);assert(Math.abs(inner.x-outer.x)<1e-12);assert(inner.z<outer.z);assert.match(inner.note,/靠内/);assert.match(outer.note,/靠外/);
+    const adjacent294=await coord('294');assert(adjacent294.x<inner.x&&inner.x-adjacent294.x<1,'294在210左侧紧邻');assert(Math.abs(adjacent294.z-inner.z)<1e-12,'294与210同为靠内');
     const aligned218=await coord('218'),aligned834=await coord('834');assert(Math.abs(aligned218.x-aligned834.x)<.03,'218 与 834 应沿垂直走廊方向对齐');
     const offset317=await coord('317'),offset1167=await coord('1167');assert(offset1167.x>offset317.x&&offset1167.z>offset317.z,'1167 位于 317 右前方而非平排');
     const four=await Promise.all(['281','1118','1202','1299'].map(coord));assert(four.every((p,i)=>i===0||p.x>four[i-1].x),'281、1118、1202、1299 的顺序');
