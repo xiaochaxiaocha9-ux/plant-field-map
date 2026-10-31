@@ -26,8 +26,8 @@ assert(Math.abs((geometry.gap3Span.right-geometry.gap3Span.left)/(geometry.baySp
 assert.equal(geometry.frameRegions[0].length,3,'一区应有三个有架区');
 assert.equal(geometry.frameRegions[1].length,0,'二区没有架子');
 assert.deepEqual(Array.from(middleRows,row=>row.row),[0,1,2]);
-assert.equal(layout.size,240,'所有已录入编号必须唯一；不得自动增加待核对的重复编号');
-assert.equal([...layout.values()].filter(x=>x==='第一片区').length,185);
+assert.equal(layout.size,239,'所有已录入编号必须唯一；不得自动增加待核对的重复编号');
+assert.equal([...layout.values()].filter(x=>x==='第一片区').length,184);
 assert.equal([...layout.values()].filter(x=>x==='第二片区').length,55);
 assert(middleRows.every(row=>row.fractions.every((x,i,a)=>x>=0&&x<=1&&(i===0||x>a[i-1]))));
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===0).ids),['483','295','220','317','1167','294','210','968','149','821']);
@@ -37,9 +37,9 @@ assert.deepEqual(Array.from(middleRows.find(r=>r.row===0).ids),['163','646','330
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===1).ids),['81','648','782','1082','890','716','130','584','1093','218']);
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===2).ids),['54','907','143','48','928','692','1069','940','1170','834']);
 for (const [id,area] of [['1118','第一片区'],['1202','第一片区'],['1138','第一片区'],['1097','第一片区'],['1304','第一片区'],['342','第一片区'],['1068','第二片区'],['434','第二片区'],['868','第二片区'],['868(2)','第二片区'],['229','第二片区'],['959','第二片区'],['297','第二片区'],['1016','第二片区'],['724','第二片区'],['331','第二片区']]) assert.equal(layout.get(id),area,`${id} 必须在用户指定片区`);
-for (const id of ['1104']) assert(!layout.has(id),`${id} 位置待用户确认，不应映射`);
+for (const id of ['1104','616']) assert(!layout.has(id),`${id} 位置待用户确认，不应映射`);
 const rowIds=(section,row)=>Array.from(allRows.find(r=>r.section===section&&r.row===row).ids);
-assert.deepEqual(rowIds('一无架区二',2),['346','482','281','1118','1202','1299','616','213','293','898','50','543']);
+assert.deepEqual(rowIds('一无架区二',2),['1299','346','281','1044','1118','1202','482','661','213','293','898','50','543']);
 assert.deepEqual(rowIds('一无架区二',0).slice(0,6),['1168','1145','1295','76','1367','1252']);
 assert.deepEqual(rowIds('一有架区三',2),['419','917','9','919','956','857','866','282']);
 assert.deepEqual(rowIds('一有架区三',0),['44','711','592','1144','969','86','595','1122']);
@@ -131,7 +131,9 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     const adjacent294=await coord('294');assert(adjacent294.x<inner.x&&inner.x-adjacent294.x<1,'294在210左侧紧邻');assert(Math.abs(adjacent294.z-inner.z)<1e-12,'294与210同为靠内');
     const aligned218=await coord('218'),aligned834=await coord('834');assert(Math.abs(aligned218.x-aligned834.x)<.03,'218 与 834 应沿垂直走廊方向对齐');
     const offset317=await coord('317'),offset1167=await coord('1167');assert(offset1167.x>offset317.x&&offset1167.z>offset317.z,'1167 位于 317 右前方而非平排');
-    const four=await Promise.all(['281','1118','1202','1299'].map(coord));assert(four.every((p,i)=>i===0||p.x>four[i-1].x),'281、1118、1202、1299 的顺序');
+    const confirmedTop=await Promise.all(['1299','346','281','1044','1118','1202','482','661','213','293','898','50','543'].map(coord));assert(confirmedTop.every((p,i)=>i===0||p.x>confirmedTop[i-1].x),'10月31日照片确认的最上排完整左右顺序');assert(confirmedTop.every(p=>p.row===3),'均为第三排');
+    assert(confirmedTop[2].z>confirmedTop[3].z&&confirmedTop[4].z>confirmedTop[5].z&&confirmedTop[6].z>confirmedTop[7].z,'281/1044、1118/1202、482/661靠外靠内错列');
+    assert.equal((await coord('1166')).section,'右侧有架区','1166仍保留原一区盆位，不按二区口误移动');
     const rightSequence=await Promise.all(['546','183','229','959','297','1188','434'].map(coord));assert(rightSequence.every((p,i)=>i===0||p.x>rightSequence[i-1].x),'二区上排左右顺序');assert(rightSequence[2].z<rightSequence[3].z&&rightSequence[4].z<rightSequence[3].z&&rightSequence[5].z>rightSequence[4].z,'229/959/297/1188前后错位');
     assert(Math.abs((await coord('1016')).x-(await coord('434')).x)<.01,'1016与434上下对齐');
     const left1169=await coord('1169'),suffix868=await coord('868(2)'),right647=await coord('647');assert(left1169.x<suffix868.x&&suffix868.x<right647.x,'868（2）在1169右侧、647左侧');assert(suffix868.x-left1169.x>right647.x-suffix868.x,'868（2）和1169之间保留空位');
