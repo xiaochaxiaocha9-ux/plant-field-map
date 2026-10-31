@@ -327,6 +327,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     const fixturePage = await browser.newPage({ viewport: { width: 1024, height: 1100 } });
     fixturePage.on('pageerror', error => errors.push(error.message));
     await fixturePage.clock.install({ time: new Date(fixture.date + 'T08:00:00+08:00') });
+    await fixturePage.addInitScript(plan=>{if(window===window.top){const entries=JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}'),key='2026-10-27|56#plant|morning';if(!entries[key]){entries[key]={plan,done:false,metrics:{stemLength:'321',leaves:'0'},updatedAt:'2026-10-27T00:01:00.000Z'};localStorage.setItem('plant-field-feedback-v1',JSON.stringify(entries));}}},fixture.tasks.find(t=>t.recordType==='plant').morning);
     await fixturePage.goto(url + 'fixture');
     const ff = fixturePage.frameLocator('iframe'), fa = ff.locator('#plant-field-3d');
     await ff.locator('.pf-label[data-id="56"]').waitFor({ state: 'visible' });
@@ -391,8 +392,8 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await taskRow('36-Z99').locator('summary').click();
     await taskRow('36-Z99').locator('input[aria-label="36-Z99本朵花冠横径（mm）"]').fill('48');
     await taskRow('56 · 植株').locator('summary').click();
-    await taskRow('56 · 植株').locator('input[aria-label="56 · 植株植株茎长（mm）"]').fill('321');
-    await taskRow('56 · 植株').locator('input[aria-label="56 · 植株植株现存真叶数"]').fill('0');
+    assert.equal(await taskRow('56 · 植株').locator('input[aria-label*="植株茎长"]').count(),0,'授粉页不再显示生长输入；历史值仍保留');
+    await taskRow('56 · 植株').locator('textarea').fill('旧测量字段隐藏后仍保留');
     await ff.locator('#pf-search').fill('49');await ff.locator('#pf-search').press('Enter');
     await ff.locator('[data-detail-task="2026-10-27|49#99|morning"]').click();
     assert.equal(await taskRow('49-F99').getAttribute('data-done'),'true','盆栽详情可直接完成对应花朵');

@@ -10,6 +10,8 @@ const identities=JSON.parse(fs.readFileSync(path.join(root,'src/plant-identities
 if(identities.schemaVersion!==1||!identities.plants)throw Error('编号显示映射格式错误');
 const { readLayout, validateConfig } = require('./task-data.cjs');
 const ids = readLayout(raw), summary = validateConfig(config, ids);
+const measurements=JSON.parse(fs.readFileSync(path.join(root,'src/measurement-tasks.json'),'utf8'));
+const {validateMeasurements}=require('./measurement-data.cjs');const measurementSummary=validateMeasurements(measurements,ids);
 for(const [id,p]of Object.entries(identities.plants))if(!ids.has(id)||!['B','F','Z'].includes(p.colorCode))throw Error('编号显示映射无效：'+id);
 const renderer = process.env.VISUALIZE_RENDERER;
 if (!renderer || !fs.existsSync(renderer)) throw Error('请设置 VISUALIZE_RENDERER 为 visualize 的 render.py 路径');
@@ -21,6 +23,7 @@ document = document.replace(/data-srcdoc="([^"]*)"/, (_, encoded) => {
   let inner = decode(encoded);
   inner = inner.replace(/<script\b[^>]*\bsrc="https:[^"]*"[^>]*><\/script>/g, '');
   inner = inner.replace('/*__PUBLISHED_TASKS__*/', 'const publishedTasks=' + JSON.stringify(config).replace(/</g, '\\u003c') + ';');
+  inner = inner.replace('/*__MEASUREMENT_TASKS__*/', 'const publishedMeasurements=' + JSON.stringify(measurements).replace(/</g, '\\u003c') + ';');
   inner = inner.replace('/*__PLANT_IDENTITIES__*/', 'const plantIdentities=' + JSON.stringify(identities.plants).replace(/</g, '\\u003c') + ';');
   inner = inner.replace(/<i data-lucide="search"[^>]*><\/i>/g, '<span aria-hidden="true">⌕</span>');
   inner = inner.replace(/<i data-lucide="rotate-ccw"[^>]*><\/i>/g, '<span aria-hidden="true">↺</span>');
@@ -62,4 +65,4 @@ fs.mkdirSync(path.join(root, 'docs'), { recursive: true });
 document = document.replace(/\r\n/g, '\n');
 fs.writeFileSync(path.join(root, 'docs/index.html'), document);
 fs.writeFileSync(path.join(root, 'docs/.nojekyll'), '');
-console.log(JSON.stringify({ built: true, confirmedPlants: ids.size, ...summary, bytes: Buffer.byteLength(document) }));
+console.log(JSON.stringify({ built: true, confirmedPlants: ids.size, ...summary, measurements:measurementSummary, bytes: Buffer.byteLength(document) }));
