@@ -26,8 +26,8 @@ assert(Math.abs((geometry.gap3Span.right-geometry.gap3Span.left)/(geometry.baySp
 assert.equal(geometry.frameRegions[0].length,3,'一区应有三个有架区');
 assert.equal(geometry.frameRegions[1].length,0,'二区没有架子');
 assert.deepEqual(Array.from(middleRows,row=>row.row),[0,1,2]);
-assert.equal(layout.size,239,'所有已录入编号必须唯一；不得自动增加待核对的重复编号');
-assert.equal([...layout.values()].filter(x=>x==='第一片区').length,184);
+assert.equal(layout.size,240,'所有已录入编号必须唯一；不得自动增加待核对的重复编号');
+assert.equal([...layout.values()].filter(x=>x==='第一片区').length,185);
 assert.equal([...layout.values()].filter(x=>x==='第二片区').length,55);
 assert(middleRows.every(row=>row.fractions.every((x,i,a)=>x>=0&&x<=1&&(i===0||x>a[i-1]))));
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===0).ids),['483','295','220','317','1167','294','210','968','149','821']);
@@ -37,7 +37,7 @@ assert.deepEqual(Array.from(middleRows.find(r=>r.row===0).ids),['163','646','330
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===1).ids),['81','648','782','1082','890','716','130','584','1093','218']);
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===2).ids),['54','907','143','48','928','692','1069','940','1170','834']);
 for (const [id,area] of [['1118','第一片区'],['1202','第一片区'],['1138','第一片区'],['1097','第一片区'],['1304','第一片区'],['342','第一片区'],['1068','第二片区'],['434','第二片区'],['868','第二片区'],['868(2)','第二片区'],['229','第二片区'],['959','第二片区'],['297','第二片区'],['1016','第二片区'],['724','第二片区'],['331','第二片区']]) assert.equal(layout.get(id),area,`${id} 必须在用户指定片区`);
-for (const id of ['897','1104']) assert(!layout.has(id),`${id} 位置待用户确认，不应映射`);
+for (const id of ['1104']) assert(!layout.has(id),`${id} 位置待用户确认，不应映射`);
 const rowIds=(section,row)=>Array.from(allRows.find(r=>r.section===section&&r.row===row).ids);
 assert.deepEqual(rowIds('一无架区二',2),['346','482','281','1118','1202','1299','616','213','293','898','50','543']);
 assert.deepEqual(rowIds('一无架区二',0).slice(0,6),['1168','1145','1295','76','1367','1252']);
@@ -127,6 +127,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     assert(!source.includes('dimensionZ'),'不再画尺寸线');
     const coord=async id=>frame.locator(`.pf-label[data-id="${id}"]`).evaluate(el=>({x:+el.dataset.x,z:+el.dataset.z,row:+el.dataset.row,section:el.dataset.section,note:el.dataset.note}));
     const inner=await coord('210'),outer=await coord('968');assert.equal(inner.row,1);assert.equal(outer.row,1);assert(Math.abs(inner.x-outer.x)<1e-12);assert(inner.z<outer.z);assert.match(inner.note,/靠内/);assert.match(outer.note,/靠外/);
+    const triangle1322=await coord('1322'),triangle1358=await coord('1358'),triangle897=await coord('897');assert(triangle1322.x<triangle897.x&&triangle897.x<triangle1358.x&&triangle897.z>triangle1322.z&&triangle897.z>triangle1358.z,'897在两盆之间外侧呈三角');
     const adjacent294=await coord('294');assert(adjacent294.x<inner.x&&inner.x-adjacent294.x<1,'294在210左侧紧邻');assert(Math.abs(adjacent294.z-inner.z)<1e-12,'294与210同为靠内');
     const aligned218=await coord('218'),aligned834=await coord('834');assert(Math.abs(aligned218.x-aligned834.x)<.03,'218 与 834 应沿垂直走廊方向对齐');
     const offset317=await coord('317'),offset1167=await coord('1167');assert(offset1167.x>offset317.x&&offset1167.z>offset317.z,'1167 位于 317 右前方而非平排');
@@ -231,8 +232,10 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
       }
       await page.screenshot({ path: path.join(out, 'width-' + width + '.png'), fullPage: true });
     }
-    await frame.locator('#pf-search').fill('1131'); await frame.locator('#pf-search').press('Enter');
-    assert.equal(await frame.locator('#pf-detail').innerText(),'1131','无任务的选中盆只显示编号');
+    const noTaskId=[...layout.keys()].find(id=>!currentTasks.tasks.some(t=>t.id===id));
+    assert(noTaskId,'需有无任务盆位用于隔离显示测试');
+    await frame.locator('#pf-search').fill(noTaskId); await frame.locator('#pf-search').press('Enter');
+    assert.equal(await frame.locator('#pf-detail').innerText(),noTaskId,'无任务的选中盆只显示编号');
     assert.equal(await frame.locator('.pf-label.pf-dim').count(), 0);
     await frame.locator('#pf-export').click();
     const png = await frame.locator('#pf-export-image').getAttribute('src');
