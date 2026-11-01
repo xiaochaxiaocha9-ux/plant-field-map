@@ -2075,10 +2075,16 @@ html&gt;body{padding:0}&lt;/style&gt;
     const batchMorning=taskDate?new Date(taskDate+'T00:00:00Z'):null,batchEvening=batchMorning?new Date(+batchMorning-86400000):null;
     const measurements=typeof publishedMeasurements==='undefined'?{firstflower:{tasks:[],unlocated:[]},weekly:{start:null,end:null,tasks:[],unlocated:[]},remeasure:{tasks:[],unlocated:[]}}:publishedMeasurements;
     const measurementMode=(when=phase)=&gt;['weekly','remeasure'].includes(when);
-    const viewTasks=()=&gt;phase==='weekly'?[...measurements.firstflower.tasks.map(t=&gt;({...t,measurementKind:'firstflower'})),...measurements.weekly.tasks.map(t=&gt;({...t,measurementKind:'weekly'}))]:phase==='remeasure'?measurements.remeasure.tasks.filter(t=&gt;t.dueDate&lt;=beijingDate()):tasks;
+    // Published measurement datasets are immutable within one page load.
+    // Rebuild the due list only when the Beijing calendar date changes.
+    const weeklyTasks=[...measurements.firstflower.tasks.map(t=&gt;({...t,measurementKind:'firstflower'})),...measurements.weekly.tasks.map(t=&gt;({...t,measurementKind:'weekly'}))];
+    let dueDay='',dueTasks=[];
+    const viewTasks=()=&gt;{if(phase==='weekly')return weeklyTasks;if(phase==='remeasure'){const day=beijingDate();if(day!==dueDay){dueDay=day;dueTasks=measurements.remeasure.tasks.filter(t=&gt;t.dueDate&lt;=day);}return dueTasks;}return tasks;};
     const phaseNames={morning:'授粉处理',evening:'授粉前处理',weekly:'生长测量',remeasure:'30天复测'};
     const periodLabels={morning:(batchMorning?dateText(batchMorning)+' ':'')+phaseNames.morning,evening:(batchEvening?dateText(batchEvening)+' ':'')+phaseNames.evening,weekly:(measurements.weekly.start?dateText(new Date(measurements.weekly.start+'T00:00:00Z'))+'—'+dateText(new Date(measurements.weekly.end+'T00:00:00Z'))+' ':'')+'生长测量',remeasure:'30天复测（到期待测）'};
-    const beijingDate=()=&gt;{const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const get=k=&gt;parts.find(x=&gt;x.type===k).value;return get('year')+'-'+get('month')+'-'+get('day');};
+    const beijingFormatter=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'});
+    let beijingMinute=null,beijingCachedDate='';
+    const beijingDate=()=&gt;{const now=Date.now(),minute=Math.floor(now/60000);if(minute!==beijingMinute){const parts=beijingFormatter.formatToParts(new Date(now)),get=k=&gt;parts.find(x=&gt;x.type===k).value;beijingCachedDate=get('year')+'-'+get('month')+'-'+get('day');beijingMinute=minute;}return beijingCachedDate;};
     const expired=(when=phase)=&gt;!measurementMode(when)&amp;&amp;!!taskDate&amp;&amp;beijingDate()&gt;taskDate;
     if(taskDate){phase=beijingDate()===taskDate?'morning':'evening';if(phase==='evening'&amp;&amp;tasks.length&amp;&amp;tasks.every(t=&gt;!hasPlannedAction(t,'evening')||/已完成|已摘取/.test(t.evening)))phase='morning';}
     const cameraLimits={pan:Math.abs(gap3Span.left)+3,minPitch:.32,maxPitch:1.25},axisHeight=1.2,axisOffset=-1.2;
@@ -2162,7 +2168,8 @@ html&gt;body{padding:0}&lt;/style&gt;
       }
       return [...pairs.values()];
     }
-    const records=id=&gt;viewTasks().filter(t=&gt;t.id===id);
+    let indexedTasks=null,recordsById=new Map();
+    const records=id=&gt;{const current=viewTasks();if(current!==indexedTasks){indexedTasks=current;recordsById=new Map();for(const t of current){if(!recordsById.has(t.id))recordsById.set(t.id,[]);recordsById.get(t.id).push(t);}}return recordsById.get(id)||[];};
     // Only update location wording when new positions resolve an old annotation.
     // The task source itself, flower numbers and actual operations stay unchanged.
     function locationAwareOperation(t,when=phase){let text=(t[when]||'').replace(/供粉后不摘取[；;，,]?/g,'');for(const m of normId(t.morning).matchAll(/接\s*(\d+(?:\(\d+\))?)\s*花粉/g))if(layout.has(m[1]))text=text.replace(/父本盆位未录入/g,'父本已定位');for(const m of normId(t.morning).matchAll(/给\s*(\d+(?:\(\d+\))?)\s*供粉/g))if(layout.has(m[1]))text=text.replace(/母本盆位未录入/g,'母本已定位');return text;}
