@@ -21,6 +21,7 @@ function needsAction(text) {
 }
 function validateConfig(config, layout) {
   if (!Array.isArray(config.tasks) || config.tasks.length > 1000 || typeof config.label !== 'string') throw Error('任务格式错误');
+  if (config.acknowledgedPhases!==undefined && (!Array.isArray(config.acknowledgedPhases)||new Set(config.acknowledgedPhases).size!==config.acknowledgedPhases.length||config.acknowledgedPhases.some(p=>!['morning','evening'].includes(p)))) throw Error('已收反馈时段格式错误');
   if (!config.tasks.length && config.date === null) return { plants: 0, tasks: 0, crosses: 0, active: { evening: 0, morning: 0 } };
   if (!/^\d{4}-\d{2}-\d{2}$/.test(config.date) || !Number.isFinite(+new Date(config.date + 'T00:00:00Z')) || new Date(config.date + 'T00:00:00Z').toISOString().slice(0, 10) !== config.date) throw Error('需要有效的实际预计开放日期');
   const periods = periodLabels(config.date);
