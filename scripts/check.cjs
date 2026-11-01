@@ -160,6 +160,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
       assert.equal(await app.getAttribute('data-task-plants'), String(taskSummary.plants));
       assert.equal(await app.getAttribute('data-pairs'), String(taskSummary.crosses));
       for (const phase of ['evening', 'morning']) {
+        if(currentTasks.acknowledgedPhases?.includes(phase)){assert.equal(await frame.locator('#pf-phase option[value="'+phase+'"]').isDisabled(),true);continue;}
         await frame.locator('#pf-phase').selectOption(phase);
         assert.equal(await frame.locator('#pf-phase option:checked').innerText(),labels[phase].replace(/晚$/,' 授粉前处理').replace(/早$/,' 授粉处理'));
         assert.equal(await app.getAttribute('data-active-tasks'), String(taskSummary.active[phase]));
