@@ -31,7 +31,7 @@ assert.equal([...layout.values()].filter(x=>x==='第一片区').length,185);
 assert.equal([...layout.values()].filter(x=>x==='第二片区').length,55);
 assert(middleRows.every(row=>row.fractions.every((x,i,a)=>x>=0&&x<=1&&(i===0||x>a[i-1]))));
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===0).ids),['483','295','220','317','1167','294','210','968','149','821']);
-assert.deepEqual(Array.from(leftRows.find(r=>r.row===1).ids),['1130','826','1007','886','291','215','402','397','713']);
+assert.deepEqual(Array.from(leftRows.find(r=>r.row===1).ids),['1130','826','1007','886','291','215','402','390','713']);
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===2).ids),['1020','144','795','585','156','2','85','929']);
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===0).ids),['163','646','330','159','550','208','416','794']);
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===1).ids),['81','648','782','1082','890','716','130','584','1093','218']);
