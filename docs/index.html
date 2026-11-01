@@ -1820,12 +1820,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     #plant-field-3d button{font-weight:500}
     #plant-field-3d [hidden]{display:none!important}
     #plant-field-3d .pf-header{padding:18px 20px 12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-height:62px}
-    #plant-field-3d .pf-export{margin-left:auto;border:1px solid var(--pf-border);background:var(--pf-panel);border-radius:8px;padding:7px 12px;min-height:42px;white-space:nowrap}
-    #plant-field-3d .pf-export-dialog{color:var(--pf-fg);background:var(--pf-panel);border:1px solid var(--pf-border);border-radius:12px;max-width:min(96vw,1000px);max-height:94vh;padding:14px}
-    #plant-field-3d .pf-export-dialog::backdrop{background:#000b}
-    #plant-field-3d .pf-export-dialog img{display:block;max-width:100%;max-height:70vh;object-fit:contain;margin:10px auto}
-    #plant-field-3d .pf-export-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-    #plant-field-3d .pf-export-actions a{color:var(--pf-wire)}
+    #plant-field-3d .pf-feedback-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
     #plant-field-3d .pf-brand{font-size:18px;font-weight:500;letter-spacing:.06em;white-space:nowrap}
     #plant-field-3d .pf-demo{font-size:11px;letter-spacing:.04em;color:var(--pf-muted);padding:3px 7px;border:1px solid var(--pf-border);border-radius:4px;white-space:nowrap}
     #plant-field-3d .pf-toolbar{padding:0 20px 14px;display:flex;gap:8px;align-items:center}
@@ -1942,7 +1937,6 @@ html&gt;body{padding:0}&lt;/style&gt;
       #plant-field-3d .pf-header{padding:10px 12px 6px;min-height:52px;gap:7px}
       #plant-field-3d .pf-brand{font-size:16px;letter-spacing:.02em}
       #plant-field-3d .pf-demo{font-size:11px;border:0;padding:0}
-      #plant-field-3d .pf-export{min-height:44px;padding:6px 10px}
       #plant-field-3d .pf-toolbar{padding-bottom:8px}
       #plant-field-3d .pf-searchbox{height:44px}
       #plant-field-3d .pf-phase{width:168px;padding:7px 5px;font-size:12px}
@@ -1967,7 +1961,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       #plant-field-3d .pf-mobile-only{display:inline}
     }
   &lt;/style&gt;
-  &lt;header class=&quot;pf-header&quot;&gt;&lt;span class=&quot;pf-brand&quot;&gt;同质园&lt;/span&gt;&lt;span class=&quot;pf-demo&quot; id=&quot;pf-layout-status&quot;&gt;盆位核对&lt;/span&gt;&lt;button type=&quot;button&quot; class=&quot;pf-export&quot; id=&quot;pf-export&quot; aria-label=&quot;保存PNG图片&quot;&gt;&lt;span class=&quot;pf-desktop-only&quot;&gt;保存PNG&lt;/span&gt;&lt;span class=&quot;pf-mobile-only&quot;&gt;存图&lt;/span&gt;&lt;/button&gt;&lt;/header&gt;
+  &lt;header class=&quot;pf-header&quot;&gt;&lt;span class=&quot;pf-brand&quot;&gt;同质园&lt;/span&gt;&lt;span class=&quot;pf-demo&quot; id=&quot;pf-layout-status&quot;&gt;盆位核对&lt;/span&gt;&lt;/header&gt;
   &lt;div class=&quot;pf-toolbar&quot;&gt;
     &lt;div class=&quot;pf-searchbox&quot; role=&quot;search&quot; aria-label=&quot;搜索植株&quot;&gt;&lt;span aria-hidden=&quot;true&quot;&gt;⌕&lt;/span&gt;&lt;input id=&quot;pf-search&quot; type=&quot;text&quot; aria-label=&quot;输入植株编号定位&quot; data-tooltip=&quot;定位光圈不改变处理颜色&quot; placeholder=&quot;找编号&quot; autocomplete=&quot;off&quot; enterkeyhint=&quot;search&quot;&gt;&lt;/div&gt;
     &lt;select id=&quot;pf-phase&quot; class=&quot;pf-phase cursor-interaction&quot; aria-label=&quot;处理阶段&quot;&gt;&lt;option value=&quot;morning&quot;&gt;授粉处理&lt;/option&gt;&lt;option value=&quot;evening&quot;&gt;授粉前处理&lt;/option&gt;&lt;option value=&quot;weekly&quot;&gt;生长测量（首花／周测）&lt;/option&gt;&lt;option value=&quot;remeasure&quot;&gt;30天复测&lt;/option&gt;&lt;/select&gt;
@@ -2003,8 +1997,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   &lt;div class=&quot;pf-detail&quot; id=&quot;pf-detail&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
   &lt;section class=&quot;pf-task-section&quot; id=&quot;pf-task-section&quot; aria-label=&quot;逐花任务清单&quot;&gt;&lt;div class=&quot;pf-task-head&quot;&gt;&lt;h3 id=&quot;pf-task-title&quot;&gt;任务&lt;/h3&gt;&lt;span id=&quot;pf-feedback-mode&quot; class=&quot;pf-feedback-mode&quot;&gt;勾选后复制反馈&lt;/span&gt;&lt;/div&gt;&lt;button type=&quot;button&quot; id=&quot;pf-add-flower&quot; class=&quot;pf-feedback-copy pf-add-top cursor-interaction&quot;&gt;＋ 添加新花朵&lt;/button&gt;&lt;div id=&quot;pf-new-draft&quot;&gt;&lt;/div&gt;&lt;div id=&quot;pf-task-list&quot;&gt;&lt;/div&gt;&lt;div id=&quot;pf-new-flowers&quot;&gt;&lt;/div&gt;&lt;label class=&quot;pf-general-note&quot;&gt;总备注&lt;textarea id=&quot;pf-general-note&quot; aria-label=&quot;本阶段总备注&quot; maxlength=&quot;2000&quot; placeholder=&quot;其他情况、整体说明等&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;div class=&quot;pf-feedback-bar&quot;&gt;&lt;button type=&quot;button&quot; id=&quot;pf-copy-feedback&quot; class=&quot;pf-feedback-copy cursor-interaction&quot;&gt;复制反馈&lt;/button&gt;&lt;/div&gt;&lt;span id=&quot;pf-feedback-message&quot; class=&quot;pf-task-note&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;&lt;/span&gt;&lt;/section&gt;
   &lt;details class=&quot;pf-credit&quot; id=&quot;pf-data-details&quot;&gt;&lt;summary class=&quot;cursor-interaction&quot; id=&quot;pf-batch-summary&quot;&gt;任务信息&lt;/summary&gt;&lt;div class=&quot;pf-source-full&quot;&gt;&lt;span&gt;原发布说明（不随新增盆位分配任务）&lt;/span&gt;&lt;span id=&quot;pf-source&quot;&gt;未载入当日任务&lt;/span&gt;&lt;span&gt;区段长度按实测比例 · 盆距示意&lt;/span&gt;&lt;/div&gt;&lt;/details&gt;
-  &lt;dialog id=&quot;pf-export-dialog&quot; class=&quot;pf-export-dialog&quot; aria-label=&quot;保存盆位图片&quot;&gt;&lt;div class=&quot;pf-export-actions&quot;&gt;&lt;span&gt;微信内可长按图片保存&lt;/span&gt;&lt;a id=&quot;pf-export-download&quot; download=&quot;同质园盆位.png&quot;&gt;下载PNG&lt;/a&gt;&lt;button type=&quot;button&quot; class=&quot;pf-export&quot; id=&quot;pf-export-close&quot;&gt;关闭&lt;/button&gt;&lt;/div&gt;&lt;img id=&quot;pf-export-image&quot; alt=&quot;当前片区的盆位、处理颜色和异交配对示意图&quot;&gt;&lt;/dialog&gt;
-  &lt;dialog id=&quot;pf-feedback-dialog&quot; class=&quot;pf-feedback-dialog&quot; aria-label=&quot;操作反馈文本&quot;&gt;&lt;div class=&quot;pf-export-actions&quot;&gt;&lt;span id=&quot;pf-copy-status&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;可长按下方文本复制&lt;/span&gt;&lt;button type=&quot;button&quot; class=&quot;pf-feedback-copy cursor-interaction&quot; id=&quot;pf-feedback-close&quot;&gt;关闭&lt;/button&gt;&lt;/div&gt;&lt;textarea id=&quot;pf-feedback-text&quot; readonly aria-label=&quot;操作反馈，可选中复制&quot;&gt;&lt;/textarea&gt;&lt;button type=&quot;button&quot; class=&quot;pf-feedback-copy cursor-interaction&quot; id=&quot;pf-feedback-recopy&quot;&gt;复制文本&lt;/button&gt;&lt;/dialog&gt;
+  &lt;dialog id=&quot;pf-feedback-dialog&quot; class=&quot;pf-feedback-dialog&quot; aria-label=&quot;操作反馈文本&quot;&gt;&lt;div class=&quot;pf-feedback-actions&quot;&gt;&lt;span id=&quot;pf-copy-status&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;可长按下方文本复制&lt;/span&gt;&lt;button type=&quot;button&quot; class=&quot;pf-feedback-copy cursor-interaction&quot; id=&quot;pf-feedback-close&quot;&gt;关闭&lt;/button&gt;&lt;/div&gt;&lt;textarea id=&quot;pf-feedback-text&quot; readonly aria-label=&quot;操作反馈，可选中复制&quot;&gt;&lt;/textarea&gt;&lt;button type=&quot;button&quot; class=&quot;pf-feedback-copy cursor-interaction&quot; id=&quot;pf-feedback-recopy&quot;&gt;复制文本&lt;/button&gt;&lt;/dialog&gt;
   &lt;script&gt;
   (()=&gt;{
     const root=document.getElementById('plant-field-3d');
@@ -2489,37 +2482,6 @@ html&gt;body{padding:0}&lt;/style&gt;
     function parseRows(rows){let area='',headers=null;const result=[],warnings=[];for(let i=0;i&lt;rows.length;i++){const row=rows[i].map(clean);if(row.every(x=&gt;!x))continue;const first=row.find(x=&gt;x);if(/^第[一二三四五六七八九十\d]+片区$/.test(first)&amp;&amp;row.filter(Boolean).length===1){area=first;continue;}const idCol=row.findIndex(x=&gt;/^(植株|植株编号|编号)$/.test(x));if(idCol&gt;=0){headers={id:idCol,flower:row.findIndex(x=&gt;/^(第几朵|花号|花朵编号)$/.test(x)),evening:row.indexOf('今晚'),morning:row.indexOf('明早')};if(headers.flower&lt;0||headers.evening&lt;0||headers.morning&lt;0)headers=null;continue;}if(!headers)continue;const id=row[headers.id];if(!id)continue;if(!/^\d+$/.test(id)){warnings.push('第'+(i+1)+'行编号无法识别');continue;}const t={area,id,flower:row[headers.flower]??'',evening:row[headers.evening]??'',morning:row[headers.morning]??''};if(!/^\d+$/.test(t.flower)||!t.evening||!t.morning){warnings.push(id+'号花号或操作缺失');continue;}if(kind(t)==='other'){warnings.push(id+'号处理待确认');continue;}result.push(t);}if(!result.length)throw Error('表头需含：植株、第几朵、今晚、明早');const keys=new Set();for(const t of result){const key=t.id+'#'+t.flower;if(keys.has(key))warnings.push('重复任务：'+key);keys.add(key);if(!layout.has(t.id))warnings.push(t.id+'号未录入盆位');else if(t.area&amp;&amp;layout.get(t.id).area!==t.area)warnings.push(t.id+'号片区不一致');}for(const t of result){const receive=t.morning.match(/接\s*(\d+)\s*花粉/),give=t.morning.match(/给\s*(\d+)\s*供粉/);if(receive){if(receive[1]===t.id)warnings.push(t.id+'号异交亲本相同');if(!result.some(x=&gt;x.id===receive[1]&amp;&amp;new RegExp('给\\s*'+t.id+'\\s*供粉').test(x.morning)))warnings.push(receive[1]+' → '+t.id+'缺供粉行');}if(give&amp;&amp;!result.some(x=&gt;x.id===give[1]&amp;&amp;new RegExp('接\\s*'+t.id+'\\s*花粉').test(x.morning)))warnings.push(t.id+' → '+give[1]+'缺接粉行');}return{tasks:result,warnings:[...new Set(warnings)]};}
     $('#pf-file').addEventListener('change',async event=&gt;{const file=event.target.files[0];pending=null;$('#pf-apply').disabled=true;$('#pf-import-error').hidden=true;$('#pf-preview').hidden=true;if(!file)return;try{if(file.size&gt;5000000)throw Error('请使用5MB以内的当天任务表');let sheets;if(/\.xlsx$/i.test(file.name))sheets=await readXlsx(file);else if(/\.(tsv|txt)$/i.test(file.name))sheets=[{name:'文本',rows:(await file.text()).replace(/^\uFEFF/,'').split(/\r?\n/).map(r=&gt;r.split('\t'))}];else throw Error('仅支持xlsx、TSV、TXT');const candidates=[];for(const s of sheets){try{candidates.push({...parseRows(s.rows),sheet:s.name});}catch(e){}}if(candidates.length!==1)throw Error(candidates.length?'请只保留要导入的一张工作表':'未识别任务表，请检查表头');pending={...candidates[0],file:file.name};$('#pf-preview').textContent=file.name+' · '+pending.tasks.length+'项任务 / '+new Set(pending.tasks.map(t=&gt;t.id)).size+'株 / '+pairsOf(pending.tasks).length+'组异交'+(pending.warnings.length?'\n'+pending.warnings.join('\n'):'\n可以应用');$('#pf-preview').hidden=false;$('#pf-apply').disabled=!!pending.warnings.length;}catch(e){$('#pf-import-error').textContent=e.message;$('#pf-import-error').hidden=false;}});
     $('#pf-apply').addEventListener('click',()=&gt;{if(!pending||pending.warnings.length)return;tasks=pending.tasks;taskLabel=pending.file;queryIds=[];$('#pf-search').value='';selected=tasks.find(t=&gt;layout.has(t.id))?.id??'';activePair=pairsOf(tasks).find(p=&gt;p.donor===selected||p.mother===selected)?.key??'';$('#pf-import').hidden=true;$('#pf-import-toggle').setAttribute('aria-expanded','false');const zone=layout.get(selected)?.zone??0;refresh();if(zone!==currentZone)flyTo(zone);save();});
-    $('#pf-export-close').addEventListener('click',()=&gt;$('#pf-export-dialog').close());
-    $('#pf-export-download').addEventListener('click',event=&gt;{event.preventDefault();window.parent.postMessage({type:'plant-png-download',png:$('#pf-export-image').src},'*');});
-    $('#pf-export').addEventListener('click',()=&gt;{
-      if(flight){camera=flight.target;flight=null;buildScene();updateHead();}
-      drawScene();
-      const exportMarks=[['cross','#f19b9d','异交（含父本）'],['auto','#96d1ae','自主'],['open','#dce5eb','开放'],['measure','#c3afe8','测量'],['hand','#e4c189','人工自交']].filter(([category])=&gt;category==='cross'?viewTasks().some(t=&gt;needsAction(t)&amp;&amp;['cross','donor'].includes(kind(t))):category==='measure'?viewTasks().some(measurePending):viewTasks().some(t=&gt;needsAction(t)&amp;&amp;kind(t)===category));
-      const scale=2,head=76,foot=exportMarks.length?64:42;
-      const output=document.createElement('canvas');output.width=Math.round(cssWidth*scale);output.height=Math.round((cssHeight+head+foot)*scale);
-      const g=output.getContext('2d');g.scale(scale,scale);g.fillStyle='#101318';g.fillRect(0,0,cssWidth,cssHeight+head+foot);
-      const bg=g.createRadialGradient(cssWidth/2,head+cssHeight*.55,0,cssWidth/2,head+cssHeight*.55,cssWidth*.7);bg.addColorStop(0,'#1b232b');bg.addColorStop(1,'#101318');g.fillStyle=bg;g.fillRect(0,head,cssWidth,cssHeight);
-      g.fillStyle='#e3eaf0';g.font='500 17px system-ui, &quot;Microsoft YaHei&quot;, sans-serif';g.fillText(areas[currentZone]+' · 盆位与处理',16,28);
-      g.fillStyle='#97a5b2';g.font='12px system-ui, &quot;Microsoft YaHei&quot;, sans-serif';g.fillText($('#pf-batch-summary').textContent,16,52,cssWidth-32);
-      g.drawImage(canvas,0,head,cssWidth,cssHeight);
-      const stageRect=stage.getBoundingClientRect();
-      for(const el of stage.querySelectorAll('.pf-label,.pf-annotation,.pf-pairtag,.pf-north')){
-        if(el.hidden||getComputedStyle(el).display==='none')continue;
-        const painted=el.classList.contains('pf-label')?el.querySelector('.pf-label-chip'):el;
-        const r=painted.getBoundingClientRect(),s=getComputedStyle(painted),x=r.left-stageRect.left,y=r.top-stageRect.top+head;
-        if(x+r.width&lt;0||x&gt;cssWidth||y&lt;head||y+r.height&gt;head+cssHeight)continue;
-        g.fillStyle=s.backgroundColor;g.fillRect(x,y,r.width,r.height);g.strokeStyle=s.borderColor;if(parseFloat(s.borderWidth)&gt;0)g.strokeRect(x,y,r.width,r.height);
-        g.fillStyle=s.color;g.font=s.font;g.textAlign='center';g.textBaseline='middle';g.fillText(painted.textContent,x+r.width/2+(el.classList.contains('pf-label')?3:0),y+r.height/2);
-        if(el.classList.contains('pf-label')){g.fillStyle=s.getPropertyValue('--task-color')||'#a5d5ef';g.beginPath();g.arc(x+5,y+r.height/2,1.7,0,Math.PI*2);g.fill();if(el.getAttribute('aria-pressed')==='true'){g.strokeStyle='#e1effb';g.strokeRect(x-1,y-1,r.width+2,r.height+2);}}
-      }
-      g.textAlign='left';g.textBaseline='alphabetic';g.font='11px system-ui, &quot;Microsoft YaHei&quot;, sans-serif';g.fillStyle='#97a5b2';
-      const status=periodLabels[phase]+' · '+(currentZone===0?'第一排最低 · 第三排最高 · 间距示意':'盆位待录入');g.fillText(status,16,head+cssHeight+23);
-      if(exportMarks.length){let x=16,y=head+cssHeight+45;for(const [,c,label]of exportMarks){const w=g.measureText(label).width+23;if(x+w&gt;cssWidth-12){x=16;y+=18;}g.fillStyle=c;g.fillRect(x,y-7,6,6);g.fillStyle='#97a5b2';g.fillText(label,x+10,y);x+=w;}}
-      const png=output.toDataURL('image/png');$('#pf-export-image').src=png;
-      const download=$('#pf-export-download');if(download.dataset.blob)URL.revokeObjectURL(download.dataset.blob);
-      const bytes=Uint8Array.from(atob(png.split(',')[1]),c=&gt;c.charCodeAt(0));const blob=URL.createObjectURL(new Blob([bytes],{type:'image/png'}));
-      download.href=blob;download.dataset.blob=blob;download.download='同质园_'+areas[currentZone]+'.png';$('#pf-export-dialog').showModal();
-    });
     function requestSavedFeedback(){try{window.parent.postMessage({type:'plant-feedback-load'},'*');}catch(e){}}
     $('#pf-search').value=queryIds.join(' ');root.dataset.flight='idle';resize();refresh();requestSavedFeedback();window.addEventListener('load',requestSavedFeedback,{once:true});
     if(globalThis.Tweak){const tweak=new Tweak({container:root,onChange:()=&gt;{buildScene();requestRender();save();}});tweak.addToggle(settings,'greenhouse',{label:'显示玻璃大棚'});tweak.addSlider(settings,'frameHeight',{label:'架子高度（示意）',min:2,max:4.4,step:.1});tweak.addSlider(settings,'duration',{label:'切区镜头时长',min:900,max:3000,step:100,unit:'ms'});tweak.addSlider(settings,'brightness',{label:'线框亮度',min:.7,max:1.3,step:.1});}
@@ -3413,10 +3375,6 @@ window.addEventListener('message', event => {
     try{localStorage.setItem('plant-field-feedback-v1',JSON.stringify(entries));frame.contentWindow.postMessage({type:'plant-feedback-saved'},'*');}catch(e){frame.contentWindow.postMessage({type:'plant-feedback-save-error'},'*');}
     return;
   }
-  if(event.source!==frame.contentWindow||data?.type!=='plant-png-download'||typeof data.png!=='string'||!data.png.startsWith('data:image/png;base64,')||data.png.length>40000000)return;
-  const bytes=Uint8Array.from(atob(data.png.split(',')[1]),c=>c.charCodeAt(0));
-  const url=URL.createObjectURL(new Blob([bytes],{type:'image/png'})),a=document.createElement('a');
-  a.href=url;a.download='同质园盆位.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
 });
 </script></body>
 </html>

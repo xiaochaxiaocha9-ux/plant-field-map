@@ -232,7 +232,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
       const size = await app.evaluate(el => ({ width: el.clientWidth, content: el.scrollWidth }));
       assert(size.content <= size.width + 1, '横向溢出：' + width);
       if(width<=480){
-        assert.equal(await frame.locator('#pf-export').innerText(),'存图');
+        assert.equal(await frame.locator('#pf-export').count(),0,'不显示存图按钮');
         assert.equal(await frame.locator('button[data-zone="0"]').innerText(),'一区');
         assert.equal(await frame.locator('#pf-data-details').getAttribute('open'),null);
         assert.equal(await frame.locator('#pf-source').isVisible(),false,'完整批次说明默认折叠');
@@ -246,17 +246,8 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await frame.locator('#pf-search').fill(noTaskId); await frame.locator('#pf-search').press('Enter');
     assert.equal(await frame.locator('#pf-detail').innerText(),noTaskId,'无任务的选中盆只显示编号');
     assert.equal(await frame.locator('.pf-label.pf-dim').count(), 0);
-    await frame.locator('#pf-export').click();
-    const png = await frame.locator('#pf-export-image').getAttribute('src');
-    const image = Buffer.from(png.split(',')[1], 'base64');
-    assert.equal(image.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
-    assert(image.readUInt32BE(16) > 600 && image.readUInt32BE(20) > 600);
-    fs.writeFileSync(path.join(out, 'exported.png'), image);
-    assert.match(await frame.locator('#pf-export-download').getAttribute('href'), /^blob:/);
-    const downloadPromise = page.waitForEvent('download', { timeout: 10000 }); await frame.locator('#pf-export-download').click();
-    const download = await downloadPromise; await download.saveAs(path.join(out, 'downloaded.png'));
-    assert(fs.statSync(path.join(out, 'downloaded.png')).size > 10000);
-    await frame.locator('#pf-export-close').click();
+    assert.equal(await frame.locator('#pf-export-dialog,#pf-export-download,#pf-export-image').count(),0,'存图界面及下载入口均已移除');
+    assert(!document.includes('plant-png-download'),'网页不再包含存图下载处理');
     await page.emulateMedia({ reducedMotion: 'reduce' }); await frame.locator('[data-zone="1"]').click();
     await frame.locator('.pf-label[data-id="56"]').waitFor({ state: 'hidden' });
     assert.doesNotMatch(await frame.locator('#pf-zoneinfo').innerText(), /盆位待录入/);
@@ -264,7 +255,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     assert.equal(await app.getAttribute('data-zone'),'1');
     assert.equal(await frame.locator('.pf-label[data-id="1068"]').isVisible(),true,'二区搜索需定位目标盆');
     assert.equal(await frame.locator('#pf-detail').innerText(),'1068');
-    tests.push('二区真实盆位和跨片区搜索；320-1024 响应式、PNG 导出及真实任务保持');
+    tests.push('二区真实盆位和跨片区搜索；320-1024 响应式、存图已移除及真实任务保持');
     const context = await browser.newContext({ viewport: { width: 360, height: 1000 }, isMobile: true, hasTouch: true });
     const mobile = await context.newPage(); mobile.on('pageerror', error => errors.push(error.message));
     await mobile.goto(url); const mf = mobile.frameLocator('iframe'); await mf.locator('#pf-search').fill('207'); await mf.locator('#pf-search').press('Enter');
@@ -321,12 +312,11 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await mf.locator('#pf-home').click(); await mobile.waitForTimeout(750);
     tests.push('real touch pointer pan and two-finger pinch keep orientation and do not jump');
     tests.push('no visible dimensions; original scale and smaller pots intact; task-first labels with immutable above/below anchors; compact selected ID; mobile 44px non-overlapping targets; selected priority and readable numbers');
-    await mf.locator('#pf-export').click(); assert.equal(await mf.locator('#pf-export-dialog').isVisible(), true);
-    await mobile.screenshot({ path: path.join(out, 'mobile-export.png'), fullPage: true }); await context.close();
+    assert.equal(await mf.locator('#pf-export,#pf-export-dialog').count(),0);await context.close();
     fallback = await chromium.launch({ headless: true, executablePath, args: ['--disable-webgl'] });
     const fp = await fallback.newPage(); fp.on('pageerror', error => errors.push(error.message)); await fp.goto(url);
     assert.equal(await fp.frameLocator('iframe').locator('#plant-field-3d').getAttribute('data-renderer'), 'perspective-canvas');
-    tests.push('touch search and PNG preview; no-WebGL fallback');
+    tests.push('touch search and removed image export; no-WebGL fallback');
     const fixturePage = await browser.newPage({ viewport: { width: 1024, height: 1100 } });
     fixturePage.on('pageerror', error => errors.push(error.message));
     await fixturePage.clock.install({ time: new Date(fixture.date + 'T08:00:00+08:00') });

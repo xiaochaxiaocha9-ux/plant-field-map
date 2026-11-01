@@ -55,10 +55,6 @@ window.addEventListener('message', event => {
     try{localStorage.setItem('plant-field-feedback-v1',JSON.stringify(entries));frame.contentWindow.postMessage({type:'plant-feedback-saved'},'*');}catch(e){frame.contentWindow.postMessage({type:'plant-feedback-save-error'},'*');}
     return;
   }
-  if(event.source!==frame.contentWindow||data?.type!=='plant-png-download'||typeof data.png!=='string'||!data.png.startsWith('data:image/png;base64,')||data.png.length>40000000)return;
-  const bytes=Uint8Array.from(atob(data.png.split(',')[1]),c=>c.charCodeAt(0));
-  const url=URL.createObjectURL(new Blob([bytes],{type:'image/png'})),a=document.createElement('a');
-  a.href=url;a.download='同质园盆位.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
 });
 </script></body>`);
 fs.mkdirSync(path.join(root, 'docs'), { recursive: true });
