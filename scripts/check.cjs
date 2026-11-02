@@ -34,7 +34,7 @@ assert(middleRows.every(row=>row.fractions.every((x,i,a)=>x>=0&&x<=1&&(i===0||x>
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===0).ids),['483','295','220','317','1167','294','210','968','149','821']);
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===1).ids),['1130','826','1007','886','291','215','402','390','713']);
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===2).ids),['1020','144','795','585','156','2','85','929']);
-assert.deepEqual(Array.from(middleRows.find(r=>r.row===0).ids),['163','646','330','159','550','208','416','794']);
+assert.deepEqual(Array.from(middleRows.find(r=>r.row===0).ids),['163','646','330','159','550','208','794','416']);
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===1).ids),['81','648','782','1082','890','716','130','584','1093','218']);
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===2).ids),['54','907','143','48','928','692','1069','940','1170','834']);
 for (const [id,area] of [['1118','第一片区'],['1202','第一片区'],['1138','第一片区'],['1097','第一片区'],['1304','第一片区'],['342','第一片区'],['1068','第二片区'],['434','第一片区'],['868','第二片区'],['868(2)','第二片区'],['229','第二片区'],['959','第二片区'],['297','第二片区'],['1016','第二片区'],['724','第二片区'],['331','第二片区']]) assert.equal(layout.get(id),area,`${id} 必须在用户指定片区`);
@@ -144,7 +144,10 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     const left1169=await coord('1169'),suffix868=await coord('868(2)'),right647=await coord('647');assert(left1169.x<suffix868.x&&suffix868.x<right647.x,'868（2）在1169右侧、647左侧');assert(suffix868.x-left1169.x>right647.x-suffix868.x,'868（2）和1169之间保留空位');
     const middleLow=await Promise.all(['163','646','330','159','550','208','416','794'].map(coord));
     assert(middleLow[3].x-middleLow[2].x>(middleLow[1].x-middleLow[0].x)*1.8,'330与159间须保留空档');
-    assert(middleLow.every(p=>p.z===middleLow[0].z),'中间区最低排仅一行');
+    assert(middleLow.slice(0,7).every(p=>p.z===middleLow[0].z),'其余最低排盆位保持不变');
+    assert(middleLow[4].x<middleLow[7].x&&middleLow[7].x<middleLow[6].x,'794在550与416之间');
+    assert(middleLow[7].z>middleLow[5].z&&middleLow[7].z>middleLow[4].z&&middleLow[7].z>middleLow[6].z,'794靠前，208位于其内侧');
+    assert(Math.abs(middleLow[7].x-middleLow[5].x)<.2,'794与208前后紧邻');
     const leftGap=await Promise.all(['317','210','215','402'].map(coord));assert(leftGap[1].x-leftGap[0].x>2);assert(leftGap[3].x-leftGap[2].x>1.3);
     tests.push('一区新增实测比例、两片区位置、218/834 对齐、1167 错位、补充近邻顺序及编号去重');
     assert.equal(await app.getAttribute('data-renderer'), 'webgl');
