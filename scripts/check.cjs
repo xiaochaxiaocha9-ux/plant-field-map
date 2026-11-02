@@ -255,7 +255,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     await frame.locator('#pf-search').fill('1068');await frame.locator('#pf-search').press('Enter');
     assert.equal(await app.getAttribute('data-zone'),'1');
     assert.equal(await frame.locator('.pf-label[data-id="1068"]').isVisible(),true,'二区搜索需定位目标盆');
-    assert.equal(await frame.locator('#pf-detail').innerText(),'1068');
+    assert.match(await frame.locator('#pf-detail').innerText(),/^1068(?:\n|$)/,'二区搜索保留编号；有任务时允许显示任务');
     tests.push('二区真实盆位和跨片区搜索；320-1024 响应式、存图已移除及真实任务保持');
     const context = await browser.newContext({ viewport: { width: 360, height: 1000 }, isMobile: true, hasTouch: true });
     const mobile = await context.newPage(); mobile.on('pageerror', error => errors.push(error.message));
