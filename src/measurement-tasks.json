@@ -4,15 +4,6 @@
   "firstflower": {
     "tasks": [
       {
-        "id": "1369",
-        "measurementDate": "2026-11-02",
-        "expected": false,
-        "recordType": "plant",
-        "flower": "",
-        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第一片区"
-      },
-      {
         "id": "733",
         "measurementDate": "2026-11-03",
         "expected": true,
@@ -20,15 +11,6 @@
         "flower": "",
         "weekly": "测量：确认首次实际开放后，测健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
         "area": "第二片区"
-      },
-      {
-        "id": "738",
-        "measurementDate": "2026-11-02",
-        "expected": false,
-        "recordType": "plant",
-        "flower": "",
-        "weekly": "测量：确认首次实际开放后，测健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；保留实际测量日期。",
-        "area": "第一片区"
       },
       {
         "id": "1098",
