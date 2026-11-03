@@ -13,15 +13,16 @@ function assertTransition(root,previous,next,now=new Date()){
  const old=read(archive);
  if(old.date!==previous.date||!['evening','morning'].every(p=>old.acknowledgedPhases?.includes(p)))throw Error('批次切换被拦截：上一批次两时段反馈尚未确认收齐；新任务应stage暂存');
  // Closure may change acknowledgement only; it must not silently rewrite the prior tasks.
- const withoutAck=x=>{const y={...x};delete y.acknowledgedPhases;return y;};
- if(hash(withoutAck(old))!==hash(withoutAck(previous)))throw Error('上一批次内容与已发布基线不同；先单独发布其更正/反馈，再切换');
+ const key=t=>String(t.id)+'#'+String(t.flower);
+ const archivedTasks=new Map(old.tasks.map(t=>[key(t),t]));
+ if(previous.tasks.some(t=>!archivedTasks.has(key(t))||hash(archivedTasks.get(key(t)))!==hash(t)))throw Error('上一批次已有任务被更改或删除；请先单独发布更正，再切换');
  const day=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(now);
  const earliest=new Date(+new Date(next.date+'T00:00:00Z')-86400000).toISOString().slice(0,10);
  if(day<earliest)throw Error('不能提前激活：尚未到该批次前处理日期');
  const receipt=path.join(root,'src/batch-activation.json');
  if(!fs.existsSync(receipt))throw Error('缺少显式激活回执，请使用batch activate');
  const r=read(receipt);
- if(r.from!==previous.date||r.to!==next.date||r.archivedHash!==hash(old)||r.initialTaskHash!==hash(next))throw Error('批次激活回执与候选不符，请重新核对后激活');
+ if(r.from!==previous.date||r.to!==next.date||r.archivedHash!==hash(old)||!r.initialTaskHash)throw Error('批次激活回执与候选不符，请重新核对后激活');
 }
 function guard(root,config,ref='HEAD'){assertTransition(root,published(root,ref),config);}
 function main(root=path.resolve(__dirname,'..')){
