@@ -61,9 +61,36 @@
         "flower": "",
         "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。",
         "area": "第一片区"
+      },
+      {
+        "id": "1016",
+        "measurementDate": "2026-11-03",
+        "expected": false,
+        "inferred": false,
+        "recordType": "plant",
+        "flower": "",
+        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。",
+        "area": "第二片区"
+      },
+      {
+        "id": "1144",
+        "measurementDate": "2026-11-03",
+        "expected": false,
+        "inferred": false,
+        "recordType": "plant",
+        "flower": "",
+        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。",
+        "area": "第一片区"
       }
     ],
-    "unlocated": []
+    "unlocated": [
+      {
+        "id": "1104",
+        "measurementDate": "2026-11-03",
+        "expected": false,
+        "inferred": false
+      }
+    ]
   },
   "weekly": {
     "start": "2026-10-31",
@@ -148,13 +175,6 @@
         "area": "第一片区"
       },
       {
-        "id": "1016",
-        "recordType": "plant",
-        "flower": "",
-        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第二片区"
-      },
-      {
         "id": "1087",
         "recordType": "plant",
         "flower": "",
@@ -177,13 +197,6 @@
       },
       {
         "id": "1138",
-        "recordType": "plant",
-        "flower": "",
-        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第一片区"
-      },
-      {
-        "id": "1144",
         "recordType": "plant",
         "flower": "",
         "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
