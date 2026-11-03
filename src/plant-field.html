@@ -193,6 +193,7 @@
     const clean=s=>String(s??'').normalize('NFKC').trim();
     let tasks=[];
     /*__PUBLISHED_TASKS__*/
+    /*__BATCH_HISTORY__*/
     /*__MEASUREMENT_TASKS__*/
     /*__PLANT_IDENTITIES__*/
     // Row numbers follow the user: first = south/lowest, third = north/highest.
@@ -249,7 +250,7 @@
     const taskDate=typeof publishedTasks!=='undefined'?publishedTasks.date:null;
     // Only the maintainer's explicit receipt closes a phase. Local checkmarks
     // and copying do not prove that feedback reached the experiment record.
-    const acknowledgedPhases=new Set(typeof publishedTasks!=='undefined'&&Array.isArray(publishedTasks.acknowledgedPhases)?publishedTasks.acknowledgedPhases:[]);
+    const acknowledgedPhases=new Set(typeof publishedTasks!=='undefined'&&!publishedTasks.readOnly&&Array.isArray(publishedTasks.acknowledgedPhases)?publishedTasks.acknowledgedPhases:[]);
     const dateText=d=>(d.getUTCMonth()+1)+'月'+d.getUTCDate()+'日';
     const batchMorning=taskDate?new Date(taskDate+'T00:00:00Z'):null,batchEvening=batchMorning?new Date(+batchMorning-86400000):null;
     const measurements=typeof publishedMeasurements==='undefined'?{firstflower:{tasks:[],unlocated:[]},weekly:{start:null,end:null,tasks:[],unlocated:[]},remeasure:{tasks:[],unlocated:[]}}:publishedMeasurements;
@@ -264,7 +265,9 @@
     const beijingFormatter=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'});
     let beijingMinute=null,beijingCachedDate='';
     const beijingDate=()=>{const now=Date.now(),minute=Math.floor(now/60000);if(minute!==beijingMinute){const parts=beijingFormatter.formatToParts(new Date(now)),get=k=>parts.find(x=>x.type===k).value;beijingCachedDate=get('year')+'-'+get('month')+'-'+get('day');beijingMinute=minute;}return beijingCachedDate;};
-    const expired=(when=phase)=>!measurementMode(when)&&!!taskDate&&beijingDate()>taskDate;
+    const archiveMode=typeof publishedTasks!=='undefined'&&publishedTasks.readOnly===true;
+    const expired=(when=phase)=>archiveMode||(!measurementMode(when)&&!!taskDate&&beijingDate()>taskDate);
+    if(typeof batchHistory!=='undefined'&&batchHistory.length){const nav=document.createElement('div');nav.textContent='批次留档（只读，登记仍在各自手机中）：';for(const a of batchHistory){const link=document.createElement('a');link.textContent=a.date+' ';link.href=a.url;link.style.color='inherit';link.addEventListener('click',e=>{e.preventDefault();parent.postMessage({type:'plant-batch-open',date:a.date},'*');});nav.append(link);}$('#pf-data-details').append(nav);}
     if(taskDate){phase=beijingDate()===taskDate?'morning':'evening';if(phase==='evening'&&tasks.length&&tasks.every(t=>!hasPlannedAction(t,'evening')||/已完成|已摘取/.test(t.evening)))phase='morning';}
     const cameraLimits={pan:Math.abs(gap3Span.left)+3,minPitch:.32,maxPitch:1.25},axisHeight=1.2,axisOffset=-1.2;
     let camera={cx:0,cz:0,yaw:0,pitch:.69,distance:31},flight=null,frameRequested=false,mvp=null,cssWidth=736,cssHeight=560,sceneBuffers=null,lastSavedSignature='';

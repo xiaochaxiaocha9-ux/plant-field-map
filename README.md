@@ -74,6 +74,16 @@ https://xiaochaxiaocha9-ux.github.io/plant-field-map/
 
 ## 维护
 
+### 批次生命周期保护（2026年11月3日）
+
+排下一批次不能直接覆盖正在执行的清单。运行 `npm run batch -- stage /path/to/candidate.json` 写入 `src/upcoming-tasks.json`，不会更改当前页面。暂存可以提前，激活不自动进行。
+
+收到前一批全部真实反馈后，在当前JSON的 `acknowledgedPhases` 确认 `evening` 和 `morning`；不能为了切换而虚构完成。然后运行 `npm run batch -- activate`。命令核对已提交基线，归档上一批、记录哈希回执，再替换当前批次。仅允许不早于新批次前处理日期（北京时间）；日期到达本身不表示已收齐反馈。前一批内容若有更正，先单独构建/发布更正，再切换。
+
+`npm run build` 会阻止绕过激活命令的跨日覆盖、清空或倒退。没有强制开关；异常恢复请交代码维护者按证据处理。这个保护适用于受支持构建链路，不是GitHub仓库写权限的安全隔离：直接覆盖docs会绕过构建。因此Muse不能再使用旧交接包的数据替换工具直接推送；应拉取最新代码、按上述stage/activate/build流程发布。UI更新后旧候选工具基线已失效，不自行改哈希绕过。
+
+归档位于 `src/batches/YYYY-MM-DD.json`，构建为 `docs/batch-YYYY-MM-DD.html`，页面“任务信息”中可打开只读留档。花朵登记键和浏览器本地存储不迁移、不清空；历史页面能查看原手机已有登记，但不能证明其他手机的进度已同步。历史盆位是当前示意位置，不是当时精确坐标。测量数据与现行任务独立，跨批不改动。
+
 - `src/plant-field.html`：三维场景与交互源码。
 - `src/daily-tasks.json`：当天已确认的处理任务；空数组表示尚未发布任务，不能把旧任务当作当天任务。
 - `docs/index.html`：独立网页发布文件，无外部CDN脚本依赖。
@@ -87,7 +97,7 @@ https://xiaochaxiaocha9-ux.github.io/plant-field-map/
 
 补盆位不自动补处理。例如原批次写“父本886盆位未录入”，本轮补齐886位置后，显示改为“父本已定位”，并提示“供粉条目待同步”，但不杜撰886的供粉任务或更改原JSON。验证器仅对带原有“父本盆位未录入”标记、后来获得位置且尚无父本行的记录提供兼容警告；缺失标记、已有但不匹配的对照行仍报错。任务批次说明以原发布内容保留，并明确是发布时记录。日常任务维护者下次更新该批次时应同步新盆位覆盖、父本操作与说明。
 
-构建需要 Node.js、Python 和本地 visualize 导出器：设置 `VISUALIZE_RENDERER` 指向其 `render.py`，需要时设置 `PYTHON_BIN`，运行 `npm run build`。构建从既有可视化导出独立文档，并将已确认任务嵌入网页，不在队员手机上请求私有文件。
+构建只需 Node.js，运行 `npm run build` 即可使用已跟踪的便携网页壳模板；不依赖Windows/Python路径。若设置 `VISUALIZE_RENDERER` 则仍可使用原导出器（可设置 `PYTHON_BIN`）。两种路径已逐字节比对一致，均执行相同批次保护并从最新源码和JSON重建，不能直接替换旧页面的数据块绕过。代码维护者更新原导出器壳时可运行 `scripts/prepare-portable-shells.cjs` 刷新模板后重新比对。浏览器测试仍需要Playwright/Chromium；仅构建不表示完成浏览器验收或部署。
 
 测试使用已安装的 Playwright（可通过 `NODE_PATH` 提供），运行 `npm test`。测试数据仅存在于隔离浏览器，不会写入或发布真实任务。
 
