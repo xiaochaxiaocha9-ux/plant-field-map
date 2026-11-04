@@ -52,9 +52,12 @@ document = document.replace('height:calc(100vh - 2rem)', 'height:100vh');
 document = document.replace('</head>', '<meta name="description" content="同质园盆位定位、每日处理与异交配对查看器。"><meta name="theme-color" content="#101318"></head>');
 document = document.replace('</body>', `<script>
 const feedbackFrame=document.getElementById('codex-visualization');
+let flowerScrollAnchor=null;
 feedbackFrame.addEventListener('load',()=>{try{feedbackFrame.contentWindow.postMessage({type:'plant-feedback-state',entries:JSON.parse(localStorage.getItem('plant-field-feedback-v1')||'{}')},'*');feedbackFrame.contentWindow.postMessage({type:'plant-operator-state',value:localStorage.getItem('plant-field-operator-v1')||''},'*');}catch(e){feedbackFrame.contentWindow.postMessage({type:'plant-feedback-state',entries:{}},'*');feedbackFrame.contentWindow.postMessage({type:'plant-feedback-save-error'},'*');}});
 window.addEventListener('message', event => {
   const frame=document.getElementById('codex-visualization'),data=event.data;
+  if(event.source===frame.contentWindow&&data?.type==='plant-flower-scroll-capture'){flowerScrollAnchor={x:scrollX,y:scrollY};return;}
+  if(event.source===frame.contentWindow&&data?.type==='plant-flower-scroll-restore'&&flowerScrollAnchor){const anchor=flowerScrollAnchor;flowerScrollAnchor=null;requestAnimationFrame(()=>scrollTo(anchor.x,anchor.y));return;}
   if(event.source===frame.contentWindow&&data?.type==='plant-batch-open'&&${JSON.stringify(history.map(a=>a.date))}.includes(data.date)){location.href=new URL('batch-'+data.date+'.html',location.href).href;return;}
   if(event.source===frame.contentWindow&&data?.type==='plant-feedback-copy'&&typeof data.text==='string'&&data.text.length<=250000&&Number.isSafeInteger(data.requestId)){
     Promise.resolve().then(()=>navigator.clipboard.writeText(data.text)).then(()=>frame.contentWindow.postMessage({type:'plant-feedback-copied',requestId:data.requestId},'*')).catch(()=>frame.contentWindow.postMessage({type:'plant-feedback-copy-error',requestId:data.requestId},'*'));

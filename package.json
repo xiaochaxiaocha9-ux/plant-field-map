@@ -3,5 +3,5 @@
   "version": "1.0.0",
   "private": true,
   "description": "同质园盆位与每日处理查看器",
-  "scripts": { "build": "node scripts/build.cjs", "batch": "node scripts/batch-lifecycle.cjs", "test": "node scripts/check-batches.cjs && node scripts/check-batch-browser.cjs && node scripts/check.cjs && node scripts/check-measurements.cjs" }
+  "scripts": { "build": "node scripts/build.cjs", "batch": "node scripts/batch-lifecycle.cjs", "test": "node scripts/check-batches.cjs && node scripts/check-batch-browser.cjs && node scripts/check-compact.cjs && node scripts/check.cjs && node scripts/check-measurements.cjs" }
 }
