@@ -126,13 +126,6 @@
         "area": "第一片区"
       },
       {
-        "id": "966",
-        "recordType": "plant",
-        "flower": "",
-        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第一片区"
-      },
-      {
         "id": "1087",
         "recordType": "plant",
         "flower": "",
@@ -154,13 +147,6 @@
         "area": "第一片区"
       },
       {
-        "id": "1253",
-        "recordType": "plant",
-        "flower": "",
-        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第一片区"
-      },
-      {
         "id": "1257",
         "recordType": "plant",
         "flower": "",
@@ -169,13 +155,6 @@
       },
       {
         "id": "1298",
-        "recordType": "plant",
-        "flower": "",
-        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第一片区"
-      },
-      {
-        "id": "1299",
         "recordType": "plant",
         "flower": "",
         "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
