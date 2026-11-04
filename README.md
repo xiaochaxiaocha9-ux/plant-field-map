@@ -78,6 +78,8 @@ https://xiaochaxiaocha9-ux.github.io/plant-field-map/
 
 ## 维护
 
+重要：2026年11月4日发生过测量数据发布携带旧网页，导致紧凑清单被回滚。任务或测量更新时必须从最新源码运行 `npm run build`，再运行 `npm run check:source`，确认页面包含当前界面源码指纹及最新三份数据；不要从旧版本恢复 `docs/index.html` 后仅替换数据块。校验失败不得发布。Muse 维护的片区字段需使用最新盆位：1098、549、1119均已移入第一片区。此检查是发布流程的一部分，并不能阻止绕过流程直接推送旧页面。
+
 ### 批次生命周期保护（2026年11月3日）
 
 排下一批次不能直接覆盖正在执行的清单。运行 `npm run batch -- stage /path/to/candidate.json` 写入 `src/upcoming-tasks.json`，不会更改当前页面。暂存可以提前，激活不自动进行。

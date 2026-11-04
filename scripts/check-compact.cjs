@@ -1,5 +1,6 @@
 const fs=require('fs'),path=require('path'),http=require('http'),assert=require('assert'),{chromium}=require('playwright');
 const root=path.resolve(__dirname,'..'),doc=fs.readFileSync(path.join(root,'docs/index.html'),'utf8'),config=JSON.parse(fs.readFileSync(path.join(root,'src/daily-tasks.json'),'utf8'));
+const sourceHash=require('crypto').createHash('sha256').update(fs.readFileSync(path.join(root,'src/plant-field.html'))).digest('hex');assert(doc.includes('<meta name="plant-source-sha256" content="'+sourceHash+'">'),'网页未从当前界面源码重新构建，不能发布');
 (async()=>{let browser,server;try{
  server=http.createServer((q,r)=>{r.setHeader('Content-Type','text/html;charset=utf8');r.end(doc)});await new Promise(r=>server.listen(0,'127.0.0.1',r));
  browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE||'C:/Program Files/Google/Chrome/Application/chrome.exe',args:['--enable-unsafe-swiftshader']});

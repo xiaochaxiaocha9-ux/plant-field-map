@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const cp = require('child_process');
+const crypto = require('crypto');
 const root = path.resolve(__dirname, '..');
 const input = path.join(root, 'src/plant-field.html');
 const config = JSON.parse(fs.readFileSync(path.join(root, 'src/daily-tasks.json'), 'utf8'));
@@ -49,7 +50,7 @@ document = document.replace('sandbox="allow-scripts"', 'sandbox="allow-scripts a
 document = document.replace(/lang="en"/g, 'lang="zh-CN"');
 document = document.replace('body{box-sizing:border-box;padding:1rem;background:inherit}', 'body{box-sizing:border-box;padding:0;background:#101318}');
 document = document.replace('height:calc(100vh - 2rem)', 'height:100vh');
-document = document.replace('</head>', '<meta name="description" content="同质园盆位定位、每日处理与异交配对查看器。"><meta name="theme-color" content="#101318"></head>');
+document = document.replace('</head>', '<meta name="plant-source-sha256" content="'+crypto.createHash('sha256').update(raw).digest('hex')+'"><meta name="description" content="同质园盆位定位、每日处理与异交配对查看器。"><meta name="theme-color" content="#101318"></head>');
 document = document.replace('</body>', `<script>
 const feedbackFrame=document.getElementById('codex-visualization');
 let flowerScrollAnchor=null;
