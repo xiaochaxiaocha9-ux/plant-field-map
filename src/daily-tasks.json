@@ -241,5 +241,8 @@
       "morning": "人工自交：取本花花粉授本花柱头，再套袋，黄线"
     }
   ],
-  "acknowledgedPhases": ["evening"]
+  "acknowledgedPhases": [
+    "evening",
+    "morning"
+  ]
 }
