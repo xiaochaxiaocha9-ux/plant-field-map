@@ -546,8 +546,8 @@
     function updateHead(){$('#pf-zonetitle').textContent=flight?.transfer?areas[flight.fromZone]+' → '+areas[currentZone]:areas[currentZone];$('#pf-zoneinfo').textContent=flight?'转场中':'盆位按照片及口述近似';root.dataset.zone=String(currentZone);}
     function refresh(){
       if(!pairsOf(tasks).some(p=>p.key===activePair))activePair='';
-      for(const option of $('#pf-phase').options){option.textContent=periodLabels[option.value];option.hidden=acknowledgedPhases.has(option.value);option.disabled=acknowledgedPhases.has(option.value);}
-      if(acknowledgedPhases.has(phase))phase=['morning','evening','weekly','remeasure'].find(p=>!acknowledgedPhases.has(p))||'weekly';
+      const weeklyClosed=!measurements.weekly.tasks.length&&!measurements.weekly.unlocated.length;const phaseClosed=p=>acknowledgedPhases.has(p)||(p==='weekly'&&weeklyClosed);for(const option of $('#pf-phase').options){option.textContent=periodLabels[option.value];option.hidden=phaseClosed(option.value);option.disabled=phaseClosed(option.value);}
+      if(phaseClosed(phase))phase=['morning','evening','firstflower','weekly','remeasure'].find(p=>!phaseClosed(p))||'firstflower';
       $('#pf-phase').value=phase;const activeKinds=new Set(viewTasks().filter(t=>needsAction(t)).map(kind));if(viewTasks().some(measurePending))activeKinds.add('measure');root.querySelectorAll('#pf-task-legend [data-kind]').forEach(el=>el.hidden=!activeKinds.has(el.dataset.kind));$('#pf-task-legend').hidden=!activeKinds.size;$('#pf-source').textContent=measurementMode()?measurementSummary():taskLabel+(expired()?' · 历史批次，不作为今日待办':'');$('#pf-layout-status').textContent=layout.size+'株'+(pendingSecondRow?' · 2待核':'');
       const batchText=measurementMode()?periodLabels[phase]:batchMorning?periodLabels.evening+' / '+periodLabels.morning:'暂无批次';$('#pf-batch-summary').textContent=batchText+(expired()?' · 历史':'');
       root.querySelectorAll('[data-focus]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.focus===focusedSection)));

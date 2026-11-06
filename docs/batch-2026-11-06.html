@@ -8,7 +8,7 @@
 <title>同质园 · 盆位与处理</title>
 <style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:0;background:#101318}iframe{display:block;width:100%;height:100vh;margin:0 auto;border:0}</style>
 
-<meta name="plant-source-sha256" content="703b890a6859456830ac1c0be9eeaf34e2d96127b83f088da3bc0730b838059b"><meta name="description" content="同质园盆位定位、每日处理与异交配对查看器。"><meta name="theme-color" content="#101318"></head>
+<meta name="plant-source-sha256" content="73675ea92cf6ec8d00d059d80fbb4e0936927f6d71e9272ee9ee1f9af3608904"><meta name="description" content="同质园盆位定位、每日处理与异交配对查看器。"><meta name="theme-color" content="#101318"></head>
 <body>
 <iframe id="codex-visualization" sandbox="allow-scripts allow-downloads" referrerpolicy="no-referrer" title="同质园 · 盆位与处理" data-srcdoc="&lt;!doctype html&gt;
 &lt;html lang=&quot;zh-CN&quot; data-visualize-standalone&gt;
@@ -2360,8 +2360,8 @@ html&gt;body{padding:0}&lt;/style&gt;
     function updateHead(){$('#pf-zonetitle').textContent=flight?.transfer?areas[flight.fromZone]+' → '+areas[currentZone]:areas[currentZone];$('#pf-zoneinfo').textContent=flight?'转场中':'盆位按照片及口述近似';root.dataset.zone=String(currentZone);}
     function refresh(){
       if(!pairsOf(tasks).some(p=&gt;p.key===activePair))activePair='';
-      for(const option of $('#pf-phase').options){option.textContent=periodLabels[option.value];option.hidden=acknowledgedPhases.has(option.value);option.disabled=acknowledgedPhases.has(option.value);}
-      if(acknowledgedPhases.has(phase))phase=['morning','evening','weekly','remeasure'].find(p=&gt;!acknowledgedPhases.has(p))||'weekly';
+      const weeklyClosed=!measurements.weekly.tasks.length&amp;&amp;!measurements.weekly.unlocated.length;const phaseClosed=p=&gt;acknowledgedPhases.has(p)||(p==='weekly'&amp;&amp;weeklyClosed);for(const option of $('#pf-phase').options){option.textContent=periodLabels[option.value];option.hidden=phaseClosed(option.value);option.disabled=phaseClosed(option.value);}
+      if(phaseClosed(phase))phase=['morning','evening','firstflower','weekly','remeasure'].find(p=&gt;!phaseClosed(p))||'firstflower';
       $('#pf-phase').value=phase;const activeKinds=new Set(viewTasks().filter(t=&gt;needsAction(t)).map(kind));if(viewTasks().some(measurePending))activeKinds.add('measure');root.querySelectorAll('#pf-task-legend [data-kind]').forEach(el=&gt;el.hidden=!activeKinds.has(el.dataset.kind));$('#pf-task-legend').hidden=!activeKinds.size;$('#pf-source').textContent=measurementMode()?measurementSummary():taskLabel+(expired()?' · 历史批次，不作为今日待办':'');$('#pf-layout-status').textContent=layout.size+'株'+(pendingSecondRow?' · 2待核':'');
       const batchText=measurementMode()?periodLabels[phase]:batchMorning?periodLabels.evening+' / '+periodLabels.morning:'暂无批次';$('#pf-batch-summary').textContent=batchText+(expired()?' · 历史':'');
       root.querySelectorAll('[data-focus]').forEach(el=&gt;el.setAttribute('aria-pressed',String(el.dataset.focus===focusedSection)));
