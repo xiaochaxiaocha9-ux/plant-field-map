@@ -150,5 +150,5 @@
       "morning": "摘取测量：开放后整朵摘取送实验室"
     }
   ],
-  "acknowledgedPhases": []
+  "acknowledgedPhases": ["evening"]
 }
