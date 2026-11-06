@@ -8,7 +8,7 @@
 <title>同质园 · 盆位与处理</title>
 <style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:0;background:#101318}iframe{display:block;width:100%;height:100vh;margin:0 auto;border:0}</style>
 
-<meta name="plant-source-sha256" content="c6b31d1f58c47c215c3416034ff500b1808a07107294061b104762b5a566b6c8"><meta name="description" content="同质园盆位定位、每日处理与异交配对查看器。"><meta name="theme-color" content="#101318"></head>
+<meta name="plant-source-sha256" content="703b890a6859456830ac1c0be9eeaf34e2d96127b83f088da3bc0730b838059b"><meta name="description" content="同质园盆位定位、每日处理与异交配对查看器。"><meta name="theme-color" content="#101318"></head>
 <body>
 <iframe id="codex-visualization" sandbox="allow-scripts allow-downloads" referrerpolicy="no-referrer" title="同质园 · 盆位与处理" data-srcdoc="&lt;!doctype html&gt;
 &lt;html lang=&quot;zh-CN&quot; data-visualize-standalone&gt;
@@ -1964,7 +1964,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   &lt;header class=&quot;pf-header&quot;&gt;&lt;span class=&quot;pf-brand&quot;&gt;同质园&lt;/span&gt;&lt;span class=&quot;pf-demo&quot; id=&quot;pf-layout-status&quot;&gt;盆位核对&lt;/span&gt;&lt;/header&gt;
   &lt;div class=&quot;pf-toolbar&quot;&gt;
     &lt;div class=&quot;pf-searchbox&quot; role=&quot;search&quot; aria-label=&quot;搜索植株&quot;&gt;&lt;span aria-hidden=&quot;true&quot;&gt;⌕&lt;/span&gt;&lt;input id=&quot;pf-search&quot; type=&quot;text&quot; aria-label=&quot;输入植株编号定位&quot; data-tooltip=&quot;定位光圈不改变处理颜色&quot; placeholder=&quot;找编号&quot; autocomplete=&quot;off&quot; enterkeyhint=&quot;search&quot;&gt;&lt;/div&gt;
-    &lt;select id=&quot;pf-phase&quot; class=&quot;pf-phase cursor-interaction&quot; aria-label=&quot;处理阶段&quot;&gt;&lt;option value=&quot;morning&quot;&gt;授粉处理&lt;/option&gt;&lt;option value=&quot;evening&quot;&gt;授粉前处理&lt;/option&gt;&lt;option value=&quot;weekly&quot;&gt;生长测量（首花／周测）&lt;/option&gt;&lt;option value=&quot;remeasure&quot;&gt;30天复测&lt;/option&gt;&lt;/select&gt;
+    &lt;select id=&quot;pf-phase&quot; class=&quot;pf-phase cursor-interaction&quot; aria-label=&quot;处理阶段&quot;&gt;&lt;option value=&quot;morning&quot;&gt;授粉处理&lt;/option&gt;&lt;option value=&quot;evening&quot;&gt;授粉前处理&lt;/option&gt;&lt;option value=&quot;firstflower&quot;&gt;首花生长测量&lt;/option&gt;&lt;option value=&quot;weekly&quot;&gt;周末生长测量&lt;/option&gt;&lt;option value=&quot;remeasure&quot;&gt;30天复测&lt;/option&gt;&lt;/select&gt;
     &lt;button id=&quot;pf-import-toggle&quot; class=&quot;pf-iconbutton cursor-interaction&quot; type=&quot;button&quot; aria-label=&quot;导入当天任务表&quot; aria-expanded=&quot;false&quot; data-tooltip=&quot;导入任务表&quot; hidden&gt;&lt;i data-lucide=&quot;upload&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;
   &lt;/div&gt;
   &lt;div class=&quot;pf-results&quot; id=&quot;pf-results&quot; hidden&gt;&lt;span id=&quot;pf-searchmsg&quot; class=&quot;pf-searchmsg&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;&lt;/span&gt;&lt;div id=&quot;pf-result-buttons&quot; style=&quot;display:contents&quot;&gt;&lt;/div&gt;&lt;/div&gt;
@@ -2068,14 +2068,14 @@ html&gt;body{padding:0}&lt;/style&gt;
     const dateText=d=&gt;(d.getUTCMonth()+1)+'月'+d.getUTCDate()+'日';
     const batchMorning=taskDate?new Date(taskDate+'T00:00:00Z'):null,batchEvening=batchMorning?new Date(+batchMorning-86400000):null;
     const measurements=typeof publishedMeasurements==='undefined'?{firstflower:{tasks:[],unlocated:[]},weekly:{start:null,end:null,tasks:[],unlocated:[]},remeasure:{tasks:[],unlocated:[]}}:publishedMeasurements;
-    const measurementMode=(when=phase)=&gt;['weekly','remeasure'].includes(when);
+    const measurementMode=(when=phase)=&gt;['firstflower','weekly','remeasure'].includes(when);
     // Published measurement datasets are immutable within one page load.
     // Rebuild the due list only when the Beijing calendar date changes.
-    const weeklyTasks=[...measurements.firstflower.tasks.map(t=&gt;({...t,measurementKind:'firstflower'})),...measurements.weekly.tasks.map(t=&gt;({...t,measurementKind:'weekly'}))];
+    const firstflowerTasks=measurements.firstflower.tasks.map(t=&gt;({...t,firstflower:t.weekly,measurementKind:'firstflower'})),weeklyTasks=measurements.weekly.tasks.map(t=&gt;({...t,measurementKind:'weekly'}));
     let dueDay='',dueTasks=[];
-    const viewTasks=()=&gt;{if(phase==='weekly')return weeklyTasks;if(phase==='remeasure'){const day=beijingDate();if(day!==dueDay){dueDay=day;dueTasks=measurements.remeasure.tasks.filter(t=&gt;t.dueDate&lt;=day);}return dueTasks;}return tasks;};
-    const phaseNames={morning:'授粉处理',evening:'授粉前处理',weekly:'生长测量',remeasure:'30天复测'};
-    const periodLabels={morning:(batchMorning?dateText(batchMorning)+' ':'')+phaseNames.morning,evening:(batchEvening?dateText(batchEvening)+' ':'')+phaseNames.evening,weekly:(measurements.weekly.start?dateText(new Date(measurements.weekly.start+'T00:00:00Z'))+'—'+dateText(new Date(measurements.weekly.end+'T00:00:00Z'))+' ':'')+'生长测量',remeasure:'30天复测（到期待测）'};
+    const viewTasks=()=&gt;{if(phase==='firstflower')return firstflowerTasks;if(phase==='weekly')return weeklyTasks;if(phase==='remeasure'){const day=beijingDate();if(day!==dueDay){dueDay=day;dueTasks=measurements.remeasure.tasks.filter(t=&gt;t.dueDate&lt;=day);}return dueTasks;}return tasks;};
+    const phaseNames={morning:'授粉处理',evening:'授粉前处理',firstflower:'首花生长测量',weekly:'周末生长测量',remeasure:'30天复测'};
+    const periodLabels={morning:(batchMorning?dateText(batchMorning)+' ':'')+phaseNames.morning,evening:(batchEvening?dateText(batchEvening)+' ':'')+phaseNames.evening,firstflower:phaseNames.firstflower,weekly:(measurements.weekly.start?dateText(new Date(measurements.weekly.start+'T00:00:00Z'))+'—'+dateText(new Date(measurements.weekly.end+'T00:00:00Z'))+' ':'')+phaseNames.weekly,remeasure:'30天复测（到期待测）'};
     const beijingFormatter=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'});
     let beijingMinute=null,beijingCachedDate='';
     const beijingDate=()=&gt;{const now=Date.now(),minute=Math.floor(now/60000);if(minute!==beijingMinute){const parts=beijingFormatter.formatToParts(new Date(now)),get=k=&gt;parts.find(x=&gt;x.type===k).value;beijingCachedDate=get('year')+'-'+get('month')+'-'+get('day');beijingMinute=minute;}return beijingCachedDate;};
@@ -2094,8 +2094,9 @@ html&gt;body{padding:0}&lt;/style&gt;
       const actionable=s.replace(/不(?:套袋|去雄|授粉|人工授粉|摘取|绑线)/g,'');
       return /接\s*\d+(?:\(\d+\))?\s*花粉|给\s*\d+(?:\(\d+\))?\s*供粉|套袋|去雄|绑|摘取|测量|采样|人工自交|自主自交|自然开放|确认|检查/.test(actionable)||(when==='evening'&amp;&amp;/(?:深绿|深紫|红|黄|绿|白|蓝)(?:色)?线/.test(actionable));
     }
-    const feedbackDate=(t,when=phase)=&gt;when==='remeasure'?t?.dueDate||measurements.asOf:when==='weekly'?t?.measurementDate||measurements.weekly.start:taskDate;
-    const feedbackKey=(t,when=phase)=&gt;(feedbackDate(t,when)||'undated')+'|'+t.id+'#'+(t.recordType==='plant'?'plant':t.flower)+'|'+when;
+    const feedbackDate=(t,when=phase)=&gt;when==='remeasure'?t?.dueDate||measurements.asOf:['weekly','firstflower'].includes(when)?t?.measurementDate||measurements.weekly.start:taskDate;
+    // Preserve the existing weekly storage key for first-flower feedback.
+    const feedbackKey=(t,when=phase)=&gt;(feedbackDate(t,when)||'undated')+'|'+t.id+'#'+(t.recordType==='plant'?'plant':t.flower)+'|'+(when==='firstflower'?'weekly':when);
     const rawFeedback=(t,when=phase)=&gt;feedback[feedbackKey(t,when)];
     const currentFeedback=(t,when=phase)=&gt;{const value=rawFeedback(t,when);return value?.plan===t[when]?value:null;};
     function needsAction(t,when=phase){return !!t&amp;&amp;!expired(when)&amp;&amp;hasPlannedAction(t,when)&amp;&amp;!/(已完成|已摘取)/.test(t[when])&amp;&amp;!currentFeedback(t,when)?.done;}
@@ -2120,7 +2121,8 @@ html&gt;body{padding:0}&lt;/style&gt;
     function shortAction(t,when=phase){
       const source=locationAwareOperation(t,when);if(prepNoOp(t,when))return'不处理';if(!hasPlannedAction(t,when))return'—';
       if(when==='remeasure')return'30天复测 · '+t.dueDate.slice(5).replace('-','月')+'日到期';
-      if(when==='weekly')return t.measurementKind==='firstflower'?((t.expected?'预计首花，实际开放后测':t.measurementDate&lt;beijingDate()?'首花后补测':'首花当日测量')+(t.inferred?'（首花日推定）':'')):'本周周测';
+      if(when==='firstflower')return (t.expected?'预计首花，实际开放后测':t.measurementDate&lt;beijingDate()?'首花后补测':'首花当日测量')+(t.inferred?'（首花日推定）':'');
+      if(when==='weekly')return '本周周测';
       if(when==='evening')return prepLabel(source);
       const normalized=normId(source),k=kind(t),m=normalized.match(/接\s*(\d+(?:\(\d+\))?)\s*花粉/),flower=source.match(/父本第(\d+)朵/);
       if(m)return'异交 ← '+flowerId({id:m[1],flower:flower?.[1]||'?',flowerId:t.donorFlowerId})+(source.includes('★')?' ★':'')+(measurePending(t)?' · 测量':'');
@@ -2177,7 +2179,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     const ease=t=&gt;t*t*(3-2*t),clamp=(v,a,b)=&gt;Math.max(a,Math.min(b,v));
     const distanceForWidth=(zone=currentZone)=&gt;Math.min(85,Math.max(33,((baySpan.right-gap3Span.left)/2+2)/(Math.tan(38*Math.PI/360)*(cssWidth/cssHeight))));
     const defaultCamera=zone=&gt;({cx:(gap3Span.left+baySpan.right)/2,cz:centers[zone].z,yaw:0,pitch:.85,distance:distanceForWidth(zone)});
-    function restore(s){const p=s?.privateContent??s;if(![2,3,4,5,6,7].includes(p?.version))return false;if(['morning','evening','weekly','remeasure'].includes(p.phase))phase=p.phase;if(p.version&gt;=5&amp;&amp;Array.isArray(p.queryIds))queryIds=p.queryIds.map(normId).filter(x=&gt;/^\d+(?:\(\d+\))?$/.test(x)).slice(0,300);if(layout.has(normId(p.selected)))selected=normId(p.selected);if(p.version&gt;=5&amp;&amp;typeof p.activePair==='string')activePair=p.activePair;if(p.version&gt;=7&amp;&amp;['tasks','all'].includes(p.labelScope))labelScope=p.labelScope;if(p.version&gt;=7&amp;&amp;['all','left','middle','right'].includes(p.focusedSection))focusedSection=p.focusedSection;currentZone=p.version&gt;=5&amp;&amp;[0,1].includes(p.zone)?p.zone:0;camera=defaultCamera(currentZone);if(p.version&gt;=5&amp;&amp;typeof p.greenhouse==='boolean')settings.greenhouse=p.greenhouse;if(p.geometryRevision===geometryRevision&amp;&amp;p.navigation==='pan-tilt'&amp;&amp;p.camera&amp;&amp;['cx','cz','pitch','distance'].every(k=&gt;Number.isFinite(p.camera[k]))){camera={cx:clamp(p.camera.cx,-cameraLimits.pan,cameraLimits.pan),cz:centers[currentZone].z,yaw:0,pitch:clamp(p.camera.pitch,cameraLimits.minPitch,cameraLimits.maxPitch),distance:clamp(p.camera.distance,9,85)};}return true;}
+    function restore(s){const p=s?.privateContent??s;if(![2,3,4,5,6,7].includes(p?.version))return false;if(['morning','evening','firstflower','weekly','remeasure'].includes(p.phase))phase=p.phase;if(p.version&gt;=5&amp;&amp;Array.isArray(p.queryIds))queryIds=p.queryIds.map(normId).filter(x=&gt;/^\d+(?:\(\d+\))?$/.test(x)).slice(0,300);if(layout.has(normId(p.selected)))selected=normId(p.selected);if(p.version&gt;=5&amp;&amp;typeof p.activePair==='string')activePair=p.activePair;if(p.version&gt;=7&amp;&amp;['tasks','all'].includes(p.labelScope))labelScope=p.labelScope;if(p.version&gt;=7&amp;&amp;['all','left','middle','right'].includes(p.focusedSection))focusedSection=p.focusedSection;currentZone=p.version&gt;=5&amp;&amp;[0,1].includes(p.zone)?p.zone:0;camera=defaultCamera(currentZone);if(p.version&gt;=5&amp;&amp;typeof p.greenhouse==='boolean')settings.greenhouse=p.greenhouse;if(p.geometryRevision===geometryRevision&amp;&amp;p.navigation==='pan-tilt'&amp;&amp;p.camera&amp;&amp;['cx','cz','pitch','distance'].every(k=&gt;Number.isFinite(p.camera[k]))){camera={cx:clamp(p.camera.cx,-cameraLimits.pan,cameraLimits.pan),cz:centers[currentZone].z,yaw:0,pitch:clamp(p.camera.pitch,cameraLimits.minPitch,cameraLimits.maxPitch),distance:clamp(p.camera.distance,9,85)};}return true;}
     function save(){
       const privateContent={version:7,geometryRevision,navigation:'pan-tilt',selected,phase,activePair,queryIds,labelScope,focusedSection,zone:currentZone,greenhouse:settings.greenhouse,camera:{...(flight?flight.target:camera)}};
       lastSavedSignature=JSON.stringify(privateContent);
@@ -2458,8 +2460,8 @@ html&gt;body{padding:0}&lt;/style&gt;
       }for(const {when,value}of generalNotes){const day=when==='evening'?batchEvening:batchMorning;lines.push((day?day.toISOString().slice(0,10):'日期未定')+' '+phaseNames[when], '总备注：'+value.note);}return lines.join('\n');
     }
     function measurementSummary(){
-      const ts=viewTasks(),missing=phase==='weekly'?[...measurements.firstflower.unlocated,...measurements.weekly.unlocated]:measurements.remeasure.unlocated.filter(t=&gt;t.dueDate&lt;=beijingDate());
-      return periodLabels[phase]+' · 仅展示已录入盆位的'+ts.length+'/'+(ts.length+missing.length)+'株'+(missing.length?'；未定位：'+missing.map(t=&gt;displayId(t.id)).join('、'):'')+(phase==='weekly'?'；首花与普通周测分组，保留实际测量日':'；含逾期未完成项，保留原到期日');
+      const ts=viewTasks(),missing=phase==='firstflower'?measurements.firstflower.unlocated:phase==='weekly'?measurements.weekly.unlocated:measurements.remeasure.unlocated.filter(t=&gt;t.dueDate&lt;=beijingDate());
+      return periodLabels[phase]+' · 仅展示已录入盆位的'+ts.length+'/'+(ts.length+missing.length)+'株'+(missing.length?'；未定位：'+missing.map(t=&gt;displayId(t.id)).join('、'):'')+(phase==='remeasure'?'；含逾期未完成项，保留原到期日':'；保留实际测量日');
     }
     function measurementFeedbackText(){
       const rows=viewTasks().map(t=&gt;({t,v:currentFeedback(t)})).filter(({v})=&gt;v&amp;&amp;(v.done||v.note||Object.values(v.metrics||{}).some(x=&gt;x!=='')));
