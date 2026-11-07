@@ -10,7 +10,10 @@ function validateMeasurements(config,layout){
  }
  if(config.weekly.tasks.some(t=>config.remeasure.tasks.some(r=>r.id===t.id)))throw Error('同株不可同时为未开花周测和首花后复测');
  if(config.firstflower.tasks.some(t=>config.weekly.tasks.some(r=>r.id===t.id)))throw Error('首花待测不重复列入普通周测');
+ const lg=config.leafpick;if(lg){if(!/^\d{4}-\d{2}-\d{2}$/.test(lg.date||'')||!Array.isArray(lg.tasks)||!Array.isArray(lg.unlocated))throw Error('叶片采样清单格式无效');const lallowed=new Set(['id','area','recordType','flower','leafpick','sampleDate','daysAfterFlower']);const lids=new Set();
+  for(const t of lg.tasks){const id=normId(t.id);if(lids.has(id)||!layout.has(id)||layout.get(id)!==t.area||t.recordType!=='plant'||t.flower!==''||!t.leafpick?.startsWith('采样：')||t.sampleDate!==lg.date||!Number.isInteger(t.daysAfterFlower)||Object.keys(t).some(k=>!lallowed.has(k)))throw Error('叶片采样植株/字段无效：'+id);lids.add(id);}
+  for(const t of lg.unlocated){if(layout.has(normId(t.id))||lids.has(normId(t.id))||Object.keys(t).some(k=>!['id','recordType','flower','leafpick','sampleDate','daysAfterFlower'].includes(k)))throw Error('未定位叶片采样项不一致');lids.add(normId(t.id));}}
  if(/[A-Z]:[\\/]|\.xlsx|\.jpe?g|github_pat_|ghp_/i.test(JSON.stringify(config)))throw Error('测量配置不可包含私有文件或凭据');
- return {firstflower:config.firstflower.tasks.length,weekly:config.weekly.tasks.length,scheduled30d:config.remeasure.tasks.length};
+ return {firstflower:config.firstflower.tasks.length,weekly:config.weekly.tasks.length,scheduled30d:config.remeasure.tasks.length,leafpick:config.leafpick?.tasks.length||0};
 }
 module.exports={validateMeasurements};
