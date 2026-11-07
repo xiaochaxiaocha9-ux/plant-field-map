@@ -146,7 +146,10 @@
       #plant-field-3d .pf-desktop-only{display:none}
       #plant-field-3d .pf-mobile-only{display:inline}
     }
-  </style>
+  .pf-pickcap-overlay{position:fixed;inset:0;background:rgba(6,8,10,.62);display:flex;align-items:center;justify-content:center;z-index:60;padding:1rem}
+.pf-pickcap-card{background:#1b2129;border:1px solid #3a4552;border-radius:12px;max-width:22rem;padding:1.1rem 1.2rem;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.pf-pickcap-text{margin:0 0 .9rem;line-height:1.65;color:#e8edf2}
+</style>
   <header class="pf-header"><span class="pf-brand">同质园</span><span class="pf-demo" id="pf-layout-status">盆位核对</span></header>
   <div class="pf-toolbar">
     <div class="pf-searchbox" role="search" aria-label="搜索植株"><i data-lucide="search" aria-hidden="true"></i><input id="pf-search" type="text" aria-label="输入植株编号定位" data-tooltip="定位光圈不改变处理颜色" placeholder="找编号" autocomplete="off" enterkeyhint="search"></div>
@@ -196,6 +199,7 @@
     /*__BATCH_HISTORY__*/
     /*__MEASUREMENT_TASKS__*/
     /*__PLANT_IDENTITIES__*/
+    /*__PICK_CAP__*/
     // Row numbers follow the user: first = south/lowest, third = north/highest.
     // IDs and row order come from the user; gaps and local offsets follow the reference photos.
     const areas=['第一片区','第二片区'],centers=[{x:0,z:0},{x:0,z:-25}],columns=12,spacing=1.62,rowSpacing=1.45,rowElevations=[0,.5,1],frameDepth=rowSpacing*1.5-.15,layout=new Map(),pots=[];
@@ -622,6 +626,15 @@
         const recipients=phase==='morning'?recipientsOf(t):[];if(recipients.length>1){const panel=document.createElement('div');panel.className='pf-recipient-list';panel.dataset.recipientCount=String(recipients.length);const title=document.createElement('strong');title.textContent='本花需供粉 '+recipients.length+' 朵 · 全部授粉后再点完成';panel.append(title);recipients.forEach((p,i)=>{const line=document.createElement('div');line.textContent=(i+1)+'. '+exactFlowerRef(p.donor,p.donorFlower)+' → '+exactFlowerRef(p.mother,p.motherFlower);panel.append(line);});editor.append(panel);}more.append(editor);row.append(more);list.append(row);
       }if(measurementMode()){$('#pf-new-flowers').replaceChildren();$('#pf-new-draft').replaceChildren();}else renderNewFlowers();
     }
+    function showPickCapNotice(pid,n){
+      document.querySelectorAll('.pf-pickcap-overlay').forEach(el=>el.remove());
+      const overlay=document.createElement('div');overlay.className='pf-pickcap-overlay';
+      const card=document.createElement('div');card.className='pf-pickcap-card';card.setAttribute('role','alertdialog');card.setAttribute('aria-label','摘取测量已满提示');
+      const text=document.createElement('p');text.className='pf-pickcap-text';text.textContent='提醒：'+displayId(pid)+' 的摘取测量已经满 3 朵了（已摘 '+n+' 朵），不用再摘取测量。可以绑白色线，按自然开放处理。';
+      const ok=document.createElement('button');ok.type='button';ok.className='pf-feedback-copy cursor-interaction';ok.textContent='知道了';ok.addEventListener('click',()=>overlay.remove());
+      overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+      card.append(text,ok);overlay.append(card);document.body.append(overlay);ok.focus();
+    }
     function renderNewFlowers(){
       const host=$('#pf-new-flowers'),draftHost=$('#pf-new-draft');host.replaceChildren();draftHost.replaceChildren();const prefix=(taskDate||'undated')+'|new-';
       for(const [key,value] of Object.entries(feedback).filter(([key])=>key.startsWith(prefix)&&key.endsWith('|'+phase))){
@@ -629,7 +642,7 @@
         const add=(name,label,type='text')=>{const wrap=document.createElement('label');wrap.textContent=label;const input=document.createElement(type==='select'?'select':'input');if(type==='select'){for(const text of [...new Set(['',...phaseActualOptions(),value.actual||''])]){const option=document.createElement('option');option.value=text;option.textContent=text?actualOptionLabel(text):'请选择处理';input.append(option);}}else{input.type=type;if(type==='number'){input.min='0';input.step=['leaves','branches'].includes(name)?'1':'any';}}input.setAttribute('aria-label',entryName+label);input.value=value[name]??value.metrics?.[name]??'';input.disabled=expired();wrap.append(input);editor.append(wrap);fields[name]=input;};
         add('id','植株编号');add('flowerId','花号（可暂空）');add('actual','实际处理','select');add('position','植株上的位置（选填）');if(phase==='morning')for(const [name,label]of Object.entries({corolla1:metricNames.corolla1,corolla2:metricNames.corolla2}))add(name,label,'number');add('note','备注');
         let refreshRow=()=>{};const update=()=>{const previous=feedback[key];feedback[key]={...previous,id:fields.id.value.trim().slice(0,30),flowerId:fields.flowerId.value.trim().slice(0,50),position:fields.position.value.trim().slice(0,160),actual:fields.actual.value,note:fields.note.value.slice(0,240),metrics:{...previous.metrics,...Object.fromEntries(Object.keys(metricNames).filter(k=>fields[k]).map(k=>[k,fields[k].value.slice(0,60)]))},updatedAt:new Date().toISOString()};refreshRow();persistFeedback();};Object.values(fields).forEach(input=>input.addEventListener('input',update));
-        if(isDraft){const finish=()=>{if(!fields.id.value.trim()||!fields.actual.value)return false;newDraftKey='';renderNewFlowers();return true;};const addToList=document.createElement('button');addToList.type='button';addToList.textContent='添加到清单';const capture=()=>parent.postMessage({type:'plant-flower-scroll-capture'},'*');addToList.addEventListener('pointerdown',capture);addToList.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')capture();});addToList.addEventListener('click',()=>{const x=window.scrollX,y=window.scrollY;if(!finish())$('#pf-feedback-message').textContent='请先填写植株编号并选择处理';else{requestAnimationFrame(()=>window.scrollTo(x,y));parent.postMessage({type:'plant-flower-scroll-restore'},'*');}});editor.append(addToList);editor.addEventListener('focusout',()=>setTimeout(()=>{if(newDraftKey===key&&!editor.contains(document.activeElement))finish();},0));draftHost.append(editor);continue;}
+        if(isDraft){const finish=()=>{if(!fields.id.value.trim()||!fields.actual.value)return false;const pid=normId(fields.id.value),picked=typeof pickCap==='undefined'?0:(pickCap[pid]||0);newDraftKey='';renderNewFlowers();if(picked>=3)showPickCapNotice(pid,picked);return true;};const addToList=document.createElement('button');addToList.type='button';addToList.textContent='添加到清单';const capture=()=>parent.postMessage({type:'plant-flower-scroll-capture'},'*');addToList.addEventListener('pointerdown',capture);addToList.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')capture();});addToList.addEventListener('click',()=>{const x=window.scrollX,y=window.scrollY;if(!finish())$('#pf-feedback-message').textContent='请先填写植株编号并选择处理';else{requestAnimationFrame(()=>window.scrollTo(x,y));parent.postMessage({type:'plant-flower-scroll-restore'},'*');}});editor.append(addToList);editor.addEventListener('focusout',()=>setTimeout(()=>{if(newDraftKey===key&&!editor.contains(document.activeElement))finish();},0));draftHost.append(editor);continue;}
         const row=document.createElement('div');row.className='pf-task-row pf-new-row';row.dataset.newKey=key;const main=document.createElement('button');main.type='button';main.className='pf-task-main cursor-interaction';const code=document.createElement('span'),short=document.createElement('span');code.className='pf-task-code';short.className='pf-task-short';main.append(code,short);main.addEventListener('click',()=>{const id=normId(feedback[key].id);if(layout.has(id))selectPlant(id);});row.append(main);
         const done=document.createElement('button');done.type='button';done.className='pf-task-done cursor-interaction';done.disabled=expired();done.addEventListener('click',()=>{const previous=feedback[key],now=new Date().toISOString();previous.done=!previous.done;previous.completedAt=previous.done?now:'';previous.updatedAt=now;refreshRow();persistFeedback();if(previous.done)row.scrollIntoView({block:'nearest'});});row.append(done);
         const more=document.createElement('details');more.className='pf-task-more';const summary=document.createElement('summary');summary.setAttribute('aria-label','编辑'+entryName);more.append(summary,editor);row.append(more);refreshRow=()=>{const saved=feedback[key];code.textContent=saved.flowerId|| (saved.id?displayId(normId(saved.id))+' · 花号待核':entryName+' · 编号待填');short.textContent=saved.actual?actualOptionLabel(saved.actual):'处理待填';done.textContent=saved.done?'已完成':'完成';done.setAttribute('aria-pressed',String(!!saved.done));row.dataset.done=String(!!saved.done);};refreshRow();host.append(row);

@@ -9,6 +9,7 @@ require('./batch-lifecycle.cjs').guard(root,config);
 if (!Array.isArray(config.tasks) || config.tasks.length > 1000) throw Error('任务格式错误');
 const raw = fs.readFileSync(input, 'utf8');
 const identities=JSON.parse(fs.readFileSync(path.join(root,'src/plant-identities.json'),'utf8'));
+const pickCap=JSON.parse(fs.readFileSync(path.join(root,'src/pick-cap.json'),'utf8'));
 if(identities.schemaVersion!==1||!identities.plants)throw Error('编号显示映射格式错误');
 const { readLayout, validateConfig } = require('./task-data.cjs');
 const ids = readLayout(raw), summary = validateConfig(config, ids);
@@ -40,6 +41,7 @@ document = document.replace(/data-srcdoc="([^"]*)"/, (_, encoded) => {
   inner = inner.replace('/*__BATCH_HISTORY__*/', 'const batchHistory='+JSON.stringify(history)+';');
   inner = inner.replace('/*__MEASUREMENT_TASKS__*/', 'const publishedMeasurements=' + JSON.stringify(measurements).replace(/</g, '\\u003c') + ';');
   inner = inner.replace('/*__PLANT_IDENTITIES__*/', 'const plantIdentities=' + JSON.stringify(identities.plants).replace(/</g, '\\u003c') + ';');
+  inner = inner.replace('/*__PICK_CAP__*/', 'const pickCap=' + JSON.stringify(pickCap.plants).replace(/</g, '\\u003c') + ';');
   inner = inner.replace(/<i data-lucide="search"[^>]*><\/i>/g, '<span aria-hidden="true">⌕</span>');
   inner = inner.replace(/<i data-lucide="rotate-ccw"[^>]*><\/i>/g, '<span aria-hidden="true">↺</span>');
   inner = inner.replace(/lang="en"/g, 'lang="zh-CN"');
