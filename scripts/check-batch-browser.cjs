@@ -24,7 +24,7 @@ const {chromium}=require('playwright'),root=path.resolve(__dirname,'..');
   assert.equal(await f.locator('#plant-field-3d').getAttribute('data-batch-expired'),'true');
   assert(await f.locator('.pf-task-done').count()>0);assert.equal(await f.locator('.pf-task-done:enabled').count(),0);assert.equal(await f.locator('#pf-add-flower').isDisabled(),true);
   assert.equal(await f.locator('#pf-phase option[value="morning"]').isEnabled(),true,'Closed archive still lets users inspect morning phase');
-  assert.deepEqual(await f.locator('#pf-phase option').evaluateAll(xs=>xs.map(x=>x.value)),['morning','evening','firstflower','weekly','remeasure']);
+  assert.deepEqual(await f.locator('#pf-phase option').evaluateAll(xs=>xs.map(x=>x.value)),['morning','evening','firstflower','weekly','remeasure','leafpick']);
   assert.deepEqual(errors,[]);console.log(JSON.stringify({passed:true,tests:['portable build without Python','archive page generated','history link visible','closed phases readable','archive read-only on opening day','no enabled completion or new-flower buttons','mobile no script errors']}));
  }finally{await browser?.close();if(server)await new Promise(r=>server.close(r));fs.rmSync(temp,{recursive:true,force:true});}
 })().catch(e=>{console.error(e);process.exitCode=1;});

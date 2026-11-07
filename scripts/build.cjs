@@ -10,6 +10,9 @@ if (!Array.isArray(config.tasks) || config.tasks.length > 1000) throw Error('任
 const raw = fs.readFileSync(input, 'utf8');
 const identities=JSON.parse(fs.readFileSync(path.join(root,'src/plant-identities.json'),'utf8'));
 const pickCap=JSON.parse(fs.readFileSync(path.join(root,'src/pick-cap.json'),'utf8'));
+pickCap.plants=Object.fromEntries(Object.entries(pickCap.plants||{}).map(([id,n])=>[id.normalize('NFKC'),n]));
+if(pickCap.schemaVersion!==1||!pickCap.plants||Object.entries(pickCap.plants).some(([id,n])=>!/^\d+(?:\(\d+\))?$/.test(id)||!Number.isInteger(n)||n<0))throw Error('摘取累计计数格式错误');
+for(const t of config.tasks)if((pickCap.plants[t.id]||0)>=3&&/^摘取测量/.test(t.morning||'')&&!/超额采样已确认/.test(t.morning))throw Error(t.id+'号摘取测量已满3朵，请改为其他尚缺处理；确有必要时注明“超额采样已确认”，不能默认继续分配');
 if(identities.schemaVersion!==1||!identities.plants)throw Error('编号显示映射格式错误');
 const { readLayout, validateConfig } = require('./task-data.cjs');
 const ids = readLayout(raw), summary = validateConfig(config, ids);
