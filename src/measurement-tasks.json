@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "asOf": "2026-11-07",
+  "asOf": "2026-11-11",
   "firstflower": {
     "tasks": [
       {
@@ -11,16 +11,6 @@
         "flower": "",
         "weekly": "测量：确认首次实际开放后，测健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
         "area": "第二片区"
-      },
-      {
-        "id": "1098",
-        "measurementDate": "2026-10-27",
-        "expected": false,
-        "inferred": true,
-        "recordType": "plant",
-        "flower": "",
-        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。",
-        "area": "第一片区"
       },
       {
         "id": "1116",
@@ -37,16 +27,6 @@
         "measurementDate": "2026-10-28",
         "expected": false,
         "inferred": true,
-        "recordType": "plant",
-        "flower": "",
-        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。",
-        "area": "第一片区"
-      },
-      {
-        "id": "294",
-        "measurementDate": "2026-10-29",
-        "expected": false,
-        "inferred": false,
         "recordType": "plant",
         "flower": "",
         "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。",
