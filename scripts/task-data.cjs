@@ -57,7 +57,8 @@ function validateConfig(config, layout) {
     }
     for (const m of normId(t.morning).matchAll(/给\s*(\d+(?:\(\d+\))?)\s*供粉\(母本第(\d+)朵[^)]*\)/g)) {
       const recipient = tasks.find(x => x.id === m[1] && String(x.flower) === m[2]);
-      if (layout.has(m[1]) && (!recipient || !new RegExp('接\\s*' + escapeId(t.id) + '\\s*花粉').test(normId(recipient.morning)) || !recipient.morning.includes('父本第' + t.flower + '朵'))) throw Error('异交受粉行缺失或花号不一致：' + t.id + '→' + m[1]);
+      if(layout.has(m[1])&&!recipient&&m[0].includes('母本盆位未录入'))locatedPartnersMissingTasks.add(m[1]);
+      else if (layout.has(m[1]) && (!recipient || !new RegExp('接\\s*' + escapeId(t.id) + '\\s*花粉').test(normId(recipient.morning)) || !recipient.morning.includes('父本第' + t.flower + '朵'))) throw Error('异交受粉行缺失或花号不一致：' + t.id + '→' + m[1]);
       if (!layout.has(m[1]) && !m[0].includes('母本盆位未录入')) throw Error('缺少未定位母本说明：' + m[1]);
       pairs.add(t.id + '#' + t.flower + '>' + m[1] + '#' + m[2]);
       const dk = t.id + '#' + t.flower;if (!donors.has(dk)) donors.set(dk, new Set());donors.get(dk).add(m[1] + '#' + m[2]);

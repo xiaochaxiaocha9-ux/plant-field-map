@@ -26,8 +26,8 @@ assert(Math.abs((geometry.gap3Span.right-geometry.gap3Span.left)/(geometry.baySp
 assert.equal(geometry.frameRegions[0].length,3,'一区应有三个有架区');
 assert.equal(geometry.frameRegions[1].length,0,'二区没有架子');
 assert.deepEqual(Array.from(middleRows,row=>row.row),[0,1,2]);
-assert.equal(layout.size,240,'所有已录入编号必须唯一；不得自动增加待核对的重复编号');
-assert.equal([...layout.values()].filter(x=>x==='第一片区').length,191);
+assert.equal(layout.size,241,'所有已录入编号必须唯一；不得自动增加待核对的重复编号');
+assert.equal([...layout.values()].filter(x=>x==='第一片区').length,192);
 assert.equal([...layout.values()].filter(x=>x==='第二片区').length,49);
 assert.equal(layout.get('77'),'第一片区');
 assert(middleRows.every(row=>row.fractions.every((x,i,a)=>x>=0&&x<=1&&(i===0||x>a[i-1]))));
@@ -38,7 +38,7 @@ assert.deepEqual(Array.from(middleRows.find(r=>r.row===0).ids),['163','646','330
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===1).ids),['81','648','782','1082','890','716','1305','84','1093','218']);
 assert.deepEqual(Array.from(middleRows.find(r=>r.row===2).ids),['54','907','143','48','928','692','1069','940','1170','834']);
 for (const [id,area] of [['1118','第一片区'],['1202','第一片区'],['1138','第一片区'],['1097','第一片区'],['1304','第一片区'],['342','第一片区'],['1068','第二片区'],['434','第一片区'],['868','第二片区'],['868(2)','第二片区'],['229','第二片区'],['959','第二片区'],['297','第二片区'],['1016','第二片区'],['724','第二片区'],['331','第二片区']]) assert.equal(layout.get(id),area,`${id} 必须在用户指定片区`);
-for (const id of ['1104']) assert(!layout.has(id),`${id} 位置待用户确认，不应映射`);
+assert.equal(layout.get('1104'),'第一片区','1104已于11月15日确认在1376左侧');
 const rowIds=(section,row)=>Array.from(allRows.find(r=>r.section===section&&r.row===row).ids);
 assert.deepEqual(rowIds('一无架区二',2),['1299','346','281','1044','1118','1202','482','661','213','293','898','50','543']);
 assert.deepEqual(rowIds('一无架区二',1),['228','348','401','205','77','1145','754','676','897','1358','162','434','802']);
@@ -133,6 +133,8 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     const inner=await coord('210'),outer=await coord('968');assert.equal(inner.row,1);assert.equal(outer.row,1);assert(Math.abs(inner.x-outer.x)<1e-12);assert(inner.z<outer.z);assert.match(inner.note,/靠内/);assert.match(outer.note,/靠外/);
     const adjacent294=await coord('294');assert(adjacent294.x<inner.x&&inner.x-adjacent294.x<1,'294在210左侧紧邻');assert(Math.abs(adjacent294.z-inner.z)<1e-12,'294与210同为靠内');
     const moved873=await coord('873'),below286=await coord('286');assert.equal(moved873.section,below286.section);assert.equal(moved873.row,below286.row+1);assert(Math.abs(moved873.x-below286.x)<.001,'873 在 286 上方对齐');
+    const near84=await Promise.all(['716','1305','84','1093'].map(coord));assert(near84.every((p,i)=>p.row===2&&(i===0||p.x>near84[i-1].x)),'84附近第二排顺序应保持716、1305、84、1093');
+    const p1104=await coord('1104'),p1376=await coord('1376');assert.equal(p1104.row,p1376.row);assert.equal(p1104.section,p1376.section);assert(p1104.x<p1376.x&&p1376.x-p1104.x<1.2);assert.equal(p1104.z,p1376.z);
     const aligned218=await coord('218'),aligned834=await coord('834');assert(Math.abs(aligned218.x-aligned834.x)<.03,'218 与 834 应沿垂直走廊方向对齐');
     const offset317=await coord('317'),offset1167=await coord('1167');assert(offset1167.x>offset317.x&&offset1167.z>offset317.z,'1167 位于 317 右前方而非平排');
     const confirmedTop=await Promise.all(['1299','346','281','1044','1118','1202','482','661','213','293','898','50','543'].map(coord));assert(confirmedTop.every((p,i)=>i===0||p.x>confirmedTop[i-1].x),'10月31日照片确认的最上排完整左右顺序');assert(confirmedTop.every(p=>p.row===3),'均为第三排');
