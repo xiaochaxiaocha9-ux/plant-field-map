@@ -1,5 +1,11 @@
 const fs=require('fs'),path=require('path'),http=require('http'),assert=require('assert'),{chromium}=require('playwright');
-const root=path.resolve(__dirname,'..'),doc=fs.readFileSync(path.join(root,'docs/index.html'),'utf8'),batch=require('../src/daily-tasks.json');
+const root=path.resolve(__dirname,'..'),sourceDoc=fs.readFileSync(path.join(root,'docs/index.html'),'utf8'),batch=require('../src/daily-tasks.json');
+// Isolated thresholds: live counts grow over time and must not change test expectations.
+const counts=Object.fromEntries(Object.entries(require('../src/pick-cap.json').plants).map(([id,n])=>[id.normalize('NFKC'),n]));
+const encode=s=>s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const cap=x=>encode('const pickCap='+JSON.stringify(x).replace(/</g,'\\u003c')+';');
+const taskEmbedding=x=>encode('const publishedTasks='+JSON.stringify(x).replace(/</g,'\\u003c')+';');
+const doc=sourceDoc.replace(cap(counts),cap({...counts,'78':4,'47':2})).replace(taskEmbedding(batch),taskEmbedding({...batch,acknowledgedPhases:[]}));assert.notEqual(doc,sourceDoc,'阈值和阶段开放只替换隔离浏览器的数据，不改实际记录');
 (async()=>{const server=http.createServer((q,r)=>{r.setHeader('Content-Type','text/html;charset=utf-8');r.end(doc)});await new Promise(r=>server.listen(0,'127.0.0.1',r));let browser;try{
  browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',args:['--enable-unsafe-swiftshader']});const page=await browser.newPage({viewport:{width:360,height:900}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.clock.install({time:new Date(batch.date+'T12:00:00+08:00')});await page.goto('http://127.0.0.1:'+server.address().port);const f=page.frameLocator('iframe');await f.locator('#plant-field-3d[data-feedback-loaded="true"]').waitFor();await f.locator('#pf-phase').selectOption('morning');
  const draft=f.locator('#pf-new-draft'),notice=f.getByRole('alertdialog',{name:'摘取测量已满提示'});
