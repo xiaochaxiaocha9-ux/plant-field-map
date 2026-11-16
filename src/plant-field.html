@@ -153,7 +153,7 @@
   <header class="pf-header"><span class="pf-brand">同质园</span><span class="pf-demo" id="pf-layout-status">盆位核对</span></header>
   <div class="pf-toolbar">
     <div class="pf-searchbox" role="search" aria-label="搜索植株"><i data-lucide="search" aria-hidden="true"></i><input id="pf-search" type="text" aria-label="输入植株编号定位" data-tooltip="定位光圈不改变处理颜色" placeholder="找编号" autocomplete="off" enterkeyhint="search"></div>
-    <select id="pf-phase" class="pf-phase cursor-interaction" aria-label="处理阶段"><option value="morning">授粉处理</option><option value="evening">授粉前处理</option><option value="firstflower">首花生长测量</option><option value="weekly">周末生长测量</option><option value="remeasure">30天复测</option><option value="leafpick">叶片采样</option></select>
+    <select id="pf-phase" class="pf-phase cursor-interaction" aria-label="处理阶段"><option value="morning">授粉处理</option><option value="evening">授粉前处理</option><option value="firstflower">首花生长测量</option><option value="remeasure">30天复测</option><option value="leafpick">叶片采样</option></select>
     <button id="pf-import-toggle" class="pf-iconbutton cursor-interaction" type="button" aria-label="导入当天任务表" aria-expanded="false" data-tooltip="导入任务表" hidden><i data-lucide="upload" aria-hidden="true"></i></button>
   </div>
   <div class="pf-results" id="pf-results" hidden><span id="pf-searchmsg" class="pf-searchmsg" role="status" aria-live="polite"></span><div id="pf-result-buttons" style="display:contents"></div></div>
@@ -266,7 +266,7 @@
     let dueDay='',dueTasks=[];
     const viewTasks=()=>{if(phase==='firstflower')return firstflowerTasks;if(phase==='weekly')return weeklyTasks;if(phase==='leafpick')return leafpickTasks;if(phase==='remeasure'){const day=beijingDate();if(day!==dueDay){dueDay=day;dueTasks=measurements.remeasure.tasks.filter(t=>t.dueDate<=day);}return dueTasks;}return tasks;};
     const phaseNames={morning:'授粉处理',evening:'授粉前处理',firstflower:'首花生长测量',weekly:'周末生长测量',remeasure:'30天复测',leafpick:'叶片采样'};
-    const periodLabels={morning:(batchMorning?dateText(batchMorning)+' ':'')+phaseNames.morning,evening:(batchEvening?dateText(batchEvening)+' ':'')+phaseNames.evening,firstflower:phaseNames.firstflower,weekly:(measurements.weekly.start?dateText(new Date(measurements.weekly.start+'T00:00:00Z'))+'—'+dateText(new Date(measurements.weekly.end+'T00:00:00Z'))+' ':'')+phaseNames.weekly,remeasure:'30天复测（到期待测）',leafpick:(measurements.leafpick?.date?dateText(new Date(measurements.leafpick.date+'T00:00:00Z'))+' ':'')+phaseNames.leafpick};
+    const periodLabels={morning:(batchMorning?dateText(batchMorning)+' ':'')+phaseNames.morning,evening:(batchEvening?dateText(batchEvening)+' ':'')+phaseNames.evening,firstflower:phaseNames.firstflower,weekly:(measurements.weekly.start?dateText(new Date(measurements.weekly.start+'T00:00:00Z'))+'—'+dateText(new Date(measurements.weekly.end+'T00:00:00Z'))+' ':'')+phaseNames.weekly,remeasure:'30天复测（到期待测）',leafpick:phaseNames.leafpick};
     const beijingFormatter=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'});
     let beijingMinute=null,beijingCachedDate='';
     const beijingDate=()=>{const now=Date.now(),minute=Math.floor(now/60000);if(minute!==beijingMinute){const parts=beijingFormatter.formatToParts(new Date(now)),get=k=>parts.find(x=>x.type===k).value;beijingCachedDate=get('year')+'-'+get('month')+'-'+get('day');beijingMinute=minute;}return beijingCachedDate;};
