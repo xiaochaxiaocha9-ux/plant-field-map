@@ -1,31 +1,11 @@
 {
   "schemaVersion": 1,
-  "asOf": "2026-11-16",
+  "asOf": "2026-11-19",
   "firstflower": {
     "tasks": [
       {
-        "id": "1104",
-        "measurementDate": "2026-11-03",
-        "expected": false,
-        "inferred": false,
-        "area": "第一片区",
-        "recordType": "plant",
-        "flower": "",
-        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。"
-      },
-      {
         "id": "611",
         "measurementDate": "2026-11-15",
-        "expected": false,
-        "inferred": false,
-        "area": "第一片区",
-        "recordType": "plant",
-        "flower": "",
-        "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。"
-      },
-      {
-        "id": "1257",
-        "measurementDate": "2026-11-16",
         "expected": false,
         "inferred": false,
         "area": "第一片区",
@@ -378,14 +358,6 @@
         "area": "第二片区"
       },
       {
-        "id": "276",
-        "recordType": "plant",
-        "flower": "",
-        "dueDate": "2026-11-09",
-        "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第二片区"
-      },
-      {
         "id": "282",
         "recordType": "plant",
         "flower": "",
@@ -490,14 +462,6 @@
         "area": "第二片区"
       },
       {
-        "id": "333",
-        "recordType": "plant",
-        "flower": "",
-        "dueDate": "2026-11-11",
-        "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第二片区"
-      },
-      {
         "id": "340",
         "recordType": "plant",
         "flower": "",
@@ -586,14 +550,6 @@
         "area": "第一片区"
       },
       {
-        "id": "433",
-        "recordType": "plant",
-        "flower": "",
-        "dueDate": "2026-11-19",
-        "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第二片区"
-      },
-      {
         "id": "434",
         "recordType": "plant",
         "flower": "",
@@ -608,14 +564,6 @@
         "dueDate": "2026-11-06",
         "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
         "area": "第一片区"
-      },
-      {
-        "id": "459",
-        "recordType": "plant",
-        "flower": "",
-        "dueDate": "2026-11-01",
-        "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第二片区"
       },
       {
         "id": "482",
@@ -746,14 +694,6 @@
         "area": "第一片区"
       },
       {
-        "id": "647",
-        "recordType": "plant",
-        "flower": "",
-        "dueDate": "2026-11-12",
-        "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第二片区"
-      },
-      {
         "id": "648",
         "recordType": "plant",
         "flower": "",
@@ -832,14 +772,6 @@
         "dueDate": "2026-11-14",
         "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
         "area": "第一片区"
-      },
-      {
-        "id": "724",
-        "recordType": "plant",
-        "flower": "",
-        "dueDate": "2026-11-04",
-        "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第二片区"
       },
       {
         "id": "725",
@@ -982,14 +914,6 @@
         "recordType": "plant",
         "flower": "",
         "dueDate": "2026-11-17",
-        "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第二片区"
-      },
-      {
-        "id": "868(2)",
-        "recordType": "plant",
-        "flower": "",
-        "dueDate": "2026-11-04",
         "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
         "area": "第二片区"
       },
@@ -1194,14 +1118,6 @@
         "area": "第一片区"
       },
       {
-        "id": "958",
-        "recordType": "plant",
-        "flower": "",
-        "dueDate": "2026-11-02",
-        "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第二片区"
-      },
-      {
         "id": "959",
         "recordType": "plant",
         "flower": "",
@@ -1214,14 +1130,6 @@
         "recordType": "plant",
         "flower": "",
         "dueDate": "2026-10-31",
-        "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第二片区"
-      },
-      {
-        "id": "961",
-        "recordType": "plant",
-        "flower": "",
-        "dueDate": "2026-11-17",
         "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
         "area": "第二片区"
       },
@@ -1362,14 +1270,6 @@
         "area": "第二片区"
       },
       {
-        "id": "1118",
-        "recordType": "plant",
-        "flower": "",
-        "dueDate": "2026-11-26",
-        "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第一片区"
-      },
-      {
         "id": "1119",
         "recordType": "plant",
         "flower": "",
@@ -1432,14 +1332,6 @@
         "dueDate": "2026-11-10",
         "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
         "area": "第一片区"
-      },
-      {
-        "id": "1169",
-        "recordType": "plant",
-        "flower": "",
-        "dueDate": "2026-11-13",
-        "remeasure": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。",
-        "area": "第二片区"
       },
       {
         "id": "1170",
