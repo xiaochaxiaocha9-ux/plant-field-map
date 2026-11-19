@@ -27,8 +27,8 @@ assert.equal(geometry.frameRegions[0].length,3,'一区应有三个有架区');
 assert.equal(geometry.frameRegions[1].length,0,'二区没有架子');
 assert.deepEqual(Array.from(middleRows,row=>row.row),[0,1,2]);
 assert.equal(layout.size,241,'所有已录入编号必须唯一；不得自动增加待核对的重复编号');
-assert.equal([...layout.values()].filter(x=>x==='第一片区').length,192);
-assert.equal([...layout.values()].filter(x=>x==='第二片区').length,49);
+assert.equal([...layout.values()].filter(x=>x==='第一片区').length,194);
+assert.equal([...layout.values()].filter(x=>x==='第二片区').length,47);
 assert.equal(layout.get('77'),'第一片区');
 assert(middleRows.every(row=>row.fractions.every((x,i,a)=>x>=0&&x<=1&&(i===0||x>a[i-1]))));
 assert.deepEqual(Array.from(leftRows.find(r=>r.row===0).ids),['483','295','220','317','1167','294','210','968','149','821']);
@@ -46,8 +46,8 @@ assert.deepEqual(rowIds('一无架区二',0),['1168','1295','76','1252','547','1
 assert.deepEqual(rowIds('一有架区三',2),['419','917','9','919','956','857','866','282']);
 assert.deepEqual(rowIds('一有架区三',0),['44','725','592','1144','969','86','595','1122']);
 assert.deepEqual(rowIds('一无架区三',2),['867','1087','288','549','873','1137','1297','53','942','179','966']);
-assert.deepEqual(rowIds('一无架区三',1),['1365','911','1066','889','286','887','289','5','200','201','811','12','711','1368']);
-assert.deepEqual(rowIds('二区全段',2),['1068','914','1116','404','707','912','882','544','52','868','808','546','183','229','959','297','1188','296','459','304','1162']);
+assert.deepEqual(rowIds('一无架区三',1),['1188','808','1365','911','1066','889','286','887','289','5','200','201','811','12','711','1368']);
+assert.deepEqual(rowIds('二区全段',2),['1068','914','1116','404','707','912','882','544','52','868','546','183','229','959','297','296','459','304','1162']);
 assert.deepEqual(rowIds('二区全段',1),['331','916','915','518','913','733','896','410','749','787','910','780','758','684','','','1088','1016','1169','868(2)','647','960','433','333','276','1010','','19','961','958','','724']);
 const taskSummary = validateConfig(currentTasks, layout);
 const encode = s => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -133,6 +133,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     const inner=await coord('210'),outer=await coord('968');assert.equal(inner.row,1);assert.equal(outer.row,1);assert(Math.abs(inner.x-outer.x)<1e-12);assert(inner.z<outer.z);assert.match(inner.note,/靠内/);assert.match(outer.note,/靠外/);
     const adjacent294=await coord('294');assert(adjacent294.x<inner.x&&inner.x-adjacent294.x<1,'294在210左侧紧邻');assert(Math.abs(adjacent294.z-inner.z)<1e-12,'294与210同为靠内');
     const moved873=await coord('873'),below286=await coord('286');assert.equal(moved873.section,below286.section);assert.equal(moved873.row,below286.row+1);assert(Math.abs(moved873.x-below286.x)<.001,'873 在 286 上方对齐');
+    const movedRow=await Promise.all(['1188','808','1365','911'].map(coord));assert(movedRow.every((p,i)=>p.section==='一无架区三'&&p.row===2&&p.z===movedRow[0].z&&(i===0||(p.x>movedRow[i-1].x&&p.x-movedRow[i-1].x<1))),'1188、808、1365、911同排从左到右紧邻');
     const near84=await Promise.all(['716','1305','84','1093'].map(coord));assert(near84.every((p,i)=>p.row===2&&(i===0||p.x>near84[i-1].x)),'84附近第二排顺序应保持716、1305、84、1093');
     const p1104=await coord('1104'),p1376=await coord('1376');assert.equal(p1104.row,p1376.row);assert.equal(p1104.section,p1376.section);assert(p1104.x<p1376.x&&p1376.x-p1104.x<1.2);assert.equal(p1104.z,p1376.z);
     const aligned218=await coord('218'),aligned834=await coord('834');assert(Math.abs(aligned218.x-aligned834.x)<.03,'218 与 834 应沿垂直走廊方向对齐');
@@ -145,7 +146,7 @@ assert.throws(() => validateConfig({ ...fixture, tasks: fixture.tasks.filter(t =
     assert((await coord('1137')).x<(await coord('1297')).x,'1137位于1297左边');assert((await coord('549')).x>(await coord('288')).x,'549位于288右边');assert(Math.abs((await coord('549')).x-(await coord('1066')).x)<1e-9,'549与1066上下对齐');
     assert(Math.abs((await coord('884')).x-(await coord('1250')).x)<1e-9 && (await coord('884')).z>(await coord('1250')).z,'884位于1250正前方');
     assert(lowestInner.every((p,i)=>p.row===1&&(i===0||p.x>lowestInner[i-1].x)),'最低排内侧完整左右顺序');assert(lowestOuter.every((p,i)=>p.row===1&&(i===0||p.x>lowestOuter[i-1].x)),'最低排外侧完整左右顺序');assert(Math.min(...lowestOuter.map(p=>p.z))>Math.max(...lowestInner.map(p=>p.z)),'最低排外侧保持靠外，不压成直线');
-    const rightSequence=await Promise.all(['546','183','229','959','297','1188'].map(coord));assert(rightSequence.every((p,i)=>i===0||p.x>rightSequence[i-1].x),'二区上排左右顺序');assert(rightSequence[2].z<rightSequence[3].z&&rightSequence[4].z<rightSequence[3].z&&rightSequence[5].z>rightSequence[4].z,'229/959/297/1188前后错位');
+    const rightSequence=await Promise.all(['546','183','229','959','297'].map(coord));assert(rightSequence.every((p,i)=>i===0||p.x>rightSequence[i-1].x),'二区上排其余植株左右顺序');assert(rightSequence[2].z<rightSequence[3].z&&rightSequence[4].z<rightSequence[3].z,'229/959/297前后错位');
     const left1169=await coord('1169'),suffix868=await coord('868(2)'),right647=await coord('647');assert(left1169.x<suffix868.x&&suffix868.x<right647.x,'868（2）在1169右侧、647左侧');assert(suffix868.x-left1169.x>right647.x-suffix868.x,'868（2）和1169之间保留空位');
     const middleLow=await Promise.all(['163','646','330','159','550','208','416','794'].map(coord));
     assert(middleLow[3].x-middleLow[2].x>(middleLow[1].x-middleLow[0].x)*1.8,'330与159间须保留空档');
