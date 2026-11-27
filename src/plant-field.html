@@ -243,10 +243,10 @@
       {area:'第一片区',section:'一有架区三',row:2,ids:['419','917','9','919','956','857','866','282'],positions:[.04,.16,.28,.40,.52,.64,.76,.88],offsets:[0,0,0,0,0,0,0,0]},
       {area:'第一片区',section:'一有架区三',row:1,ids:['923','225','1097','1100','1120','1015','186','173'],positions:[.04,.16,.23,.28,.58,.70,.82,.94],offsets:[0,.40,-.30,.40,0,0,0,0]},
       {area:'第一片区',section:'一有架区三',row:0,ids:['44','725','592','1144','969','86','595','1122'],positions:[.04,.16,.28,.40,.60,.72,.84,.96],offsets:[0,0,0,0,0,0,0,0]},
-      {area:'第一片区',section:'一无架区三',row:2,ids:['867','1087','288','549','1066','808','911','459','1137','1297','53','413','179','811'],positions:[.03,.09,.15,.25,.385,.40,.43,.50,.54,.60,.66,.72,.78,.84],offsets:[0,0,0,0,-.5,0,0,0,0,0,0,0,0,0]},
-      {area:'第一片区',section:'一无架区三',row:1,ids:['1188','1365','889','286','873','887','587','711','200','201','441','12','5','1368'],positions:[0,.09,.25,.37,.40,.43,.49,.55,.61,.67,.73,.79,.85,.91],offsets:[0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+      {area:'第一片区',section:'一无架区三',row:2,ids:['867','1087','288','549','873','1137','1297','53','413','179','811'],positions:[.03,.09,.15,.25,.37,.54,.60,.66,.72,.78,.84],offsets:[0,0,0,0,0,0,0,0,0,0,0],notes:['','','','','286上方；间距为示意','','','','','','']},
+      {area:'第一片区',section:'一无架区三',row:1,ids:['1188','808','1365','911','1066','889','286','887','587','711','200','201','441','12','5','1368'],positions:[0,.045,.09,.135,.25,.31,.37,.43,.49,.55,.61,.67,.73,.79,.85,.91],offsets:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
       {area:'第一片区',section:'一无架区三',row:0,ids:['1104','1376','1387','1298','289','921','966','942','1089','1257','1369','1253','1304','342'],positions:[.32,.37,.42,.47,.52,.57,.62,.67,.72,.77,.82,.87,.82,.90],offsets:[0,0,0,0,0,0,0,0,0,0,0,0,.52,.52],notes:['1376左侧紧邻；2026-11-15用户确认；距离示意','','','','','','','','','','','','','']},
-      {area:'第二片区',section:'二区全段',row:2,ids:['1068','914','1116','404','707','912','882','544','52','868','546','183','229','959','297','296','304','1162'],positions:[.03,.10,.15,.35,.375,.40,.425,.45,.47,.49,.57,.61,.63,.65,.675,.87,.95,.98],offsets:[0,0,0,0,0,0,0,0,0,0,0,0,-.35,.35,-.35,0,.35,0]},
+      {area:'第二片区',section:'二区全段',row:2,ids:['1068','914','1116','404','707','912','882','544','52','868','546','183','229','959','297','296','459','304','1162'],positions:[.03,.10,.15,.35,.375,.40,.425,.45,.47,.49,.57,.61,.63,.65,.675,.87,.91,.95,.98],offsets:[0,0,0,0,0,0,0,0,0,0,0,0,-.35,.35,-.35,0,-.35,.35,0]},
       {area:'第二片区',section:'二区全段',row:1,ids:['331','916','915','518','913','733','896','410','749','787','910','780','758','684','','','1088','1016','1169','868(2)','647','960','433','333','276','1010','','19','961','958','','724'],positions:[.03,.045,.06,.075,.09,.16,.18,.20,.22,.25,.27,.30,.32,.35,.49,.59,.61,.73,.745,.778,.795,.84,.86,.88,.90,.92,.94,.96,.98,.98,.98,1],offsets:[0,-.28,.28,-.28,.28,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,.38,-.38,.68,0]}
     ];
     const pendingSecondRow=actualRows.some(data=>data.ids.some(id=>!id));
@@ -324,7 +324,7 @@
     const completionText=(t,done)=>done?'已完成':phase==='morning'&&recipientsOf(t).length>1?recipientsOf(t).length+'朵均完成':'完成';
     function shortAction(t,when=phase){
       const source=locationAwareOperation(t,when);if(prepNoOp(t,when))return'不处理';if(!hasPlannedAction(t,when))return'—';
-      if(when==='remeasure')return t.remeasure.includes('【已测直径】')?'已测直径':t.remeasure.includes('【直径待复测】')?'直径待复测':'';
+      if(when==='remeasure'){const found=new Set();for(const m of t.remeasure.matchAll(/【已测：([^】]+)】/g)){const seg=m[1].replace(/（\d{4}-\d{2}-\d{2}）$/,'');for(const raw of seg.split('、')){const n=raw.replace('（mm）','').trim();if(n==='主蔓长度')found.add('茎长');else if(n==='茎基部直径')found.add('直径');else if(n==='现存真叶数')found.add('真叶');else if(n==='分枝数')found.add('分枝');else if(n==='健康状态')found.add('健康');}}if(t.remeasure.includes('校正估算定版')&&!found.has('直径'))found.add('直径（估算）');const items=['茎长','直径','直径（估算）','真叶','分枝','健康'].filter(x=>found.has(x));return items.length?'已测：'+items.join('、'):'未测';}
       if(when==='leafpick')return'叶片采样 · 花后'+t.daysAfterFlower+'天';
       if(when==='fruitcheck')return'坐果确认 · '+t.pendingCount+'朵待确认';
       if(when==='firstflower')return (t.expected?'预计首花，实际开放后测':t.measurementDate<beijingDate()?'首花后补测':'首花当日测量')+(t.inferred?'（首花日推定）':'');
@@ -635,7 +635,7 @@
       for(const t of rows){
         const stored=currentFeedback(t),old=rawFeedback(t),conflict=!!old&&!stored,sourceDone=/已完成|已摘取/.test(t[phase]),done=sourceDone||stored?.done===true;
         const row=document.createElement('div');row.className='pf-task-row';row.dataset.taskKey=feedbackKey(t);row.dataset.flowerId=flowerId(t);row.dataset.done=String(done);row.dataset.prepNoop=String(prepNoOp(t));
-        const main=document.createElement('button');main.type='button';main.className='pf-task-main cursor-interaction';main.setAttribute('aria-label',flowerId(t)+'，'+shortAction(t));main.innerHTML='<span class="pf-task-code">'+escape(flowerId(t))+'</span><span class="pf-task-short">'+escape(shortAction(t))+'</span>';main.addEventListener('click',()=>selectPlant(t.id,pairForTask(t)?.key||''));row.append(main);
+        const main=document.createElement('button');main.type='button';main.className='pf-task-main cursor-interaction';main.setAttribute('aria-label',flowerId(t)+'，'+shortAction(t));main.innerHTML='<span class="pf-task-code">'+escape(phase==='remeasure'?displayId(t.id):flowerId(t))+'</span><span class="pf-task-short">'+escape(shortAction(t))+'</span>';main.addEventListener('click',()=>selectPlant(t.id,pairForTask(t)?.key||''));row.append(main);
         const complete=document.createElement('button');complete.type='button';complete.className='pf-task-done cursor-interaction';complete.textContent=prepNoOp(t)?'不处理':completionText(t,done);complete.setAttribute('aria-pressed',String(done));complete.disabled=blocked||sourceDone||conflict||prepNoOp(t);complete.hidden=prepNoOp(t);
         row.append(complete);
         const more=document.createElement('details');more.className='pf-task-more';const summary=document.createElement('summary');summary.className='cursor-interaction';summary.setAttribute('aria-label',flowerId(t)+'备注及实际处理');summary.textContent=conflict?'计划有更新，需核对':stored?.actual?'实际：'+stored.actual:stored?.note?'有备注':'';more.append(summary);
