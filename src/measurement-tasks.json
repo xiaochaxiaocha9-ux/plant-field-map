@@ -1830,5 +1830,568 @@
       }
     ],
     "unlocated": []
+  },
+  "colorcheck": {
+    "date": "2026-11-27",
+    "scope": "花色确认：从未报过花色的植株44株、花色有冲突待核对的植株18株；下次开花时顺手核对，备注里写紫、粉或白即可。",
+    "tasks": [
+      {
+        "id": "5",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "149",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记8朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "201",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记1朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "206",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记2朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "229",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记4朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第二片区"
+      },
+      {
+        "id": "293",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记5朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "297",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记4朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第二片区"
+      },
+      {
+        "id": "304",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第二片区"
+      },
+      {
+        "id": "340",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "401",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记2朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "482",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记7朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "543",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记4朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "546",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第二片区"
+      },
+      {
+        "id": "547",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "549",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记4朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "550",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记7朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "611",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记2朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "644",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记1朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "716",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "733",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记2朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第二片区"
+      },
+      {
+        "id": "738",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记2朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "867",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记1朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "873",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记6朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "959",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记2朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第二片区"
+      },
+      {
+        "id": "961",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第二片区"
+      },
+      {
+        "id": "1010",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第二片区"
+      },
+      {
+        "id": "1016",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记2朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第二片区"
+      },
+      {
+        "id": "1088",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记2朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第二片区"
+      },
+      {
+        "id": "1098",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记6朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1104",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1145",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1162",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第二片区"
+      },
+      {
+        "id": "1166",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记8朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1170",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记7朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1257",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记1朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1295",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记2朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1299",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记1朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1304",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记1朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1305",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记2朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1339",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记2朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1365",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记1朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "1368",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记1朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false,
+        "area": "第一片区"
+      },
+      {
+        "id": "48",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：本株同时登记有粉色和紫色两种花，同株应只有一个颜色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "78",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：本株同时登记有粉色和紫色两种花，同株应只有一个颜色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "968",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：本株同时登记有白色和紫色两种花，同株应只有一个颜色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "77",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：首花记为紫色，后来有一朵报为粉色，同株应只有一个颜色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "208",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：首花实测花色与种子编号所示花色不同，当时记为保留观察。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "834",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：B12那朵与本株既往的白色花不合，当时定为等开放确认花色后再定编号。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "56",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是粉色码，本株的花登记为紫色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "200",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是粉色码，本株的花登记为紫色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "542",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是紫色码，本株的花登记为粉色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "692",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是紫色码，本株的花登记为粉色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "694",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是紫色码，本株的花登记为粉色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "707",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是粉色码，本株的花登记为紫色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第二片区"
+      },
+      {
+        "id": "940",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是紫色码，本株的花登记为白色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "958",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是白色码，本株的花登记为粉色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第二片区"
+      },
+      {
+        "id": "969",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是白色码，本株的花登记为紫色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "1130",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是粉色码，本株的花登记为紫色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      },
+      {
+        "id": "1131",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是粉色码，本株的花登记为紫色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true,
+        "area": "第一片区"
+      }
+    ],
+    "unlocated": [
+      {
+        "id": "146",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记1朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false
+      },
+      {
+        "id": "343",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认：本株已登记1朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
+        "checkDate": "2026-11-27",
+        "conflict": false
+      },
+      {
+        "id": "321",
+        "recordType": "plant",
+        "flower": "",
+        "colorcheck": "花色确认（有冲突）：种子编号是紫色码，本株的花登记为白色。下次开花时核对实际花色，在备注里写明。",
+        "checkDate": "2026-11-27",
+        "conflict": true
+      }
+    ]
   }
 }
