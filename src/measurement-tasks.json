@@ -102,6 +102,36 @@
     "recordType": "plant",
     "flower": "",
     "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。"
+   },
+   {
+    "id": "1253",
+    "measurementDate": "2026-11-28",
+    "expected": false,
+    "inferred": false,
+    "area": "第一片区",
+    "recordType": "plant",
+    "flower": "",
+    "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。"
+   },
+   {
+    "id": "1089",
+    "measurementDate": "2026-11-28",
+    "expected": false,
+    "inferred": false,
+    "area": "第一片区",
+    "recordType": "plant",
+    "flower": "",
+    "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。"
+   },
+   {
+    "id": "1298",
+    "measurementDate": "2026-11-28",
+    "expected": false,
+    "inferred": false,
+    "area": "第一片区",
+    "recordType": "plant",
+    "flower": "",
+    "weekly": "测量：健康状态、主蔓长度（mm）、茎基部直径（mm）、现存真叶数、分枝数；记录实际测量日期。首花当日未测的，保留实际补测日期，不回填。"
    }
   ],
   "unlocated": []
@@ -1816,15 +1846,6 @@
    },
    {
     "id": "961",
-    "recordType": "plant",
-    "flower": "",
-    "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
-    "checkDate": "2026-11-27",
-    "conflict": false,
-    "area": "第二片区"
-   },
-   {
-    "id": "1010",
     "recordType": "plant",
     "flower": "",
     "colorcheck": "花色确认：本株已登记3朵，全部记为色待确认，还没报过花色。下次开花时看一眼，在备注里写花色（紫、粉或白）。",
