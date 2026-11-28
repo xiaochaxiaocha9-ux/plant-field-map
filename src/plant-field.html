@@ -206,7 +206,6 @@
   <dialog id="pf-feedback-dialog" class="pf-feedback-dialog" aria-label="操作反馈文本"><div class="pf-feedback-actions"><span id="pf-copy-status" role="status" aria-live="polite">可长按下方文本复制</span><button type="button" class="pf-feedback-copy cursor-interaction" id="pf-feedback-close">关闭</button></div><textarea id="pf-feedback-text" readonly aria-label="操作反馈，可选中复制"></textarea><button type="button" class="pf-feedback-copy cursor-interaction" id="pf-feedback-recopy">复制文本</button></dialog>
   <dialog id="pf-completion-dialog" class="pf-celebrate" aria-labelledby="pf-completion-title" aria-describedby="pf-completion-reminder"><div class="pf-celebrate-fireworks" aria-hidden="true"></div><div class="pf-celebrate-content"><div class="pf-celebrate-thumbs" aria-hidden="true">👍👍</div><h2 id="pf-completion-title">都完成啦，太棒了！</h2><p id="pf-completion-reminder">辛苦啦！别忘了再巡一圈，检查有没有漏统计的花朵和即将开放的花苞。</p><small>本阶段清单已勾完，记得复制反馈哦。</small><button type="button" id="pf-completion-close" class="cursor-interaction">好，再检查一圈 ✨</button></div></dialog>
   <dialog id="pf-colour-dialog" class="pf-feedback-dialog" aria-label="今日人工自交花色确认"><div class="pf-feedback-actions"><span>今日人工自交 · 先确认花色</span><button type="button" class="pf-feedback-copy" id="pf-colour-close">关闭</button></div><p class="pf-colour-hint">自交前看一眼这朵花的颜色，点对应按钮：会记进这朵花的备注，随反馈一起发回。不确定就先关掉，做完再点右上角“花色确认”补填。</p><div id="pf-colour-list"></div></dialog>
-  <dialog id="pf-picknote-dialog" class="pf-feedback-dialog" aria-label="摘取存放提醒"><p class="pf-colour-hint" id="pf-picknote-text"></p><div class="pf-feedback-actions"><button type="button" class="pf-feedback-copy" id="pf-picknote-close">知道了</button></div></dialog>
   <script>
   (()=>{
     const root=document.getElementById('plant-field-3d');
@@ -273,7 +272,7 @@
     let lastCopyNoteKeys=[];
     if(typeof publishedTasks!=='undefined'){tasks=publishedTasks.tasks.map(t=>({...t,id:normId(t.id)}));taskLabel=publishedTasks.label+(publishedTasks.date?' · '+publishedTasks.date:'');}
     const taskDate=typeof publishedTasks!=='undefined'?publishedTasks.date:null;
-    const colourConfirm=typeof publishedTasks!=='undefined'?(publishedTasks.colourConfirm||null):null;let colourShown=false;const pickNote=typeof publishedTasks!=='undefined'?(publishedTasks.pickNote||null):null;let pickNoteShown=false;
+    const colourConfirm=typeof publishedTasks!=='undefined'?(publishedTasks.colourConfirm||null):null;let colourShown=false;
     // Only the maintainer's explicit receipt closes a phase. Local checkmarks
     // and copying do not prove that feedback reached the experiment record.
     const acknowledgedPhases=new Set(typeof publishedTasks!=='undefined'&&!publishedTasks.readOnly&&Array.isArray(publishedTasks.acknowledgedPhases)?publishedTasks.acknowledgedPhases:[]);
@@ -633,8 +632,6 @@
     function maybeShowColourDialog(){const btn=$('#pf-colour-open');if(!btn)return;const active=!!colourConfirm&&phase===colourConfirm.phase&&!expired();btn.hidden=!active;if(active&&feedbackReady&&!colourShown){colourShown=true;renderColourDialog();const d=$('#pf-colour-dialog');if(d&&!d.open)d.showModal();}}
     $('#pf-colour-close').addEventListener('click',()=>$('#pf-colour-dialog').close());
     $('#pf-colour-open').addEventListener('click',()=>{renderColourDialog();const d=$('#pf-colour-dialog');if(d&&!d.open)d.showModal();});
-    function maybeShowPickNote(t){if(!pickNote||pickNoteShown||phase!==pickNote.phase||expired())return;const hit=(pickNote.items||[]).some(it=>normId(it.id)===normId(t.id)&&String(it.flower)===String(t.flower));if(!hit)return;pickNoteShown=true;const d=$('#pf-picknote-dialog');if(!d)return;$('#pf-picknote-text').textContent=pickNote.text||'';if(!d.open)d.showModal();}
-    $('#pf-picknote-close').addEventListener('click',()=>$('#pf-picknote-dialog').close());
     function toggleTask(t,report){
       const value=currentFeedback(t),old=rawFeedback(t);if(expired()||prepNoOp(t)||/已完成|已摘取/.test(t[phase])||(old&&!value))return;
       const fail=message=>{ $('#pf-feedback-message').textContent=message;if(report)report(message); };
@@ -642,7 +639,7 @@
       const wasComplete=flowerChecklistComplete(),previousTimes=Object.values(feedback).map(v=>Date.parse(v.completedAt)||0),now=new Date(Math.max(Date.now(),Math.max(0,...previousTimes)+1)).toISOString(),done=!value?.done;feedback[feedbackKey(t)]={...(value||{}),plan:t[phase],done,linkedBy:'',completedAt:done?now:'',metrics:cleanMetrics(value?.metrics),updatedAt:now};
       syncSingleRecipient(t,done?(value?.actual==='花药未开裂'?'no-pollen':!value?.actual?'complete':'undo'):'undo');
       refresh();persistFeedback();
-      if(done&&!wasComplete&&flowerChecklistComplete())showCompletionCelebration();if(done)maybeShowPickNote(t);
+      if(done&&!wasComplete&&flowerChecklistComplete())showCompletionCelebration();
     }
     function renderTaskList(){
       const list=$('#pf-task-list'),rows=viewTasks().filter(visibleInList),blocked=expired();list.replaceChildren();
